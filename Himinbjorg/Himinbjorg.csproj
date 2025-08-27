@@ -10,9 +10,22 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Edda\Edda.csproj" />
+    <ProjectReference Include="../Edda/Edda.csproj" />
+    <ProjectReference Include="../Odin/Odin.csproj" />
   </ItemGroup>
 
+  <!-- Make static files from Odin accessible at runtime -->
+  <ItemGroup>
+    <Content Include="../Odin/wwwroot/odin/**/*" CopyToOutputDirectory="PreserveNewest">
+      <Link>wwwroot/odin/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="CopyOdinStaticFiles" AfterTargets="Build;Publish">
+    <Copy SourceFiles="@(Content)"
+      DestinationFiles="@(Content->'$(OutDir)wwwroot/odin/%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+  </Target>
 </Project>
