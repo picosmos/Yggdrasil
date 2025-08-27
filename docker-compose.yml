@@ -2,9 +2,13 @@ services:
   himinbjorg:
     build: .
     ports:
-    - "27179:8080"
+      - "27179:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME}
+      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - db_data:/app/himinbjorg.db
     # Uncomment the following lines if you want to mount code for hot-reload during development

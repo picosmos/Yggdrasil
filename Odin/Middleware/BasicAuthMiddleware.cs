@@ -8,8 +8,8 @@ namespace Odin.Middleware
     public class BasicAuthMiddleware
     {
         private readonly RequestDelegate _next;
-        private const string USERNAME = "admin"; // Change as needed
-        private const string PASSWORD = "password"; // Change as needed
+        private static readonly string USERNAME = Environment.GetEnvironmentVariable("BASIC_AUTH_USERNAME") ?? "admin";
+        private static readonly string PASSWORD = Environment.GetEnvironmentVariable("BASIC_AUTH_PASSWORD") ?? "password";
 
         public BasicAuthMiddleware(RequestDelegate next)
         {
@@ -25,7 +25,7 @@ namespace Odin.Middleware
                 await context.Response.CompleteAsync();
                 return;
             }
-            
+
             var authHeader = context.Request.Headers["Authorization"].ToString();
             if (!authHeader.StartsWith("Basic "))
             {
@@ -36,7 +36,7 @@ namespace Odin.Middleware
             }
 
             var encodedCredentials = authHeader.Substring("Basic ".Length).Trim();
-           
+
             try
             {
                 var credentialBytes = Convert.FromBase64String(encodedCredentials);
