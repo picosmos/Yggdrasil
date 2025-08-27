@@ -1,0 +1,11 @@
+services:
+  garminbackend:
+    build: .
+    ports:
+    - "27179:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    # Uncomment the following lines if you want to mount code for hot-reload during development
+    # volumes:
+    #   - .:/app
+    #   - ~/.aspnet/https:/https:ro
