@@ -5,7 +5,11 @@ services:
     - "27179:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - db_data:/app/himinbjorg.db
     # Uncomment the following lines if you want to mount code for hot-reload during development
-    # volumes:
     #   - .:/app
     #   - ~/.aspnet/https:/https:ro
+
+volumes:
+  db_data:
