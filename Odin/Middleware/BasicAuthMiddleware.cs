@@ -42,6 +42,7 @@ namespace Odin.Middleware
 
             var encodedCredentials = authHeader.Substring("Basic ".Length).Trim();
 
+            bool jumpToNext = false;
             try
             {
                 var credentialBytes = Convert.FromBase64String(encodedCredentials);
@@ -49,8 +50,7 @@ namespace Odin.Middleware
                 if (credentials.Length == 2 && credentials[0] == USERNAME && credentials[1] == PASSWORD)
                 {
                     _logger.LogInformation("Basic authentication succeeded for user '{Username}' from {RemoteIp}", credentials[0], context.Connection.RemoteIpAddress);
-                    await _next(context);
-                    return;
+                    jumpToNext = true;
                 }
                 else
                 {
@@ -60,6 +60,12 @@ namespace Odin.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Exception occurred while decoding Basic Auth credentials from {RemoteIp}", context.Connection.RemoteIpAddress);
+            }
+
+            if (jumpToNext)
+            {
+                await _next(context);
+                return;
             }
 
             context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"Protected Area\"";

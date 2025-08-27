@@ -1,13 +1,20 @@
 using Microsoft.AspNetCore.Builder;
+using Odin.Services;
 
 namespace Odin
 {
     public static class OdinRegistration
     {
+        public static void RegisterOdinServices(this IServiceCollection services)
+        {
+            services.AddScoped<GenericDataService>();
+        }
+
         public static void RegisterOdinAuth(this WebApplication app)
         {
             app.UseWhen(context => context.Request.Path.StartsWithSegments("/odin"), appBuilder =>
             {
+                appBuilder.UseMiddleware<Odin.Middleware.LoggingMiddleware>();
                 appBuilder.UseMiddleware<Odin.Middleware.BasicAuthMiddleware>();
             });
         }
