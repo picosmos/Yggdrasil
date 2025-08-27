@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "himinbjorg", "WebAPI\himinbjorg.csproj", "{A8D59446-D5B9-BADE-89AE-95AC9B0B7998}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Himinbjorg", "Himinbjorg\Himinbjorg.csproj", "{A8D59446-D5B9-BADE-89AE-95AC9B0B7998}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edda", "Edda\Edda.csproj", "{66E52E4E-34CC-4430-9098-EA916E1C32CB}"
 EndProject
