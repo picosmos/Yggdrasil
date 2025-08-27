@@ -1,4 +1,4 @@
-namespace Edda.Models;
+namespace Mimir.Models;
 
 public class User
 {

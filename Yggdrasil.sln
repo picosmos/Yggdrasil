@@ -2,9 +2,9 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Himinbjorg", "Himinbjorg\Himinbjorg.csproj", "{A8D59446-D5B9-BADE-89AE-95AC9B0B7998}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skithblathnir", "Skithblathnir\Skithblathnir.csproj", "{A8D59446-D5B9-BADE-89AE-95AC9B0B7998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edda", "Edda\Edda.csproj", "{66E52E4E-34CC-4430-9098-EA916E1C32CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mimir", "Mimir\Mimir.csproj", "{66E52E4E-34CC-4430-9098-EA916E1C32CB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Odin", "Odin\Odin.csproj", "{208B81A2-8831-4330-83BB-CA895E0A66B4}"
 EndProject

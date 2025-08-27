@@ -1,5 +1,5 @@
 services:
-  himinbjorg:
+  yggdrasil:
     build: .
     ports:
       - "27179:8080"
@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - db_data:/app/himinbjorg.db
+      - db_data:/app/mimir.db
     # Uncomment the following lines if you want to mount code for hot-reload during development
     #   - .:/app
     #   - ~/.aspnet/https:/https:ro

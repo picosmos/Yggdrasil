@@ -1,11 +1,11 @@
-namespace Edda;
+namespace Mimir;
 
 using Microsoft.EntityFrameworkCore;
 using Models;
 
-public class EddaDbContext : DbContext
+public class MimirDbContext : DbContext
 {
-    public EddaDbContext(DbContextOptions<EddaDbContext> options) : base(options) { }
+    public MimirDbContext(DbContextOptions<MimirDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
 

@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Edda;
+using Mimir;
 using Odin;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<EddaDbContext>(options =>
+builder.Services.AddDbContext<MimirDbContext>(options =>
 	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllersWithViews();

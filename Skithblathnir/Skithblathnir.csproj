@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Edda/Edda.csproj" />
+    <ProjectReference Include="../Mimir/Mimir.csproj" />
     <ProjectReference Include="../Odin/Odin.csproj" />
   </ItemGroup>
 

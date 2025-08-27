@@ -3,11 +3,12 @@
 
 # Mythology
 
-Hjemdallr (guardian between the divine and earthly realms) - inReach
+Heimdallr (guardian between the divine and earthly realms) - inReach
 Himinbjorg (where Hjemdallr live) - API
-Midgard - FrontEnd
-Edda - Database
+Skíðblaðnir (Skithblathnir) (extroadanry craftsmanship is needed to build a foldable ship providing space for all gods and their weapons) - The combining project
+Midgard (the land of humankind) - FrontEnd
 Odin (god father) - admin backend
+Mimir (a wise being who guards the well of wisdom) - database
 Yggdrasil (world tree) - the project it self
 
 ## Name
