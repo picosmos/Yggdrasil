@@ -13,6 +13,14 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 app.RegisterOdinAuth();
+app.Use(async (context, next) =>
+{
+	if (context.Request.Path == "/")
+	{
+		context.Request.Path = "/index.html";
+	}
+	await next();
+});
 app.UseStaticFiles();
 app.UseRouting();
 app.RegisterOdinRoutes();

@@ -16,6 +16,19 @@
     <ProjectReference Include="../Odin/Odin.csproj" />
   </ItemGroup>
 
+  <!-- Make front end accessible at runtime -->
+  <ItemGroup>
+    <Content Include="../Midgard/**/*" CopyToOutputDirectory="PreserveNewest">
+      <Link>wwwroot/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="CopyOdinStaticFiles" AfterTargets="Build;Publish">
+    <Copy SourceFiles="@(Content)"
+      DestinationFiles="@(Content->'$(OutDir)wwwroot/%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+  </Target>
+
   <!-- Make static files from Odin accessible at runtime -->
   <ItemGroup>
     <Content Include="../Odin/wwwroot/odin/**/*" CopyToOutputDirectory="PreserveNewest">

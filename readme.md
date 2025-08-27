@@ -3,6 +3,13 @@
 
 # Mythology
 
+Hjemdallr (guardian between the divine and earthly realms) - inReach
+Himinbjorg (where Hjemdallr live) - API
+Midgard - FrontEnd
+Edda - Database
+Odin (god father) - admin backend
+Yggdrasil (world tree) - the project it self
+
 ## Name
 
 > In Norse mythology, Heimdallr (Hǫrgr Heimdallr, anglicized Heimdall) is described as the watchman of the gods.
