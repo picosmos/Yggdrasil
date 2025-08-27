@@ -10,4 +10,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 80
-ENTRYPOINT ["dotnet", "GarminBackend.dll"]
+ENTRYPOINT ["dotnet", "himinbjorg.dll"]

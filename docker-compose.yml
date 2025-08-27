@@ -1,5 +1,5 @@
 services:
-  garminbackend:
+  himinbjorg:
     build: .
     ports:
     - "27179:8080"
