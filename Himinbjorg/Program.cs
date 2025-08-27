@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Edda;
+using Odin;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,18 +12,9 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Use BasicAuthMiddleware for all /odin/* routes
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/odin"), appBuilder =>
-{
-	appBuilder.UseMiddleware<Odin.Middleware.BasicAuthMiddleware>();
-});
-
-
+app.RegisterOdinAuth();
 app.UseStaticFiles();
 app.UseRouting();
-
-app.MapControllerRoute(
-	name: "areas",
-	pattern: "odin/{controller=Home}/{action=Index}/{id?}");
+app.RegisterOdinRoutes();
 
 app.Run();
