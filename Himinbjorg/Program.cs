@@ -8,7 +8,15 @@ builder.Services.AddDbContext<EddaDbContext>(options =>
 
 builder.Services.AddControllersWithViews();
 
+
 var app = builder.Build();
+
+// Use BasicAuthMiddleware for all /odin/* routes
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/odin"), appBuilder =>
+{
+	appBuilder.UseMiddleware<Odin.Middleware.BasicAuthMiddleware>();
+});
+
 
 app.UseStaticFiles();
 app.UseRouting();
