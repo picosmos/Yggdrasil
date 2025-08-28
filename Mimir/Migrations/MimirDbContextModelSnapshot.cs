@@ -41,6 +41,8 @@ namespace Mimir.Mimir.Migrations
                     b.HasIndex("Secret")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Tracks");
                 });
 
@@ -49,6 +51,10 @@ namespace Mimir.Mimir.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("InternationalMobileEquipmentIdentity")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -61,6 +67,17 @@ namespace Mimir.Mimir.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Mimir.Models.Track", b =>
+                {
+                    b.HasOne("Mimir.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

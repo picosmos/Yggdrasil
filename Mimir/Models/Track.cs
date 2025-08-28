@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mimir.Models;
@@ -9,6 +10,9 @@ public class Track
     [ReadOnly(true)]
     public long Id { get; set; }
 
+    public User User { get; set; } = null!;
+
+    [ForeignKey(nameof(User))]
     public long UserId { get; set; }
 
     public DateTime From { get; set; }

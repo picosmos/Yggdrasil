@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Mimir/Mimir.csproj" />
+    <ProjectReference Include="../Himinbjorg/Himinbjorg.csproj" />
     <ProjectReference Include="../Odin/Odin.csproj" />
   </ItemGroup>
 

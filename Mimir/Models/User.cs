@@ -10,4 +10,7 @@ public class User
     public required string Name { get; set; }
 
     public required string ProtegearApiSecret { get; set; }
+
+    [DefaultValue("")]
+    public required string InternationalMobileEquipmentIdentity { get; set; }
 }

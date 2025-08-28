@@ -1,14 +1,366 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Miðgarðr</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #error {
+            display: none;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        #error img {
+            max-width: 300px;
+        }
+
+        .links {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: white;
+            padding: 10px;
+
+            z-index: 1000;
+        }
+
+        .links a {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
-    <h1> Velkommen til Miðgarðr</h1>
+    <div id="map"></div>
+    <div id="error">
+        <h1 id="error-message">Error Occurred</h1>
+        <img src="guillaume.png" alt="Rubberduck">
+    </div>
 
-    <img src="http://upload.wikimedia.org/wikipedia/commons/0/0f/Midgard_%28S%C3%B6_56%2C_Fyrby%29.jpg" />
+    <script>module = {};</script>
+    <script src="https://unpkg.com/hsluv@0.1.0/hsluv.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const srcMap = {
+            "osm": "{s}.tile.openstreetmap.org",
+            "opentpo": "{s}.tile.opentopomap.org",
+            "tracetrack": "tile.tracestrack.com/topo__"
+        };
+
+        const reverseSrcMap = Object.fromEntries(
+            Object.entries(srcMap).map(([k, v]) => [v, k])
+        );
+
+        function getParams() {
+            const params = new URLSearchParams(window.location.search);
+            const name = params.get("name");
+            const id = params.get("id");
+            const colour = params.get("colour");
+            let osmTilSource = params.get("src");
+
+            if (!osmTilSource) {
+                osmTilSource = "{s}.tile.openstreetmap.org";
+            } else {
+                osmTilSource = srcMap[osmTilSource] || decodeURIComponent(osmTilSource);
+            }
+
+            return { id, colour, osmTilSource };
+        }
+
+        const map = L.map("map").setView([60.39299, 5.32415], 12);
+
+        const { osmTilSource } = getParams();
+        L.tileLayer("https://" + osmTilSource + "/{z}/{x}/{y}.png", {
+            maxZoom: 19
+        }).addTo(map);
+
+        L.control.scale().addTo(map);
+
+        const cacheDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
+        const hueShiftAfter = 4 * 60 * 60 * 1000; // 4 hours in milliseconds, the time after which the track is visually separated
+        const hueShiftDegrees = 77; // degrees added to the current colour hue if the last point is more than hueShiftAfter older
+
+        function showError(type) {
+            document.getElementById("map").style.display = "none";
+            const errorDiv = document.getElementById("error");
+            const errorMessage = document.getElementById("error-message");
+
+            if (type === 403) {
+                errorMessage.innerText = "403 - Access denied, go away";
+            } else if (type === 404) {
+                errorMessage.innerText = "404 - The user does not exist";
+            } else {
+                errorMessage.innerText = "Something went awry. Have a cup of coffee while we sort it out.☕";
+            }
+
+            errorDiv.style.display = "block";
+        }
+
+        function isCacheValid(key) {
+            const cachedData = localStorage.getItem(key);
+            if (cachedData) {
+                const { timestamp } = JSON.parse(cachedData);
+                return Date.now() - timestamp < cacheDuration;
+            }
+            return false;
+        }
+
+        function getCache(key) {
+            const cachedData = localStorage.getItem(key);
+            return cachedData ? JSON.parse(cachedData).data : null;
+        }
+
+        function setCache(key, data) {
+            const cachedData = {
+                timestamp: Date.now(),
+                data: data
+            };
+            localStorage.setItem(key, JSON.stringify(cachedData));
+        }
+
+        (function cleanCache() {
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                const cachedData = localStorage.getItem(key);
+                if (cachedData) {
+                    const { timestamp } = JSON.parse(cachedData);
+                    if (Date.now() - timestamp > cacheDuration) {
+                        localStorage.removeItem(key);
+                    }
+                }
+            });
+        })();
+
+        const hueToColour = (hue/*in degrees*/) => {
+            const saturation = 100;
+            const lightness = 37;
+            return hsluv.Hsluv.hsluvToHex([hue % 360, saturation, lightness]);
+        };
+
+        function displayPoints(data) {
+            (function () {
+                const points = data
+                    .filter(event => event.event && event.event.position && !event.event.position.invalid)
+                    .map(event => ({
+                        lat: event.event.position.lat,
+                        lon: event.event.position.lng,
+                        alt: event.event.position.alt,
+                        time: event.sent
+                    }))
+                    .sort((a, b) => new Date(a.time) - new Date(b.time));
+
+                if (points.length === 0) {
+                    return;
+                }
+
+                points[0].groupId = 0;
+                for (let i = 1; i < points.length; i++) {
+                    points[i].groupId = points[i - 1].groupId;
+                    if (new Date(points[i].time) - new Date(points[i - 1].time) > hueShiftAfter) {
+                        points[i].groupId++;
+                    }
+                }
+
+                const { colour } = getParams();
+                points.forEach(p => {
+                    if (colour === "shenanigans") {
+                        p.colour = hueToColour(p.groupId * hueShiftDegrees % 360);
+                    }
+                    else {
+                        p.colour = "#0077cc";
+                    }
+                });
+
+                const formatter = new Intl.DateTimeFormat("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    timeZone: "Europe/Oslo",
+                    timeZoneName: "short"
+                });
+
+                points.forEach(p => {
+                    const date = new Date(p.time);
+
+                    const formattedTime = formatter.format(date).replace(",", "");
+
+                    L.circleMarker([p.lat, p.lon, p.alt], {
+                        radius: 6,
+                        fillColor: p.colour,
+                        color: p.colour,
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map).bindPopup(`Time: ${formattedTime}<br>${p.lat.toFixed(6)}, ${p.lon.toFixed(6)} (${p.alt} moh)`);
+                });
+
+                const coordinateGroupsObject = Object.groupBy(points, p => p.groupId);
+                const coordinateGroups = Object.values(coordinateGroupsObject);
+                coordinateGroups.forEach(group => {
+                    let coordinates = group.map(p => [p.lat, p.lon]);
+                    const colour = group.length === 0 ? "blue" : group[group.length - 1].colour;
+                    L.polyline(coordinates, { color: group[0].colour }).addTo(map);
+                });
+
+                if (points.length > 0) {
+                    map.fitBounds(points.map(p => [p.lat, p.lon]));
+                }
+            })();
+
+            // Now fetch and plot the huts
+            fetch("/hytter.csv")
+                .then(response => {
+                    if (!response.ok) {
+                        console.error("Could not fetch hytter.csv");
+                        return [];
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    const parsed = Papa.parse(csvText, {
+                        header: true,
+                        skipEmptyLines: true
+                    });
+                    const huts = parsed.data;
+
+                    // Define a small hut icon
+                    const hutIcon = L.icon({
+                        iconUrl: "hut.png",
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        popupAnchor: [0, -10]
+                    });
+
+                    huts.forEach(hut => {
+                        if (hut.latitude && hut.longitude) {
+                            L.marker([parseFloat(hut.latitude), parseFloat(hut.longitude)], { icon: hutIcon })
+                                .addTo(map)
+                                .bindPopup(`<strong>${hut.name}</strong><br>Owner: ${hut.ownername}<br>Height: ${hut.height}m<br>
+                                Type: ${hut.serviceLevel}${hut.dntKey !== "unlocked" ? ` (${hut.dntKey})` : ""}<br>
+                                Area: ${hut.areaName}<br>
+                                ${Number(hut.latitude).toFixed(6)}, ${Number(hut.longitude).toFixed(6)}`);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading huts:", error);
+                });
+        }
+
+        let users = [];
+
+        const { id } = getParams();
+
+        const apiUrl = `/Himinbjorg/Track?id=${id}`;
+
+        fetch(apiUrl, {
+            method: "GET"
+        }).then(response => {
+            if (response.status === 403) {
+                showError(403);
+                throw new Error("403 Forbidden");
+            }
+            if (response.status === 404) {
+                showError(404);
+                throw new Error("404 Not Found");
+            }
+            if (!response.ok) {
+                showError();
+                throw new Error("Other API Error");
+            }
+            return response.json();
+        })
+            .then(data => {
+                const { name, from, to } = getParams();
+                const cacheKey = `${name}-${from}-${to}`;
+                // Cache the response for future use
+                setCache(cacheKey, data);
+
+                // Display the points on the map
+                displayPoints(data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    </script>
+    <style>
+        .segmented-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .segmented-menu button {
+            flex: 1;
+            border: none;
+            background: #f2f2f2;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .segmented-menu button:hover {
+            background: #e0e0e0;
+        }
+
+        .segmented-menu button.active {
+            background: #0077cc;
+            color: white;
+        }
+    </style>
+
+    <script>
+        function changeUrlParameter(param, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(param, value);
+            window.location.href = url.toString();
+        }
+
+        function getCurrentSrcKey() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get("src") || "osm";
+            const decoded = srcMap[raw] || decodeURIComponent(raw);
+            return reverseSrcMap[decoded] || null;
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const currentKey = getCurrentSrcKey();
+            if (currentKey) {
+                const activeButton = document.querySelector(`.segmented-menu button[data-src='${currentKey}']`);
+                if (activeButton) activeButton.classList.add("active");
+            }
+        });
+    </script>
+
+    <div class="segmented-menu">
+        <button data-src="osm" onclick="changeUrlParameter('src', 'osm')">Classic</button>
+        <button data-src="opentpo" onclick="changeUrlParameter('src', 'opentpo')">Topo</button>
+        <button data-src="tracetrack" onclick="changeUrlParameter('src', 'tracetrack')">TracesTrack</button>
+    </div>
+
+
 </body>
 
 </html>

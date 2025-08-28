@@ -1,0 +1,592 @@
+,id,name,serviceLevel,dntCabin,ownername,latitude,longitude,height,areaName,dntKey,bedsStaffed,bedsNoService,bedsSelfService
+401,10716,Storgrytdalseter,self-service,True,DNT Oslo og Omegn,61.9124268841079,10.3695250635268,860,Alvdal Vestfjell,,0,0,14
+397,10720,Korsberghytta,self-service,True,DNT Oslo og Omegn,61.974562443913,10.4436494295403,1247,Alvdal Vestfjell,,0,0,14
+206,101127,Nutevasshytta,self-service,True,Aust-Agder Turistforening,59.1068704741899,7.81745537282836,908,Austheiene,unlocked,0,0,20
+452,10586,Nystøyl,self-service,True,Aust-Agder Turistforening,59.1670576705041,7.73575285250332,885,Austheiene,unlocked,0,0,20
+453,10585,Hovstøyl,self-service,True,Aust-Agder Turistforening,59.255167173849,7.77065282023417,834,Austheiene,unlocked,0,0,20
+451,10587,Mjåvasshytta,self-service,True,Aust-Agder Turistforening,58.9758556128529,8.17913009861405,801,Austheiene,unlocked,0,6,18
+517,10465,Berdalsbu,self-service,True,Aust-Agder Turistforening,59.443183796938,7.50895470243302,980,Austheiene,unlocked,0,0,18
+443,10626,Hengeltjørnhytta,self-service,True,Aust-Agder Turistforening,59.0714917,8.08285,689,Austheiene,unlocked,0,0,19
+551,10385,Skarsvassbu,self-service,True,Aust-Agder Turistforening,58.81982801,8.257896,581,Austheiene,unlocked,0,0,12
+552,10384,Grunnetjørnsbu,self-service,True,Aust-Agder Turistforening,58.8930435522833,8.12518518468801,701,Austheiene,unlocked,0,0,18
+554,10382,Tjørnbrotbu,self-service,True,Aust-Agder Turistforening,59.5373496324392,7.5196342854484,1303,Austheiene,unlocked,0,0,18
+555,10380,Granbustøyl,self-service,True,Aust-Agder Turistforening,59.0067095497395,7.94877436450121,775,Austheiene,unlocked,0,0,13
+224,101104,Bjørnevasshytta,no-service,True,DNT Sør,59.3477533095884,7.53737475781159,818,Austheiene,dnt-key,0,8,0
+532,10442,Torsdalsbu,no-service,True,Aust-Agder Turistforening,59.2034089473101,7.76722220589319,677,Austheiene,dnt-key,0,9,0
+499,10501,Daggrø,no-service,True,Kongsberg og Omegns Turistforening,60.02915,8.981136,984,Blefjell og Vegglifjell,dnt-key,0,12,0
+487,10515,Eriksbu,no-service,True,Kongsberg og Omegns Turistforening,59.8818329121573,9.18842463614556,945,Blefjell og Vegglifjell,dnt-key,0,28,0
+486,10516,Sigridsbu,no-service,True,Kongsberg og Omegns Turistforening,59.794645946534,9.15572952322309,1180,Blefjell og Vegglifjell,dnt-key,0,30,0
+102,101389,Øvre Fjellstul,no-service,True,Kongsberg og Omegns Turistforening,59.9456226902977,9.09309247905369,815,Blefjell og Vegglifjell,dnt-key,0,10,0
+575,10336,Lufsjå,self-service,True,DNT Oslo og Omegn,60.1445277116917,8.79824347420683,1236,Blefjell og Vegglifjell,dnt-key,0,0,16
+42,101118964,Tussvatnet,no-service,True,Bodø og Omegns Turistforening,67.33718114459728,14.690689159033582,92,Bodømarka,special key,0,8,0
+422,10671,Fivla,no-service,True,Luster Turlag,61.4960052549312,7.35691584943062,972,Breheimen med Jostedalsbreen,unlocked,0,24,0
+57,101030769,Kollsetestølen,no-service,True,Sogndal Turlag,61.27929522703769,6.97758650815436,613,Breheimen med Jostedalsbreen,dnt-key,0,8,0
+294,10946,Trulsbu,self-service,True,DNT Oslo og Omegn,61.7388362603387,7.93782058468067,1288,Breheimen med Jostedalsbreen,,0,0,12
+299,10939,Grøssete,no-service,True,Sogndal Turlag,61.3379289311691,6.98990329417458,844,Breheimen med Jostedalsbreen,dnt-key,0,4,0
+301,10934,Vetledalseter,self-service,True,Indre Nordfjord Turlag,61.8454010975339,7.1864088474534,522,Breheimen med Jostedalsbreen,unlocked,0,0,6
+302,10932,Skridulaupbu,self-service,True,DNT Oslo og Omegn,61.90339188934,7.60565824026068,917,Breheimen med Jostedalsbreen,dnt-key,0,0,4
+303,10931,Skålatårnet,self-service,True,Bergen og Hordaland Turlag,61.8684003040359,6.96588893911931,1836,Breheimen med Jostedalsbreen,unlocked,0,0,14
+70,10908407,Nørdstedalseter Selvbetjent,self-service,True,DNT Oslo og Omegn,61.642642,7.790506,940,Breheimen med Jostedalsbreen,,0,0,6
+307,10920,Stølsdalen,self-service,True,DNT Oslo og Omegn,61.5677786406197,7.81311914743831,1039,Breheimen med Jostedalsbreen,dnt-key,0,0,10
+504,10490,Sota Sæter,staffed,True,DNT Oslo og Omegn,61.8091994199845,7.70941266902509,740,Breheimen med Jostedalsbreen,,86,0,0
+501,10496,Nørdstedalseter,staffed,True,DNT Oslo og Omegn,61.642718,7.790486,940,Breheimen med Jostedalsbreen,,42,0,12
+163,101254,Skålabu,self-service,True,Bergen og Hordaland Turlag,61.86815001,6.96580285,1837,Breheimen med Jostedalsbreen,unlocked,0,0,20
+84,10750898,Tungestølen Leir,no-service,True,DNT Oslo og Omegn,61.54140142303365,6.976363477595555,260,Breheimen med Jostedalsbreen,dnt-key,0,2,0
+398,10719,Navarsete,self-service,True,DNT Oslo og Omegn,61.432758663026,7.34091373451017,628,Breheimen med Jostedalsbreen,,0,0,9
+399,10718,Sprongdalshytta,self-service,True,DNT Oslo og Omegn,61.7402585588693,7.48841148401977,1268,Breheimen med Jostedalsbreen,dnt-key,0,0,12
+92,10296538,Tungestølen Turisthytte DNT,staffed,True,Luster Turlag,61.543958401975374,6.971936574692137,293,Breheimen med Jostedalsbreen,unlocked,40,0,0
+484,10526,Slæom,self-service,True,DNT Oslo og Omegn,61.8234729272641,7.48193735578395,1113,Breheimen med Jostedalsbreen,dnt-key,0,0,18
+400,10717,Fast,self-service,True,DNT Oslo og Omegn,61.5734344679404,7.5363133633699,847,Breheimen med Jostedalsbreen,,0,0,11
+51,101086363,Tungestølen ubetjent - Austerdalshytta,no-service,True,Luster Turlag,61.54402865509434,6.971666937762336,292,Breheimen med Jostedalsbreen,dnt-key,0,12,0
+227,101098,Arentzbu,self-service,True,DNT Oslo og Omegn,61.6406471824091,7.5556187335475,883,Breheimen med Jostedalsbreen,dnt-key,0,0,22
+113,101372,Vigdalstøl,self-service,True,DNT Oslo og Omegn,61.5187635538686,7.3618246770408,765,Breheimen med Jostedalsbreen,dnt-key,0,0,10
+229,101091,Fuglesteg,no-service,True,Luster Turlag,61.4836584341712,7.69109473923541,628,Breheimen med Jostedalsbreen,dnt-key,0,31,0
+16,101283545,Kjørrdalsselet,no-service,True,Sogndal Turlag,61.24280832042794,7.080900085202586,533,Breheimen med Jostedalsbreen,dnt-key,0,2,0
+53,101075912,Eigerøy fyrvokterbolig,no-service,True,Stavanger Turistforening,58.43236619717743,5.870487426209678,5,Dalane,special key,0,12,0
+205,101131,Gaudland,no-service,True,Stavanger Turistforening,58.396878,6.249324,144,Dalane,special key,0,18,0
+309,10918,Reinheim,self-service,True,DNT Oslo og Omegn,62.3414858345727,9.35709650479606,1341,Dovrefjell,dnt-key,0,0,34
+344,10797,Vangshaugen,staffed,True,Kristiansund og Nordmøre Turistforening,62.5435290117671,8.95556143934528,740,Dovrefjell,dnt-key,64,0,16
+348,10793,Loennechenbua,no-service,True,Kristiansund og Nordmøre Turistforening,62.4312182149804,9.18181309659674,1358,Dovrefjell,unlocked,0,4,0
+194,101147,Åmotdalshytta,self-service,True,Kristiansund og Nordmøre Turistforening,62.3592445472625,9.19745186890836,1302,Dovrefjell,unlocked,0,0,34
+310,10917,Snøheim,staffed,True,DNT Oslo og Omegn,62.29426335667955,9.350804887862097,1474,Dovrefjell,,80,0,0
+343,10798,Raubergshytta,self-service,True,Kristiansund og Nordmøre Turistforening,62.5226255624574,8.70950555807272,1316,Dovrefjell,unlocked,0,0,18
+347,10794,Gammelsetra,self-service,True,Kristiansund og Nordmøre Turistforening,62.5005576181117,9.11954852664917,799,Dovrefjell,dnt-key,0,0,32
+525,10456,Orkelsjøhytta,no-service,True,Trondhjems Turistforening,62.519430496491196,9.874970476994434,1072,Dovrefjell,dnt-key,0,8,0
+345,10796,Grøvudalshytta,self-service,True,Kristiansund og Nordmøre Turistforening,62.443958226084,8.9015181407419,843,Dovrefjell,unlocked,0,0,41
+519,10462,Dindalshytta,self-service,True,Trondhjems Turistforening,62.5401036465533,9.34131847068594,853,Dovrefjell,dnt-key,0,0,13
+32,101170963,Damhytta,no-service,True,DNT Drammen og Omegn,59.7980322448243,10.075940955318572,432,Drammensmarka og Finnemarka,dnt-key,0,4,0
+351,10789,Svarvestolen,no-service,True,DNT Drammen og Omegn,59.8834407269781,10.0327256363024,438,Drammensmarka og Finnemarka,dnt-key,0,8,0
+175,101211,Hamborgstrømpaviljongen,no-service,True,DNT Drammen og Omegn,59.7542,10.1911,118,Drammensmarka og Finnemarka,special key,0,5,0
+28,101180171,Hovlandshytta,no-service,True,DNT Drammen og Omegn,59.92846076510381,10.054149330618515,637,Drammensmarka og Finnemarka,dnt-key,0,5,0
+407,10710,Blektjernstua,no-service,True,DNT Drammen og Omegn,59.72474,10.18738,229,Drammensmarka og Finnemarka,dnt-key,0,8,0
+420,10678,Eiksetra,staffed,True,DNT Drammen og Omegn,59.8194357111354,10.1274981727907,389,Drammensmarka og Finnemarka,,9,0,0
+50,101097025,Damslett,no-service,True,DNT Drammen og Omegn,59.800665,10.082859,436,Drammensmarka og Finnemarka,dnt-key,0,6,0
+231,101067,Goliaten,no-service,True,DNT Drammen og Omegn,59.79654,10.12007,471,Drammensmarka og Finnemarka,dnt-key,0,8,0
+170,101225,Garsjøkoia,no-service,True,DNT Drammen og Omegn,59.82180279,10.11556667,385,Drammensmarka og Finnemarka,dnt-key,0,6,0
+622,10194,Løkjelsvatnhytta,self-service,True,Haugesund Turistforening,59.6600428188208,6.11565847656858,638,Etne- og Saudafjella,unlocked,0,0,32
+625,10187,Sandvasshytta,self-service,True,Haugesund Turistforening,59.7902087471719,6.3064801292503,825,Etne- og Saudafjella,unlocked,0,0,62
+624,10192,Simlebu,self-service,True,Haugesund Turistforening,59.846543003467,6.45709582984075,781,Etne- og Saudafjella,unlocked,0,0,36
+96,10176892,Olalia,self-service,True,Haugesund Turistforening,59.59938,5.95695,465,Etne- og Saudafjella,unlocked,0,0,79
+123,101361,Øvre Sandvatn-hytta,self-service,True,Sauda Turlag,59.79841350099062,6.6781062084590985,1019,Etne- og Saudafjella,unlocked,0,0,10
+522,10459,Blomstølen,self-service,True,Haugesund Turistforening,59.7701125470983,6.24847385233669,632,Etne- og Saudafjella,unlocked,0,0,48
+564,10357,Storavassbu,self-service,True,Haugesund Turistforening,59.6941785225758,6.23503271304362,579,Etne- og Saudafjella,unlocked,0,0,34
+393,10726,Svukuriset,staffed,True,DNT Oslo og Omegn,62.2214688743504,12.0149789174589,826,Femundsmarka,,45,0,0
+319,10833,Sæter (midlertidig Knøttebu),no-service,True,DNT Oslo og Omegn,62.246042308868,11.761339679706197,668,Femundsmarka,dnt-key,0,0,4
+320,10832,Knausen,self-service,True,DNT Oslo og Omegn,62.2238946717478,10.9549957781334,720,Femundsmarka,dnt-key,0,0,6
+396,10721,Marenvollen,self-service,True,DNT Oslo og Omegn,62.543444,11.6394131905836,793,Femundsmarka,dnt-key,0,0,13
+395,10722,Narjordet,self-service,True,DNT Oslo og Omegn,62.430187,11.411012,697,Femundsmarka,dnt-key,0,0,6
+394,10723,Raudsjødalen,self-service,True,DNT Oslo og Omegn,62.2151573558319,11.1503578789361,899,Femundsmarka,dnt-key,0,0,15
+58,101027588,Fjølburøsta,self-service,True,DNT Oslo og Omegn,62.49829971282094,11.829526852921532,691,Femundsmarka,,0,0,12
+112,101375,Røvollen,self-service,True,DNT Oslo og Omegn,62.3505826997997,12.0492928045293,719,Femundsmarka,dnt-key,0,0,21
+321,10831,Ellefsplass,self-service,True,DNT Oslo og Omegn,62.2040883106297,11.4482199160612,713,Femundsmarka,dnt-key,0,0,8
+478,10547,"Nordlysobservatoriet Halde, Alta",no-service,True,Alta og Omegn Turlag,69.9394444,22.9227777,901,Finnmarkskysten,dnt-key,0,6,0
+177,101205,Bjørnhytta,no-service,True,Sør-Varanger Turlag,69.45799,29.64428,100,Finnmarkskysten,special key,0,6,6
+62,101014868,Sarveshytta,no-service,True,Alta og Omegn Turlag,70.06788948142292,23.59711414597851,326,Finnmarkskysten,dnt-key,0,5,0
+434,10652,Bojobæskihytta,no-service,True,Alta og Omegn Turlag,69.79752002,24.18320969,380,Finnmarksvidda,dnt-key,0,8,0
+26,101201819,Abborhøgda,no-service,True,DNT Finnskogen og Omegn,60.184153326366555,12.46019238386637,321,Finnskogen og Omegn,special key,0,8,0
+423,10669,Grasbråtan,no-service,True,DNT Finnskogen og Omegn,60.199215,12.33,205,Finnskogen og Omegn,dnt-key,0,6,0
+130,101323,Slettmoen,no-service,True,DNT Finnskogen og Omegn,59.911732,12.056574,186,Finnskogen og Omegn,dnt-key,0,9,0
+328,10820,Vålet,no-service,True,DNT Finnskogen og Omegn,60.278707,12.477915,309,Finnskogen og Omegn,dnt-key,0,6,0
+595,10246,Kynndammen,no-service,True,DNT Finnskogen og Omegn,60.73636669131977,12.220108473644302,280,Finnskogen og Omegn,dnt-key,0,10,0
+604,10234,Renosdammen,no-service,True,DNT Finnskogen og Omegn,60.993377,11.956837,440,Finnskogen og Omegn,dnt-key,0,4,0
+160,101262,Drengestua i Juvberget,no-service,True,DNT Finnskogen og Omegn,60.80995,12.342947,423,Finnskogen og Omegn,,0,6,0
+603,10235,Juskjølkoia,no-service,True,DNT Finnskogen og Omegn,61.016551,12.011082,513,Finnskogen og Omegn,unlocked,0,4,0
+602,10236,Flisberget,no-service,True,DNT Finnskogen og Omegn,61.006433,12.087171,506,Finnskogen og Omegn,dnt-key,0,10,0
+599,10242,Helgedammen,no-service,True,DNT Finnskogen og Omegn,60.380063,12.42388,246,Finnskogen og Omegn,dnt-key,0,6,0
+148,101282,Knekkevasshytta,no-service,True,Keipen Turlag,61.779697,5.3446626,455,Fjordane,dnt-key,0,12,0
+145,101285,Moldahytta,no-service,True,Keipen Turlag,61.7523145,5.24957910000001,377,Fjordane,dnt-key,0,10,0
+300,10935,Gjegnabu,no-service,True,Flora Turlag,61.7612412881525,5.83549326146177,1167,Fjordane,unlocked,0,6,0
+586,10259,Massbu,no-service,True,Indre Sunnfjord Turlag,61.4046789788377,5.44498569151306,386,Fjordane,unlocked,0,6,0
+621,10198,Nipebu,self-service,True,Indre Sunnfjord Turlag,61.401543,5.336894,490,Fjordane,unlocked,0,0,13
+312,10914,Blåbrebu,no-service,True,Flora Turlag,61.732642,5.54023,803,Fjordane,unlocked,0,14,0
+37,101145969,Børabu,no-service,True,Flora Turlag,61.65757102058049,5.292919235751867,515,Fjordane,unlocked,0,6,0
+189,101170,Kinn,no-service,True,Flora Turlag,61.56558805,4.7673246,8,Fjordane,special key,0,10,0
+592,10253,Skongenes fyr,no-service,True,Ytre Nordfjord Turlag,62.0320444323309,5.12273038254969,25,Fjordane,dnt-key,0,18,0
+569,10345,Råkeneset,no-service,True,Ytre Sogn Turlag,61.1139821797945,4.83000875367426,8,Fjordane,,0,8,0
+295,10945,Longevasshytta,self-service,True,Indre Sunnfjord Turlag,61.6267665866623,6.24708933853578,804,Fjordane,unlocked,0,0,11
+129,101329,Kråkenes fyr,no-service,True,Ytre Nordfjord Turlag,62.0346858,4.9857281,36,Fjordane,special key,0,15,0
+616,10214,Fonnabu Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.0766729163385,6.34779398605529,1443,Folgefonna,unlocked,0,0,44
+379,10760,Holmaskjer Turisthytte,self-service,True,Odda/Ullensvang Turlag,60.096062,6.442937,1561,Folgefonna,unlocked,0,0,14
+627,10159,Sauabrehytta,self-service,True,Haugesund Turistforening,59.9603955145336,6.43333324959848,1081,Folgefonna,unlocked,0,0,10
+597,10244,Breidablikk Turisthytte,no-service,True,Bergen og Hordaland Turlag,60.090860918104,6.34298408468033,1321,Folgefonna,unlocked,0,4,0
+23,101224823,Harravolden,no-service,True,Trondhjems Turistforening,63.83976551805722,10.463481474204741,299,Fosenhalvøya,dnt-key,0,15,0
+266,101028,Blåfjellenden,no-service,True,Stavanger Turistforening,58.9283720767132,6.52993488981025,609,Frafjord og Bjerkreim,unlocked,0,49,0
+188,101185,Kvitlen,self-service,True,Stavanger Turistforening,58.72273023,6.49019954,423,Frafjord og Bjerkreim,unlocked,0,0,50
+95,10186276,Vollumssætra,no-service,True,DNT Gjøvik og Omegn,60.5014648,10.785617,682,"Gjøvik, Land og Toten",special key,0,4,0
+315,10886,Gamle Torsætra,no-service,True,DNT Gjøvik og Omegn,60.56806,10.959326,518,"Gjøvik, Land og Toten",dnt-key,0,8,0
+611,10222,Fogdehytta,no-service,True,DNT Gjøvik og Omegn,60.8042461,10.6261075,378,"Gjøvik, Land og Toten",dnt-key,0,4,0
+581,10273,Mæhlumsætra,no-service,True,DNT Gjøvik og Omegn,60.7202452,10.50349,588,"Gjøvik, Land og Toten",special key,0,12,0
+612,10221,Vesterås,no-service,True,DNT Gjøvik og Omegn,60.5707292,10.8479883,499,"Gjøvik, Land og Toten",dnt-key,0,4,0
+154,101274,DNT Osbakken,no-service,True,DNT Gjøvik og Omegn,60.74855125194833,10.54591130157445,435,"Gjøvik, Land og Toten",dnt-key,0,28,0
+426,10666,Sommerseter,no-service,True,Skien Turlag,59.4537655710964,9.47030090594326,592,Grenland,special key,0,12,0
+389,10740,Fugleleiken,no-service,True,Skien Turlag,59.40174961523559,9.424788280468618,602,Grenland,dnt-key,0,7,0
+15,101286902,Eikenes Øst & Vest,no-service,True,DNT Telemark,59.04836352191026,9.778080832571135,21,Grenland,special key,0,10,0
+316,10880,Mule Varde Turisthytte,no-service,True,DNT Telemark,59.0998340330647,9.70021527881104,10,Grenland,special key,0,6,0
+318,10843,Sildevika,no-service,True,DNT Telemark,59.0496750566989,9.76093699094891,5,Grenland,special key,0,10,0
+239,101058,Flekkerhytta,no-service,True,Skien Turlag,59.385297,9.425346,549,Grenland,special key,0,5,0
+66,10966664,Gulsjøhytta,no-service,True,DNT Hadeland,60.52229782491679,10.496613312581303,415,Hadeland,dnt-key,0,8,0
+191,101160,Vikkelihytta,no-service,True,DNT Oslo og Omegn,60.29979,10.9731,476,Hadeland,dnt-key,0,9,0
+45,101114464,Vikkelistallen,no-service,True,DNT Oslo og Omegn,60.299705409713795,10.973073786812193,476,Hadeland,dnt-key,0,4,0
+488,10514,Kjørestua på Sagvollen,no-service,True,DNT Hadeland,60.375876377387,10.7147948143906,550,Hadeland,dnt-key,0,9,0
+1,101317699,Hytta på Skjerva,no-service,True,DNT Hadeland,60.324065,10.702522,425,Hadeland,dnt-key,0,4,0
+380,10758,Rembesdalseter,self-service,True,DNT Oslo og Omegn,60.53419,7.270229,961,Hardangervidda,,0,0,16
+384,10746,Mogen Turisthytte,staffed,True,DNT Telemark,60.0230768996484,7.8902853467126,937,Hardangervidda,,48,0,0
+234,101064,Krækkja,staffed,True,DNT Oslo og Omegn,60.4513546398914,7.71306806618418,1156,Hardangervidda,,85,0,0
+373,10767,Hadlaskard Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.2507491712327,7.16653068190641,1000,Hardangervidda,,0,0,49
+64,101003096,Kalhovd selvbetjent,self-service,True,DNT Telemark,60.06876000416176,8.369743624580423,1101,Hardangervidda,dnt-key,0,0,21
+386,10744,Mårbu,staffed,True,DNT Drammen og Omegn,60.1857645499585,8.17114879385243,1125,Hardangervidda,,38,0,29
+235,101062,Solheimstulen,staffed,True,DNT Drammen og Omegn,60.2997557846285,8.3407543778961,987,Hardangervidda,,60,0,0
+385,10745,Rauhelleren,staffed,True,DNT Drammen og Omegn,60.2562656999739,7.85008011044204,1222,Hardangervidda,,54,0,8
+433,10653,Stordalsbu,self-service,True,DNT Oslo og Omegn,60.0601575672526,8.08154791468515,1137,Hardangervidda,,0,0,12
+356,10784,Demmevasshytta,no-service,True,DNT Oslo og Omegn,60.5401525864739,7.31422016628183,1311,Hardangervidda,dnt-key,0,21,0
+132,101321,Tyssevassbu,self-service,True,DNT Oslo og Omegn,60.15614219917,6.84178900622477,1324,Hardangervidda,dnt-key,0,0,12
+440,10636,Hellevassbu,self-service,True,DNT Oslo og Omegn,59.9828950928303,7.21507294831629,1165,Hardangervidda,dnt-key,0,0,24
+116,101368,Stavali Turisthytte,staffed,True,Bergen og Hordaland Turlag,60.3184404596552,6.89495494436375,1027,Hardangervidda,unlocked,0,0,62
+441,10630,Kjeldebu,self-service,True,DNT Oslo og Omegn,60.4267108620107,7.49745521812969,1060,Hardangervidda,,0,0,48
+442,10627,Kalhovd Turisthytte,staffed,True,DNT Telemark,60.0686509640234,8.36963626854718,1098,Hardangervidda,dnt-key,75,0,21
+71,10908406,Sandhaug Selvbetjent,self-service,True,DNT Oslo og Omegn,60.1839458795195,7.48191112813482,1252,Hardangervidda,,0,0,12
+438,10646,Middalsbu,self-service,True,DNT Oslo og Omegn,59.9549413821633,6.99005482022101,861,Hardangervidda,,0,0,12
+406,10711,Helberghytta,self-service,True,DNT Oslo og Omegn,59.92891851,8.47991851,1091,Hardangervidda,dnt-key,0,0,14
+405,10712,Litlos,staffed,True,DNT Oslo og Omegn,60.0936402592026,7.13708721030565,1195,Hardangervidda,,52,0,8
+104,101385,Mårbu selvbetjent,self-service,True,DNT Drammen og Omegn,60.1864886309972,8.17103097149582,1125,Hardangervidda,dnt-key,0,0,29
+427,10664,Torehytten,self-service,True,DNT Oslo og Omegn,60.211303616616,7.03484938860817,1327,Hardangervidda,,0,0,24
+428,10660,Haukeliseter fjellstue,staffed,True,Stavanger Turistforening,59.8240035964852,7.19396025640311,987,Hardangervidda,,174,0,0
+502,10495,Sandhaug,staffed,True,DNT Oslo og Omegn,60.1839458795195,7.48191112813482,1252,Hardangervidda,,80,0,32
+72,10908405,Litlos Selvbetjent,self-service,True,DNT Oslo og Omegn,60.0936402592026,7.13708721030565,1195,Hardangervidda,,0,0,8
+143,101292,Rauhelleren selvbetjent,self-service,True,DNT Drammen og Omegn,60.2568157690581,7.84829843492782,1228,Hardangervidda,dnt-key,0,0,30
+119,101365,Lågaros,self-service,True,DNT Oslo og Omegn,60.1315194179359,7.80176270804337,1288,Hardangervidda,,0,0,38
+242,101054,Holmavatn,self-service,True,Stavanger Turistforening,59.705878,7.125031,1128,Hardangervidda Sør,,0,0,21
+626,10161,Nordvikgården,no-service,True,Haugesund Turistforening,59.3103196761418,4.88864087332268,9,Haugalandet,special key,0,43,0
+47,101103575,Villa Vibrandsøy,no-service,True,Haugesund Turistforening,59.41333643012618,5.251508410763478,5,Haugalandet,special key,0,28,0
+0,101317701,Høvringøy kysthytte,no-service,True,Haugesund Turistforening,59.276568,5.403548,12,Haugalandet,special key,0,8,0
+550,10386,Geitungen fyr,no-service,True,Haugesund Turistforening,59.1313870906424,5.24413423301471,17,Haugalandet,special key,0,24,0
+182,101194,Målia selvbetjent,self-service,True,Hamar og Hedemarken Turistforening,60.9838072217527,11.23856642743695,733,Hedmarken og Hedmarksvidda,dnt-key,0,0,10
+237,101060,Sandfløten,no-service,True,Hamar og Hedemarken Turistforening,61.0697280240437,11.1699811522182,600,Hedmarken og Hedmarksvidda,dnt-key,0,6,0
+607,10230,Gammelsaga,no-service,True,Hamar og Hedemarken Turistforening,60.51965,11.40435,300,Hedmarken og Hedmarksvidda,dnt-key,0,5,0
+447,10607,Åkersætra leirsted,no-service,True,Hamar og Hedemarken Turistforening,61.155164182708546,10.916773696961627,665,Hedmarken og Hedmarksvidda,special key,0,40,0
+446,10608,Skolla storhytte,no-service,True,Hamar og Hedemarken Turistforening,61.2430630737376,10.8170117465472,679,Hedmarken og Hedmarksvidda,special key,0,23,0
+110,101378,Svartskogkoia,no-service,True,Hamar og Hedemarken Turistforening,60.836857704824,11.4666391557104,340,Hedmarken og Hedmarksvidda,dnt-key,0,8,0
+35,101151322,Stenfjellhytta ubetjent,no-service,True,Hamar og Hedemarken Turistforening,60.941679138156104,11.191425585223072,746,Hedmarken og Hedmarksvidda,dnt-key,0,4,0
+580,10275,Fløtdamkoia,no-service,True,Hamar og Hedemarken Turistforening,60.5956912335781,11.5073565870092,386,Hedmarken og Hedmarksvidda,dnt-key,0,6,0
+111,101377,Lageråkvisla ubetjent,no-service,True,Hamar og Hedemarken Turistforening,60.92469866553762,11.194774733086035,651,Hedmarken og Hedmarksvidda,dnt-key,0,7,0
+137,101308,Savalsætra,no-service,True,Hamar og Hedemarken Turistforening,60.9166,11.3679,521,Hedmarken og Hedmarksvidda,dnt-key,0,8,0
+141,101295,Øyungshytta,self-service,True,Hamar og Hedemarken Turistforening,61.21899,10.93272,901,Hedmarken og Hedmarksvidda,dnt-key,0,0,6
+346,10795,Morskogen vokterbolig,no-service,True,Hamar og Hedemarken Turistforening,60.4704756,11.2387189,125,Hedmarken og Hedmarksvidda,special key,0,11,0
+574,10338,Tingstadkoia,no-service,True,Hamar og Hedemarken Turistforening,60.6722195356329,11.5785600566871,525,Hedmarken og Hedmarksvidda,dnt-key,0,7,0
+178,101200,Skolla ubetjent hytte,no-service,True,Hamar og Hedemarken Turistforening,61.243222472641094,10.816663028772354,678,Hedmarken og Hedmarksvidda,dnt-key,0,6,0
+179,101199,Åkersætra ubetjent,no-service,True,Hamar og Hedemarken Turistforening,61.155308381761216,10.916140637219797,665,Hedmarken og Hedmarksvidda,special key,0,8,0
+180,101196,Målia Stouslandhytta,no-service,True,Hamar og Hedemarken Turistforening,60.98372127,11.23810881,730,Hedmarken og Hedmarksvidda,special key,0,20,0
+568,10349,Halgutusveen,no-service,True,Hamar og Hedemarken Turistforening,61.1196194638958,11.0537835512439,650,Hedmarken og Hedmarksvidda,dnt-key,0,6,0
+93,10293408,Holandsbua,no-service,True,DNT Sør-Helgeland,65.3420338,12.2795172,8,Helgelandskysten,dnt-key,0,8,0
+634,10129,Stavassætra,no-service,True,Brurskanken Turlag,65.5030713148063,13.2352089183797,366,Helgelandskysten,,0,2,0
+185,101189,Strompdal skogstue,no-service,True,DNT Sør-Helgeland,65.4410835,12.82240014,133,Helgelandskysten,,0,0,6
+83,10806932,Flikja - Huken,no-service,True,DNT Valdres,60.9945922,8.7708938,866,"Hemsedal, Golsfjellet og Valdres",unlocked,0,0,6
+87,10611040,Røggjen,no-service,True,DNT Drammen og Omegn,60.6851281,9.230457,988,"Hemsedal, Golsfjellet og Valdres",dnt-key,0,6,0
+136,101309,Tyrishølt,no-service,True,DNT Valdres,60.894568,8.9863307,895,"Hemsedal, Golsfjellet og Valdres",dnt-key,0,0,10
+492,10510,Vassfarkoia,no-service,True,DNT Ringerike,60.4957849943307,9.46857052648353,809,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,20,0
+166,101237,Ellingseterkoia,no-service,True,DNT Ringerike,60.2580224,10.097314,293,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,4,0
+124,101360,Hovinkoia,no-service,True,DNT Ringerike,60.1318395509178,10.0156105766744,230,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,8,0
+223,101108,Storekrakkoia,no-service,True,DNT Ringerike,60.4964946996995,9.7114970995125,887,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,9,0
+583,10262,Tjuenborgkoia,no-service,True,DNT Ringerike,60.3386101540798,9.97647312354347,741,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,12,0
+493,10509,Fønhuskoia,no-service,True,DNT Ringerike,60.60992,9.43168,751,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,21,0
+536,10437,Grønknutkoia,no-service,True,DNT Ringerike,60.1760310215052,9.88282279775765,528,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,8,0
+520,10461,Buvasskoia,no-service,True,DNT Ringerike,60.4068507035675,9.77543253509401,379,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,11,0
+36,101148967,Lerbergsetra,no-service,True,DNT Ringerike,60.16331,10.10461,281,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,6,0
+588,10257,Vikerkoia og Gamle Vikerkoia,no-service,True,DNT Ringerike,60.4469020402669,9.95586568043673,653,"Holleia, Vikerfjell og Vassfaret",dnt-key,0,21,0
+656,1079,Kjensvasshytta,no-service,True,Hemnes Turistforening,66.0654227567682,14.2615409114161,529,Indre Helgeland,dnt-key,0,28,0
+467,10561,Kvitsteindalstunet,no-service,True,DNT Rana og omegn,66.18404,15.05173,576,Indre Helgeland,dnt-key,0,16,0
+458,10571,Virvasshytta,no-service,True,DNT Rana og omegn,66.3085742922967,15.3648525053198,648,Indre Helgeland,dnt-key,0,16,0
+649,1093,Sauvasshytta,no-service,True,DNT Rana og omegn,66.1868322946607,14.7508227202825,965,Indre Helgeland,dnt-key,0,9,0
+635,10128,Klubbfjelltjørnhytta,no-service,True,Brurskanken Turlag,65.7612504,13.543467,432,Indre Helgeland,unlocked,0,4,0
+500,10500,Bolnastua,no-service,True,DNT Rana og omegn,66.49242408517196,15.237744447494379,532,Indre Helgeland,dnt-key,0,15,0
+421,10672,Rabothytta,no-service,True,Hemnes Turistforening,66.00612,14.13957,1181,Indre Helgeland,,0,30,0
+659,1033,Gressvasshytta,no-service,True,Hemnes Turistforening,66.0480694037548,14.4258018212821,605,Indre Helgeland,dnt-key,0,27,0
+114,101370,Gråfjellhytta,no-service,True,Hemnes Turistforening,65.988710276011,14.0533913930646,1007,Indre Helgeland,dnt-key,0,16,0
+67,10953691,Reinfjellhytta,no-service,True,DNT Rana og omegn,66.28668002,14.39742772,369,Indre Helgeland,special key,0,5,0
+547,10390,Altevasshytta,no-service,True,Troms Turlag,68.6633141,18.8907379,540,Indre Troms,special key,0,17,0
+232,101066,Gaskashytta,no-service,True,Troms Turlag,68.6587700063786,19.120563942614,541,Indre Troms,dnt-key,0,18,0
+560,10367,Stordalsstua,no-service,True,Troms Turlag,68.5531376194269,18.1873709288333,473,Indre Troms,dnt-key,0,8,0
+215,101118,Dærtahytta,no-service,True,Troms Turlag,68.8195842307524,20.1084213251821,740,Indre Troms,dnt-key,0,23,0
+236,101061,Rostahytta,no-service,True,Troms Turlag,68.9397423196064,20.0275608871469,467,Indre Troms,dnt-key,0,33,0
+546,10391,Lappjordhytta,no-service,True,Troms Turlag,68.5137001187305,18.6321687115946,542,Indre Troms,dnt-key,0,14,0
+548,10389,Vuomahytta,no-service,True,Troms Turlag,68.6723180738748,19.4871423022427,725,Indre Troms,dnt-key,0,25,0
+429,10659,Dividalshytta,no-service,True,Troms Turlag,68.6757854674239,19.8210353975179,576,Indre Troms,dnt-key,0,16,0
+455,10583,Glitterheim,staffed,True,DNT Oslo og Omegn,61.6226945183016,8.63236345514155,1386,Jotunheimen,,137,0,20
+456,10581,Gjendebu,staffed,True,DNT Oslo og Omegn,61.45144,8.488531,986,Jotunheimen,dnt-key,119,0,34
+40,101130759,Vettismorki,self-service,True,DNT Oslo og Omegn,61.383538,7.963417,681,Jotunheimen,,0,0,9
+457,10580,Fondsbu,staffed,True,DNT Oslo og Omegn,61.37521,8.29731,1061,Jotunheimen,,100,0,0
+297,10941,Fannaråkhytta,staffed,True,DNT Oslo og Omegn,61.51611112,7.90694447,2068,Jotunheimen,,34,0,0
+74,10908402,Skogadalsbøen Selvbetjent,self-service,True,DNT Oslo og Omegn,61.4631563489933,8.01427979589425,833,Jotunheimen,,0,0,18
+306,10923,Gravdalen,no-service,True,Årdal Turlag,61.3587442498217,7.84960329135934,837,Jotunheimen,dnt-key,0,12,0
+311,10915,Torfinnsbu,self-service,True,DNT Oslo og Omegn,61.3561954421245,8.59556498455878,1059,Jotunheimen,dnt-key,0,0,28
+78,10902012,Glitterheim Selvbetjent,self-service,True,DNT Oslo og Omegn,61.6226945183016,8.63236345514155,1386,Jotunheimen,dnt-key,0,0,20
+109,101379,Stølsmaradalen,no-service,True,DNT Oslo og Omegn,61.4012876787175,7.93617176626861,846,Jotunheimen,,0,7,0
+73,10908403,Gjendebu Selvbetjent,self-service,True,DNT Oslo og Omegn,61.450814,8.487358,984,Jotunheimen,,0,0,34
+404,10713,Olavsbu,self-service,True,DNT Oslo og Omegn,61.4711105644619,8.27392241988924,1439,Jotunheimen,dnt-key,0,0,52
+238,101059,Leirvassbu Turisthytte,staffed,True,DNT Oslo og Omegn,61.54878944,8.24732041000001,1405,Jotunheimen,,205,0,0
+403,10714,Tomashelleren,self-service,True,DNT Oslo og Omegn,61.2354883879626,8.53245638122192,1488,Jotunheimen,,0,0,14
+402,10715,Yksendalsbu,self-service,True,DNT Oslo og Omegn,61.309367,8.516921,1051,Jotunheimen,dnt-key,0,0,18
+392,10734,Skogadalsbøen,staffed,True,DNT Oslo og Omegn,61.4631563489933,8.01427979589425,833,Jotunheimen,,87,0,24
+449,10604,Gjendesheim,staffed,True,DNT Oslo og Omegn,61.4940507143726,8.81276999450361,990,Jotunheimen,,185,0,0
+140,101296,Pråmvika,no-service,True,Kongsberg og Omegns Turistforening,59.587169,9.524332,415,"Kongsberg, Meheia, Hvittingfoss, Svene",dnt-key,0,30,0
+485,10517,Sveinsbu,no-service,True,Kongsberg og Omegns Turistforening,59.540552815782,9.52354718011894,690,"Kongsberg, Meheia, Hvittingfoss, Svene",dnt-key,0,12,0
+508,10486,Selsli,no-service,True,Kongsberg og Omegns Turistforening,59.6882472570921,9.36391617338664,730,"Kongsberg, Meheia, Hvittingfoss, Svene",dnt-key,0,24,0
+10,101292254,Klatrehytta i Trøndelag,no-service,True,Trondhjems Turistforening,63.626349843890154,9.683843041509874,96,"Kystregion sør, Trøndelag",special key,0,7,0
+461,10568,Storlisetra,self-service,True,Kristiansund og Nordmøre Turistforening,63.184453,9.011421,259,"Kystregion sør, Trøndelag",unlocked,0,0,13
+454,10584,Oskampen,self-service,True,DNT Oslo og Omegn,61.4263000142468,9.14760280368475,1180,Langsua,dnt-key,0,0,12
+497,10504,Skriurusten,self-service,True,DNT Oslo og Omegn,61.3337854430853,9.34289905643728,1038,Langsua,dnt-key,0,0,16
+115,101369,Liomseter,staffed,True,DNT Oslo og Omegn,61.2425719864718,9.59505465195403,916,Langsua,,51,0,0
+430,10658,Kittilbua,self-service,True,DNT Lillehammer,61.1723223573505,9.95945128620815,813,Langsua,dnt-key,0,0,7
+183,101193,Storeskag,self-service,True,DNT Oslo og Omegn,61.27683612,9.23295,1125,Langsua,dnt-key,0,0,19
+184,101190,Vestfjellhytta,self-service,True,DNT Lillehammer,61.25954419,9.76034872,946,Langsua,dnt-key,0,0,18
+498,10503,Haldorbu,self-service,True,DNT Oslo og Omegn,61.2605227438213,9.37042902519328,1026,Langsua,dnt-key,0,0,15
+539,10429,Svarthamar,self-service,True,DNT Oslo og Omegn,61.14303005453459,9.507205079376291,878,Langsua,dnt-key,0,0,9
+190,101168,Fehytta,self-service,True,DNT Oslo og Omegn,61.24523457,9.58658935,904,Langsua,dnt-key,0,0,10
+608,10229,Storkvolvbua,self-service,True,DNT Oslo og Omegn,61.3373521461844,9.44573188660974,1196,Langsua,dnt-key,0,0,27
+633,10131,Skjellbreidhytta,self-service,True,DNT Lillehammer,61.1149609153834,10.098249114988,917,Langsua,dnt-key,0,0,7
+605,10233,Storhøliseter,self-service,True,DNT Oslo og Omegn,61.4176040307139,9.34528934365036,966,Langsua,dnt-key,0,0,18
+572,10341,Jammerdalsbu,self-service,True,DNT Oslo og Omegn,61.5856889,10.35288611,1134,Lillehammer-Rondane,,0,0,14
+240,101056,Krokbua,no-service,True,DNT Lillehammer,61.12294,10.51602,480,Lillehammer-Rondane,special key,0,6,0
+89,10370415,Veslefjellbua,self-service,True,DNT Oslo og Omegn,61.66853,10.14202,980,Lillehammer-Rondane,dnt-key,0,0,15
+121,101363,Eldåbu,self-service,True,DNT Oslo og Omegn,61.7561173810108,9.97916307813801,1013,Lillehammer-Rondane,,0,0,20
+435,10650,Djupslia,self-service,True,DNT Lillehammer,61.3725239453012,10.5830642816129,947,Lillehammer-Rondane,dnt-key,0,0,18
+436,10649,Lyngbua,no-service,True,DNT Lillehammer,61.3825700502882,10.7468011826266,1007,Lillehammer-Rondane,dnt-key,0,5,0
+437,10648,Vetåbua,self-service,True,DNT Lillehammer,61.46864058472849,10.502561798633963,925,Lillehammer-Rondane,dnt-key,0,0,16
+577,10309,Bjørnhaugen,no-service,True,DNT Harstad og Omegn,68.658371,16.389696,211,"Lofoten, Vesterålen og Hinnøya",special key,0,12,0
+118,101366,Skoddeberghytta,no-service,True,DNT Harstad og Omegn,68.5635298727473,17.233197523808457,103,"Lofoten, Vesterålen og Hinnøya",special key,0,10,0
+291,10954,Toralfsbu,no-service,True,DNT Harstad og Omegn,68.565089,15.972244,405,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,20,0
+134,101318,Turlagsstua,no-service,True,Vesterålen Turlag,68.69734,15.35133,250,"Lofoten, Vesterålen og Hinnøya",special key,0,20,0
+657,1077,Fossestua,no-service,True,DNT Harstad og Omegn,68.63494791423815,16.047412747747387,18,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,8,0
+632,10133,Blåvatnhytta,no-service,True,DNT Harstad og Omegn,68.570897951268,17.013194812163135,564,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,10,0
+571,10343,Maistua,no-service,True,DNT Harstad og Omegn,68.7614998194305,16.5196036162703,318,"Lofoten, Vesterålen og Hinnøya",special key,0,6,0
+120,101364,Grønnkollen,no-service,True,DNT Harstad og Omegn,68.7720329,16.4376601,225,"Lofoten, Vesterålen og Hinnøya",special key,0,6,0
+570,10344,Ingemannhytta,no-service,True,Vesterålen Turlag,68.7048796787535,15.7523497955377,192,"Lofoten, Vesterålen og Hinnøya",unlocked,0,4,0
+287,10959,Haakonsbu,no-service,True,DNT Harstad og Omegn,68.594267373984,16.064855678846982,522,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,16,0
+349,10791,Trollfjordhytta,no-service,True,Vesterålen Turlag,68.3613748202377,14.8808491394614,412,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,20,0
+538,10430,Snytindhytta,no-service,True,Vesterålen Turlag,68.5640613939084,15.5754871193604,386,"Lofoten, Vesterålen og Hinnøya",unlocked,0,24,0
+533,10441,Guvåghytta,no-service,True,Vesterålen Turlag,68.6622641727809,14.7756614210368,4,"Lofoten, Vesterålen og Hinnøya",dnt-key,0,19,0
+531,10445,Selfjordhytta,no-service,True,Lofoten Turlag,68.0359282,13.0751614,25,"Lofoten, Vesterålen og Hinnøya",special key,0,10,0
+557,10371,Nøkksætra,no-service,True,Lofoten Turlag,68.2632,14.50383,263,"Lofoten, Vesterålen og Hinnøya",special key,0,11,0
+542,10399,Paurohytta,no-service,True,DNT Narvik,68.048973,17.031648,695,Narvikfjellene,dnt-key,0,10,0
+219,101112,Lossihytta,no-service,True,DNT Narvik,68.190261,17.784551,722,Narvikfjellene,dnt-key,0,10,0
+541,10400,Røysvatn,no-service,True,DNT Narvik,67.960599,16.833021,804,Narvikfjellene,dnt-key,0,12,0
+545,10395,Cunojávrihytta,no-service,True,DNT Narvik,68.197764,18.084373,706,Narvikfjellene,dnt-key,0,13,0
+289,10956,Oallavagge,no-service,True,DNT Narvik,68.293694,17.997667,858,Narvikfjellene,dnt-key,0,4,0
+282,10967,Cáihnavággihytta,no-service,True,DNT Narvik,68.11894,17.947937,1002,Narvikfjellene,dnt-key,0,9,0
+103,101388,Skoaddejávre,no-service,True,DNT Narvik,68.058775,17.593025,1005,Narvikfjellene,dnt-key,0,12,0
+615,10216,Vokterboligen,no-service,True,DNT Narvik,68.404215,17.985542,367,Narvikfjellene,special key,0,12,0
+544,10396,Gautelishytta,no-service,True,DNT Narvik,68.0389124946628,17.8374036498428,857,Narvikfjellene,dnt-key,0,12,0
+281,10968,Hunddalshytta,no-service,True,DNT Narvik,68.318259,17.899356,700,Narvikfjellene,dnt-key,0,14,0
+543,10397,Sitashytta,no-service,True,DNT Narvik,68.100595,17.234747,616,Narvikfjellene,dnt-key,0,10,0
+292,10950,Storsteinshytta,no-service,True,DNT Narvik,68.199036,17.963377,990,Narvikfjellene,special key,0,4,0
+203,101133,Gramstadtunet,no-service,True,Stavanger Turistforening,58.8842634357731,5.7991197541168,167,Nord Jæren,special key,0,12,0
+202,101134,Nodhagen,no-service,True,Stavanger Turistforening,58.920976231429,5.96677181615531,10,Nord Jæren,special key,0,14,0
+218,101113,Goldahytta,no-service,True,Troms Turlag,69.0739146720652,20.5037572632415,521,Nord Troms,dnt-key,0,22,0
+217,101114,Gappohytta,no-service,True,Troms Turlag,69.0531779230749,20.2547350578715,701,Nord Troms,dnt-key,0,24,0
+370,10770,Fjellhov,no-service,True,DNT Nord-Trøndelag,63.6627321,10.903413,294,Nord-Trøndelag,unlocked,0,3,0
+650,1092,Skjækerdalshytta,self-service,True,DNT Nord-Trøndelag,63.9108495203628,12.2219389982333,390,Nord-Trøndelag,dnt-key,0,0,12
+144,101291,Veresstua,self-service,True,DNT Nord-Trøndelag,63.78391,12.38458,387,Nord-Trøndelag,dnt-key,0,0,10
+509,10483,Angeltjønnhytta,self-service,True,DNT Nord-Trøndelag,63.462445836839,12.0588614213548,516,Nord-Trøndelag,dnt-key,0,0,8
+515,10468,Ferslia,self-service,True,DNT Nord-Trøndelag,63.5422525134286,11.9417958064591,467,Nord-Trøndelag,dnt-key,0,0,14
+197,101143,Skorovashøtta,self-service,True,DNT Nord-Trøndelag,64.642169,13.1129137555861,457,Nord-Trøndelag,dnt-key,0,0,12
+43,101114680,Finnkruhøtta,self-service,True,DNT Nord-Trøndelag,64.58311411132536,13.042307058338508,619,Nord-Trøndelag,dnt-key,0,0,4
+593,10250,"Holden fjellgård, Bekkstuggu",self-service,True,DNT Nord-Trøndelag,64.0634277662145,12.8963611239488,451,Nord-Trøndelag,dnt-key,0,0,11
+618,10212,Svarttjønnbua,no-service,True,DNT Nord-Trøndelag,64.0487787,11.5407623,201,Nord-Trøndelag,special key,0,6,0
+117,101367,Bellingstua,self-service,True,DNT Nord-Trøndelag,63.682812,12.2613575775209,502,Nord-Trøndelag,dnt-key,0,0,8
+631,10134,Setertjønnhytta,self-service,True,DNT Nord-Trøndelag,63.9956252457528,12.3131131039681,451,Nord-Trøndelag,dnt-key,0,0,12
+52,101077830,Rongevær kysthytte,no-service,True,Bergen og Hordaland Turlag,60.81297777090893,4.806898563036782,6,Nordhordland,unlocked,0,38,0
+371,10769,Kalvedalshytta,self-service,True,Bergen og Hordaland Turlag,60.7676506649977,5.48894088703409,428,Nordhordland,unlocked,0,0,34
+460,10569,Tverrlihytta,self-service,True,Kristiansund og Nordmøre Turistforening,63.06707779,8.6201389,564,Nordmøre med Fjordruta,unlocked,0,0,18
+647,1098,Trollstua,self-service,True,Kristiansund og Nordmøre Turistforening,63.159423,8.020495,75,Nordmøre med Fjordruta,dnt-key,0,0,11
+646,1099,Nersetra,self-service,True,Kristiansund og Nordmøre Turistforening,63.218515,8.433688,182,Nordmøre med Fjordruta,dnt-key,0,33,8
+645,10100,Sollia,self-service,True,Kristiansund og Nordmøre Turistforening,63.207893,8.872004,312,Nordmøre med Fjordruta,unlocked,0,0,17
+474,10551,Imarbu,self-service,True,Kristiansund og Nordmøre Turistforening,63.2109782509767,8.27645921826227,5,Nordmøre med Fjordruta,dnt-key,0,0,35
+464,10565,Rovangen,self-service,True,Kristiansund og Nordmøre Turistforening,63.3005504,8.6583745,444,Nordmøre med Fjordruta,unlocked,0,0,14
+462,10567,Storfiskhytta,self-service,True,Kristiansund og Nordmøre Turistforening,63.2746604821582,8.82373412112891,485,Nordmøre med Fjordruta,unlocked,0,0,12
+329,10819,Hermannhytta,self-service,True,Kristiansund og Nordmøre Turistforening,63.021841,8.978594,418,Nordmøre med Fjordruta,unlocked,0,0,12
+643,10103,Hardbakkhytta,self-service,True,Kristiansund og Nordmøre Turistforening,63.09987,8.764868,785,Nordmøre med Fjordruta,unlocked,0,0,23
+558,10370,Gullsteinvollen,self-service,True,Kristiansund og Nordmøre Turistforening,63.190922,8.107255,167,Nordmøre med Fjordruta,dnt-key,0,0,15
+463,10566,Jutulbu,self-service,True,Kristiansund og Nordmøre Turistforening,63.0389669037608,8.38980120800962,401,Nordmøre med Fjordruta,unlocked,0,0,19
+644,10102,Grytbakksetra,self-service,True,Kristiansund og Nordmøre Turistforening,63.109886,8.947491,411,Nordmøre med Fjordruta,unlocked,0,0,23
+413,10702,Dalabu,no-service,True,DNT Drammen og Omegn,60.4015059573342,8.97991761570914,1004,Norefjell og Eggedalsfjella,dnt-key,0,6,0
+157,101266,Høgevarde nye,no-service,True,DNT Drammen og Omegn,60.2925689,9.4612645,1401,Norefjell og Eggedalsfjella,dnt-key,0,52,0
+620,10199,Toveseter,no-service,True,DNT Drammen og Omegn,60.3387097276136,9.32239011547501,973,Norefjell og Eggedalsfjella,dnt-key,0,14,0
+587,10258,Høgevarde gamle,no-service,True,DNT Drammen og Omegn,60.2931657504425,9.46055626610276,1397,Norefjell og Eggedalsfjella,dnt-key,0,23,0
+230,101087,Dusehesten,no-service,True,DNT Drammen og Omegn,60.3996758617083,8.67981195378633,1017,Norefjell og Eggedalsfjella,dnt-key,0,8,0
+150,101280,Karterud,no-service,True,DNT Odal,60.2799368,11.6990651,194,Odalen,dnt-key,0,16,0
+523,10458,Bergersætra,no-service,True,DNT Odal,60.1665153224957,11.7756999386148,351,Odalen,dnt-key,0,3,0
+99,10136374,Breivoll Gård,staffed,True,DNT Oslo og Omegn,59.7373997999795,10.7290235495034,13,Oslofjorden,,28,0,0
+46,101114463,Bekkensten,no-service,True,DNT Oslo og Omegn,59.79158395150802,10.733447746604213,5,Oslofjorden,special key,0,14,0
+576,10316,Camp Killingen,no-service,True,DNT Drammen og Omegn,59.52077,10.33419,5,Oslofjorden,special key,0,42,0
+408,10709,Veslekillingen,no-service,True,DNT Drammen og Omegn,59.52309,10.33304,17,Oslofjorden,,0,12,0
+25,101205966,Håøya,no-service,True,DNT Tønsberg og Omegn,59.18369536682482,10.355733132806108,9,Oslofjorden,,0,20,0
+24,101210144,Tyristua,no-service,True,Holmestrand og Omegn Turistforening,59.5349707657271,10.2254605293274,285,Oslofjorden,special key,0,12,0
+55,101039692,Sjåførboligen på Elnestangen,no-service,True,DNT Oslo og Omegn,59.80214111574901,10.50013826728383,6,Oslofjorden,special key,0,11,0
+324,10825,Langøyene,no-service,True,DNT Oslo og Omegn,59.86911,10.7184,3,Oslofjorden,,0,14,0
+59,101024831,Styrbord - Gressholmen,no-service,True,DNT Oslo og Omegn,59.883645763239116,10.717185188747209,4,Oslofjorden,dnt-key,0,28,0
+61,101022071,Babord - Gressholmen,no-service,True,DNT Oslo og Omegn,59.883615765123835,10.717464781246235,5,Oslofjorden,dnt-key,0,13,0
+584,10261,Brannåsen,no-service,True,Holmestrand og Omegn Turistforening,59.53297,10.23931,255,Oslofjorden,special key,0,6,0
+361,10779,Mustadkroken,no-service,True,DNT Oslo og Omegn,59.97207,10.37167,360,Oslomarka,dnt-key,0,30,0
+357,10783,Smedmyrkoia,no-service,True,DNT Oslo og Omegn,60.0516706607775,10.550020989925,320,Oslomarka,dnt-key,0,9,0
+17,101282092,Sæteren Gård - Uglebu (ubetjent),no-service,True,DNT Oslo og Omegn,59.95147693110937,10.56226738560838,188,Oslomarka,dnt-key,0,4,0
+439,10645,Kobberhaughytta,staffed,True,DNT Oslo og Omegn,60.0360956568802,10.6636514925302,431,Oslomarka,special key,54,0,0
+18,101250515,Svartpoten,no-service,True,DNT Oslo og Omegn,59.919373551869825,10.389953100402266,355,Oslomarka,dnt-key,0,4,0
+19,101250514,Svartvannskoia,no-service,True,DNT Oslo og Omegn,59.91947266123353,10.390161954100023,354,Oslomarka,dnt-key,0,3,0
+323,10826,Snellingen,no-service,True,DNT Oslo og Omegn,60.262225371626954,10.785470298274674,529,Oslomarka,dnt-key,0,8,0
+21,101233402,Skjennungsvolden,no-service,True,DNT Oslo og Omegn,60.00407774314999,10.682230050720676,423,Oslomarka,dnt-key,0,7,0
+79,10887501,Wentzelhytta,no-service,True,DNT Oslo og Omegn,59.8093965,10.4196935,315,Oslomarka,dnt-key,0,4,0
+228,101097,Jørgenhytta,no-service,True,DNT Oslo og Omegn,60.02018,10.32393,430,Oslomarka,dnt-key,0,8,0
+355,10785,Røverhula,no-service,True,DNT Oslo og Omegn,60.02448,10.84027,405,Oslomarka,dnt-key,0,2,0
+360,10780,Lille Tømtehytta,no-service,True,DNT Oslo og Omegn,60.0513028549226,10.7610033031717,471,Oslomarka,dnt-key,0,4,0
+354,10786,Råbjørnhytta,no-service,True,DNT Oslo og Omegn,60.2361528591249,10.8549533378609,497,Oslomarka,dnt-key,0,10,0
+122,101362,Øvresaga,no-service,True,DNT Oslo og Omegn,59.7985177455395,11.0297459943168,224,Oslomarka,dnt-key,0,8,0
+352,10788,Sinnerdammen,no-service,True,DNT Oslo og Omegn,60.1691335727137,10.4959017992588,485,Oslomarka,dnt-key,0,4,0
+29,101171182,Sæteren Gård - Gapahuk (ubetjent),no-service,True,DNT Oslo og Omegn,59.950286228717744,10.562284523477416,181,Oslomarka,unlocked,0,20,0
+30,101170965,Sæteren Gård - Knoll (ubetjent),no-service,True,DNT Oslo og Omegn,59.95147313300191,10.559165467851557,180,Oslomarka,special key,0,4,0
+31,101170964,Sæteren Gård - Spettehytta (ubetjent),no-service,True,DNT Oslo og Omegn,59.94931049778708,10.561820518857502,179,Oslomarka,dnt-key,0,4,0
+33,101170962,Sæteren Gård - Eventyrhytta (ubetjent),no-service,True,DNT Oslo og Omegn,59.94911664657346,10.559901612851519,175,Oslomarka,special key,0,4,0
+5,101317685,Sæteren Gård - Elgstua (ubetjent),no-service,True,DNT Oslo og Omegn,59.947933,10.565092,157,Oslomarka,dnt-key,0,4,0
+350,10790,Småvannsbu,no-service,True,DNT Oslo og Omegn,59.7861522328751,10.3765129165493,271,Oslomarka,dnt-key,0,4,0
+139,101297,Stallen,no-service,True,DNT Oslo og Omegn,59.8503105,11.0094951,177,Oslomarka,dnt-key,0,4,0
+44,101114465,Nydalsbua,no-service,True,DNT Oslo og Omegn,60.02425519654554,10.840690630639472,406,Oslomarka,dnt-key,0,2,0
+353,10787,Spikertjernhytta,no-service,True,DNT Oslo og Omegn,60.08978762703,10.9379798462998,275,Oslomarka,dnt-key,0,4,0
+108,101380,Sæteren Gård - betjent,staffed,True,DNT Oslo og Omegn,59.948100977130906,10.561932756871414,166,Oslomarka,special key,48,0,0
+358,10782,Presthytta,no-service,True,DNT Oslo og Omegn,60.05545,10.42601,418,Oslomarka,dnt-key,0,4,0
+7,101301633,Ringkolltoppen,no-service,True,DNT Ringerike,60.166726,10.401552,701,Oslomarka,dnt-key,0,9,0
+362,10778,Katnosdammen,no-service,True,DNT Oslo og Omegn,60.1475954235365,10.5913315820471,465,Oslomarka,dnt-key,0,14,0
+363,10777,Store Tømtehytta,no-service,True,DNT Oslo og Omegn,60.0513028549226,10.761239931016,470,Oslomarka,dnt-key,0,8,0
+364,10776,Hovdehytta,no-service,True,DNT Oslo og Omegn,59.8459241916227,10.3576699634755,450,Oslomarka,dnt-key,0,8,0
+365,10775,Fjellvang,no-service,True,DNT Oslo og Omegn,60.024659,10.840105,405,Oslomarka,dnt-key,0,14,0
+366,10774,Drømmen,no-service,True,DNT Oslo og Omegn,60.03264,10.41253,291,Oslomarka,dnt-key,0,2,0
+367,10773,Bøvelstad,no-service,True,DNT Oslo og Omegn,59.8152689,11.0440829,209,Oslomarka,dnt-key,0,17,0
+368,10772,Bekkestua,no-service,True,DNT Oslo og Omegn,60.1511908366839,10.9265205250736,348,Oslomarka,dnt-key,0,4,0
+369,10771,Røyrivannskoia,no-service,True,DNT Oslo og Omegn,59.8498994,11.0098043,179,Oslomarka,dnt-key,0,4,0
+196,101145,Dølerud,no-service,True,DNT Oslo og Omegn,59.84042,10.88996,186,Oslomarka,dnt-key,0,8,0
+162,101255,Halvorsenhytta,no-service,True,DNT Oslo og Omegn,59.8709,10.39055,347,Oslomarka,dnt-key,0,9,0
+94,10258893,Fiskelaushytta,no-service,True,DNT Oslo og Omegn,59.8719995,10.9762626,253,Oslomarka,dnt-key,0,4,0
+359,10781,Myrsetra,no-service,True,DNT Oslo og Omegn,60.0326058104331,10.4125459140775,291,Oslomarka,dnt-key,0,9,0
+176,101209,Fuglemyrhytta,no-service,True,DNT Oslo og Omegn,59.9782325,10.6953172,401,Oslomarka,special key,0,10,0
+169,101226,Svartvannshytta,no-service,True,DNT Oslo og Omegn,59.91934746,10.38983792,355,Oslomarka,dnt-key,0,8,0
+41,101124534,Sandbekkhytta,no-service,True,DNT Oslo og Omegn,60.20676199258827,10.588922675375926,463,Oslomarka,,0,4,0
+101,1015390,Huldreheim,no-service,True,DNT Oslo og Omegn,59.8891529,11.0613293,270,Oslomarka,dnt-key,0,8,0
+450,10595,Nydalshytta,no-service,True,DNT Oslo og Omegn,60.024171936421,10.8409294041974,406,Oslomarka,dnt-key,0,16,0
+372,10768,Træet gård,no-service,True,Bergen og Hordaland Turlag,60.5618858374884,5.67040004976338,222,Osterøy,dnt-key,0,19,0
+549,10388,Nedrefosshytta,no-service,True,Troms Turlag,69.3205871934293,21.9676291200571,150,Reisa nasjonalpark/Ráisa álbmotlas meahcci,special key,0,16,0
+521,10460,Brandstadbu,no-service,True,DNT Romsdal,62.6341345626999,8.29709994091844,201,Romsdalen og Eikesdalen,dnt-key,0,8,0
+126,101358,Svartvassbu,no-service,True,DNT Romsdal,62.5988660958487,8.05048125284999,903,Romsdalen og Eikesdalen,unlocked,0,12,0
+529,10447,Aursjøhytta,staffed,True,Kristiansund og Nordmøre Turistforening,62.406614,8.54019,869,Romsdalen og Eikesdalen,dnt-key,34,18,14
+530,10446,Feskarbu,no-service,True,DNT Romsdal,62.8225968063033,7.40911368012351,269,Romsdalen og Eikesdalen,dnt-key,0,4,0
+68,10914923,Herjevassbu,no-service,True,DNT Romsdal,62.6542001,7.593108,397,Romsdalen og Eikesdalen,dnt-key,0,6,0
+49,101098250,Gamle Storlihytta,no-service,True,DNT Romsdal,62.747958952524726,7.14342454563328,270,Romsdalen og Eikesdalen,dnt-key,0,7,0
+97,10153516,Veøystua,no-service,True,DNT Romsdal,62.6672143,7.42579670000001,3,Romsdalen og Eikesdalen,dnt-key,0,4,0
+98,10153515,Venjesdalsbu,no-service,True,DNT Romsdal,62.5366429,7.828335,381,Romsdalen og Eikesdalen,dnt-key,0,12,0
+596,10245,Reinsvassbu,self-service,True,DNT Romsdal,62.5501131945122,8.3676825829612,900,Romsdalen og Eikesdalen,,0,0,6
+226,101102,Skorgedalsbu,self-service,True,DNT Romsdal,62.596816389781,7.63520894179487,385,Romsdalen og Eikesdalen,dnt-key,0,0,21
+651,1088,Hoemsbu,self-service,True,DNT Romsdal,62.5651261698681,8.14412375433385,37,Romsdalen og Eikesdalen,unlocked,0,0,31
+296,10944,Vasstindbu,no-service,True,DNT Romsdal,62.6305733925221,7.98424686127022,1189,Romsdalen og Eikesdalen,unlocked,0,10,0
+225,101103,Måsvassbu,self-service,True,DNT Romsdal,62.6481484603644,7.83414032622581,591,Romsdalen og Eikesdalen,special key,0,0,31
+221,101110,Bjørnhollia,staffed,True,DNT Oslo og Omegn,61.8840664078091,10.0125026350101,906,Rondane,dnt-key,90,0,14
+503,10494,Grimsdalshytta,staffed,True,DNT Oslo og Omegn,62.0907205692801,9.64146172442695,992,Rondane,,54,0,12
+77,10903615,Bjørnhollia Selvbetjent,self-service,True,DNT Oslo og Omegn,61.8840664078091,10.0125026350101,906,Rondane,dnt-key,0,0,14
+76,10903617,Grimsdalshytta Selvbetjent,self-service,True,DNT Oslo og Omegn,62.091167,9.641578,998,Rondane,dnt-key,0,0,19
+75,10903618,Rondvassbu Selvbetjent,self-service,True,DNT Oslo og Omegn,61.8789011528254,9.79727501053528,1189,Rondane,dnt-key,0,0,36
+220,101111,Rondvassbu,staffed,True,DNT Oslo og Omegn,61.878848,9.79632,1167,Rondane,dnt-key,128,0,28
+245,101050,Vassdalstjørn,self-service,True,Stavanger Turistforening,59.397362854540376,6.972983046512695,1106,Ryfylke,unlocked,0,0,30
+387,10743,Stranddalen turisthytte,staffed,True,Stavanger Turistforening,59.4382626816413,6.71858152274993,979,Ryfylke,unlocked,48,0,16
+244,101051,Krossvatn,self-service,True,Stavanger Turistforening,59.4669009719118,6.89960433623391,1101,Ryfylke,unlocked,0,0,30
+256,101038,Melands Grønahei,self-service,True,Stavanger Turistforening,59.2409793395921,6.52057608606121,846,Ryfylke,unlocked,0,0,22
+255,101039,Litle Aurådal,self-service,True,Stavanger Turistforening,59.188,6.877,1000,Ryfylke,unlocked,0,0,28
+243,101052,Viglesdalen,no-service,True,Stavanger Turistforening,59.1592793533202,6.44979689845184,416,Ryfylke,unlocked,0,62,0
+241,101055,Lysefjorden turisthytte,staffed,True,Stavanger Turistforening,59.054987520973356,6.648821364494211,6,Ryfylke,,80,0,0
+201,101135,"Skåpet, gamlehytta",no-service,True,Stavanger Turistforening,58.9853262937442,6.35052123861824,684,Ryfylke,special key,0,6,0
+192,101154,Jonstølen,self-service,True,Stavanger Turistforening,59.56097,6.85907,730,Ryfylke,unlocked,0,0,36
+268,101026,Grautheller turisthytte,self-service,True,Stavanger Turistforening,59.1125085508618,6.87703440628692,765,Ryfylke,unlocked,0,0,33
+200,101136,Flørlistølen,no-service,True,Stavanger Turistforening,59.0058416,6.4222792,389,Ryfylke,special key,0,6,0
+267,101027,Bleskestadmoen,self-service,True,Stavanger Turistforening,59.6260632369033,6.98398055622488,708,Ryfylke,unlocked,0,0,28
+187,101186,Skåpet,self-service,True,Stavanger Turistforening,58.9867542,6.342333,617,Ryfylke,unlocked,0,0,42
+262,101032,Grasdalen,no-service,True,Stavanger Turistforening,59.2312152575374,6.62251663587883,633,Ryfylke,unlocked,0,10,0
+199,101137,Heiberghytta Grautheller,no-service,True,Stavanger Turistforening,59.11663,6.875576,758,Ryfylke,special key,0,4,0
+258,101036,Kvanndalen,no-service,True,Stavanger Turistforening,59.6961840510494,6.99009081550861,660,Ryfylke,unlocked,0,10,0
+251,101043,Songedalen fjellgard,no-service,True,Stavanger Turistforening,59.0420085,6.4301267,384,Ryfylke,unlocked,0,19,0
+34,101154107,Sundmorkvatn turisthytte,no-service,True,Stavanger Turistforening,59.046144626220126,6.334716889059166,477,Ryfylke,special key,0,11,0
+135,101314,Bakken gard,no-service,True,Stavanger Turistforening,59.0158026,6.2876848,176,Ryfylke,unlocked,0,34,0
+259,101035,Kringlevatn,self-service,True,Stavanger Turistforening,59.2388074946746,7.03972696990255,949,Ryfylke,unlocked,0,0,28
+257,101037,Langavatn,self-service,True,Stavanger Turistforening,58.9916231022443,6.61469509244077,939,Ryfylke,unlocked,0,0,29
+253,101041,Nilsebu,self-service,True,Stavanger Turistforening,59.1894606307995,6.67497835474468,735,Ryfylke,unlocked,0,0,32
+254,101040,Sandsa,no-service,True,Stavanger Turistforening,59.4351086925193,6.58484226371931,635,Ryfylke,unlocked,0,49,0
+250,101044,Stakken,self-service,True,Stavanger Turistforening,59.1808999,6.5651549,761,Ryfylke,unlocked,0,0,34
+249,101045,Storsteinen,self-service,True,Stavanger Turistforening,59.280205995194,6.9096082959503,940,Ryfylke,unlocked,0,0,34
+263,101031,Flørli turiststasjon,no-service,True,Stavanger Turistforening,59.0120010196056,6.42534711546519,98,Ryfylke,unlocked,0,32,0
+264,101030,Eidavatn,self-service,True,Stavanger Turistforening,59.2705146451249,6.73777762981973,1081,Ryfylke,unlocked,0,0,42
+260,101034,Hovatn,self-service,True,Stavanger Turistforening,59.3527026856274,7.03634712324445,1121,Ryfylke,unlocked,0,0,28
+11,101291038,Fjøløy fort,no-service,True,Stavanger Turistforening,59.086236181679624,5.577044163726413,17,Ryfylkeøyene,special key,0,26,0
+105,101384,Fjøløy turisthytte,no-service,True,Stavanger Turistforening,59.08573,5.583077,79,Ryfylkeøyene,special key,0,8,0
+286,10963,Tåkeheimen,no-service,True,Bodø og Omegns Turistforening,66.69414300148048,13.829807089775443,1070,Saltfjellet og Svartisen,dnt-key,0,17,0
+610,10223,Jordbruhytta,no-service,True,Bodø og Omegns Turistforening,66.9359262198618,15.2364979950827,331,Saltfjellet og Svartisen,dnt-key,0,8,0
+623,10193,Nystadnesstua (Storjordstua),no-service,True,Bodø og Omegns Turistforening,66.8151896030092,15.400800160253624,116,Saltfjellet og Svartisen,special key,0,8,0
+613,10220,Fellvasstua,no-service,True,Bodø og Omegns Turistforening,66.8610124978763,14.1559431755195,425,Saltfjellet og Svartisen,unlocked,0,10,0
+640,10117,Tverrbrennstua,no-service,True,Bodø og Omegns Turistforening,67.0017489468569,14.9485312782136,553,Saltfjellet og Svartisen,dnt-key,0,22,0
+534,10440,Blakkådalshytta,no-service,True,DNT Rana og omegn,66.5454652556673,14.4007367358826,480,Saltfjellet og Svartisen,unlocked,0,10,0
+272,101022,Gjælentunet,no-service,True,Bodø og Omegns Turistforening,67.18422437209796,14.41084749227565,39,Saltfjellet og Svartisen,dnt-key,0,35,0
+271,101023,Bjellåvasstua,no-service,True,Bodø og Omegns Turistforening,66.84943993504365,15.046288363292945,715,Saltfjellet og Svartisen,unlocked,0,25,0
+270,101024,Lønsstua,no-service,True,Bodø og Omegns Turistforening,66.7360247651867,15.4656671539973,474,Saltfjellet og Svartisen,dnt-key,0,33,0
+638,10119,Krukkistua,no-service,True,DNT Rana og omegn,66.6788875565665,15.0499130387826,515,Saltfjellet og Svartisen,dnt-key,0,12,0
+269,101025,Beiarstua,no-service,True,Bodø og Omegns Turistforening,66.857433047017,14.6904746974789,126,Saltfjellet og Svartisen,dnt-key,0,20,0
+636,10127,Gråtådalstua,no-service,True,Bodø og Omegns Turistforening,66.7871777105009,14.4742156279381,617,Saltfjellet og Svartisen,unlocked,0,9,0
+614,10218,Midtistua,no-service,True,Bodø og Omegns Turistforening,66.7607980140651,15.0129228752903,708,Saltfjellet og Svartisen,unlocked,0,16,0
+528,10448,Lurfjellhytta,no-service,True,Bodø og Omegns Turistforening,67.1172183575192,14.7453465502179,315,Saltfjellet og Svartisen,unlocked,0,21,0
+641,10116,Saltfjellstua,no-service,True,DNT Rana og omegn,66.7150097252572,15.0260018234135,606,Saltfjellet og Svartisen,dnt-key,0,20,0
+216,101117,Bossbu,self-service,True,DNT Sør,59.183275996431,7.29451531062951,1026,Setesdalsheiane,unlocked,0,0,26
+327,10821,Tjønndalen,no-service,True,DNT Sør,58.9611217197872,7.47121030916221,700,Setesdalsheiane,unlocked,0,6,0
+209,101124,Stavskar,no-service,True,DNT Sør,59.2011509065375,7.40345560510667,995,Setesdalsheiane,,0,8,0
+212,101121,Josephsbu,self-service,True,DNT Sør,58.8788030793223,7.20586691514338,880,Setesdalsheiane,unlocked,0,0,20
+211,101122,Lakkenstova,self-service,True,DNT Sør,58.7908301900705,7.24568025342714,850,Setesdalsheiane,unlocked,0,0,32
+210,101123,Sloaros,self-service,True,DNT Sør,59.6465715692217,7.25865329776554,1047,Setesdalsheiane,unlocked,0,0,22
+214,101119,Gaukhei,self-service,True,DNT Sør,58.9160028006394,7.30541843904986,839,Setesdalsheiane,unlocked,0,0,46
+208,101125,Svartenut,self-service,True,DNT Sør,59.1315572633723,7.25007658339248,972,Setesdalsheiane,unlocked,0,0,20
+326,10822,Øyuvsbu,self-service,True,DNT Sør,59.024358834975,7.23674511200317,932,Setesdalsheiane,unlocked,0,0,34
+213,101120,Håheller,no-service,True,DNT Sør,59.0296181883382,7.16524357818714,888,Setesdalsheiane,unlocked,0,8,0
+159,101264,Ådneram anneks,no-service,True,Stavanger Turistforening,59.01763718,6.93086195,570,Sirdal,special key,0,13,0
+261,101033,Heibergtunet Storevatn,self-service,True,Stavanger Turistforening,59.1478128462254,7.02208031940604,971,Sirdal,unlocked,0,0,31
+248,101046,Støle,self-service,True,Stavanger Turistforening,58.7629298375198,6.57742109384974,546,Sirdal,unlocked,0,0,30
+252,101042,Sandvatn,no-service,True,Stavanger Turistforening,58.954249,6.650815,913,Sirdal,unlocked,0,62,0
+265,101029,Børsteinen,no-service,True,Stavanger Turistforening,59.034923,6.80655,867,Sirdal,unlocked,0,16,0
+204,101132,Ådneram turisthytte,no-service,True,Stavanger Turistforening,59.0173064605994,6.93117506279113,570,Sirdal,special key,0,56,0
+332,10813,Kvinen,self-service,True,DNT Sør,58.8791084,7.0643361,721,Sirdal,dnt-key,0,0,40
+246,101048,Tomannsbu,self-service,True,Stavanger Turistforening,58.8308467984213,6.64353466071406,730,Sirdal,unlocked,0,0,50
+247,101047,Taumevatn,self-service,True,Stavanger Turistforening,59.1029171240755,6.98769844335615,789,Sirdal,unlocked,0,0,40
+334,10811,Kongshelleren,self-service,True,DNT Oslo og Omegn,60.7771009262815,7.70118552483954,1450,Skarvheimen,dnt-key,0,0,12
+335,10808,Geiterygghytta,staffed,True,DNT Oslo og Omegn,60.7008526987777,7.60350366220272,1227,Skarvheimen,,88,0,0
+304,10929,Finsehytta,staffed,True,DNT Oslo og Omegn,60.59791,7.507,1224,Skarvheimen,dnt-key,174,0,44
+414,10686,Sulebu,self-service,True,DNT Oslo og Omegn,61.1403497728013,8.17534579530292,1328,Skarvheimen,dnt-key,0,0,22
+305,10928,Kljåen,self-service,True,DNT Oslo og Omegn,61.026579844202,8.31687081395578,983,Skarvheimen,dnt-key,0,0,8
+418,10680,Slettningsbu,self-service,True,DNT Oslo og Omegn,61.2458522935697,8.12967586555553,1315,Skarvheimen,dnt-key,0,0,14
+69,10908408,Iungsdalshytta Selvbetjent,self-service,True,DNT Oslo og Omegn,60.8102338315488,7.93362093583997,1102,Skarvheimen,dnt-key,0,0,12
+158,101265,Skarvheim,self-service,True,DNT Oslo og Omegn,61.02224,8.04158,1029,Skarvheimen,dnt-key,0,0,9
+156,101272,Aurlandsdalen Turisthytte Østerbø,staffed,True,DNT Oslo og Omegn,60.82847,7.50452,819,Skarvheimen,,117,0,0
+278,10973,Iungsdalshytta,staffed,True,DNT Oslo og Omegn,60.8102338315488,7.93362093583997,1102,Skarvheimen,dnt-key,52,0,12
+336,10805,Hallingskeid Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.6681800653787,7.24861269143682,1094,Skarvheimen,unlocked,0,0,53
+333,10812,Bjordalsbu,self-service,True,DNT Oslo og Omegn,60.92698,7.998236,1573,Skarvheimen,,0,0,24
+88,10541964,Brebua - Finsehytta selvbetjening,self-service,True,DNT Oslo og Omegn,60.59817,7.50746,1221,Skarvheimen,dnt-key,0,0,44
+470,10558,Sørmyrseter,no-service,True,Kongsberg og Omegns Turistforening,59.5036956376215,9.64852032675268,630,"Skrim, Vindfjell",dnt-key,0,14,0
+505,10489,Ivarsbu,no-service,True,Larvik og Omegns Turistforening,59.5146513523317,9.72558961906847,612,"Skrim, Vindfjell",special key,0,32,0
+506,10488,Solumhytta,no-service,True,Skien Turlag,59.4684845644958,9.56792589103426,578,"Skrim, Vindfjell",dnt-key,0,10,0
+432,10656,Darrebu,no-service,True,DNT Tønsberg og Omegn,59.490437441176,9.74828181455115,612,"Skrim, Vindfjell",dnt-key,0,10,0
+526,10455,Presteseter,no-service,True,Larvik og Omegns Turistforening,59.4341476986014,9.79257432003823,453,"Skrim, Vindfjell",special key,0,26,0
+658,1046,Sylvarnes,no-service,True,Vik Turlag,61.0939341,6.2953362,50,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,9,0
+573,10340,Vardadalsbu Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.9467450997535,5.88992045066273,887,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,20
+375,10764,Skavlabu Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.8619057275462,5.8153161745966,960,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,20
+288,10958,Kaldavasshytta,no-service,True,Voss Utferdslag,60.7019515084634,7.07970332215315,1262,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,18,0
+391,10737,Høgabu Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.5348664561984,5.92471676999892,905,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,25
+556,10375,Jashaugbu,no-service,True,Vik Turlag,60.97939,6.73771,985,"Stølsheimen, Bergsdalen og Vossafjelli",dnt-key,0,4,0
+133,101320,Nansenbu,no-service,True,Voss Utferdslag,60.5414,6.3443,1190,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,10,0
+106,101382,Rosethytta,no-service,True,Voss Utferdslag,60.5914,6.4186,672,"Stølsheimen, Bergsdalen og Vossafjelli",,0,10,0
+377,10762,Solrenningen Turisthytte,self-service,True,Bergen og Hordaland Turlag,61.0089028883366,6.13080536548784,646,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,35
+376,10763,Vending Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.4740267915025,6.07516738508902,822,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,30
+565,10356,Tvinnestølen,no-service,True,Voss Utferdslag,60.7368242061129,6.36452869789317,1052,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,17,0
+563,10363,Grindaflethytta,self-service,True,Voss Utferdslag,60.843448291311,6.91550431993121,1090,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,14
+325,10823,Alexander Grieghytten,no-service,True,Bergen og Hordaland Turlag,60.5369789016054,6.07913238937247,615,"Stølsheimen, Bergsdalen og Vossafjelli",special key,0,34,0
+378,10761,Selhamar Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.9135942319075,6.26283599331662,874,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,45
+146,101284,BT-hytten,no-service,True,Bergen og Hordaland Turlag,60.6619167,6.8626611,873,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,6,0
+540,10428,Torfinnsheim,no-service,True,Voss Utferdslag,60.5621464818624,6.24231743390803,892,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,28,0
+562,10365,Åsedalen Turisthytte,self-service,True,Bergen og Hordaland Turlag,60.965675357962,6.22049193398861,820,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,25
+195,101146,Gullhorgabu,self-service,True,Bergen og Hordaland Turlag,60.5007,5.96018284416215,851,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,41
+537,10435,Målsethytta,no-service,True,Vik Turlag,60.9866382518594,6.51990380437744,867,"Stølsheimen, Bergsdalen og Vossafjelli",dnt-key,0,31,0
+383,10753,Kiellandbu,no-service,True,Bergen og Hordaland Turlag,60.5146024810954,6.20127818852509,903,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,5,0
+591,10254,Vatnane Turisthytte,no-service,True,Bergen og Hordaland Turlag,61.0231865975367,6.3259048123886,898,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,6,0
+374,10765,Brydalseter,no-service,True,Bergen og Hordaland Turlag,61.0777878146419,6.05471998249017,573,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,7,0
+527,10454,Norddalshytten,self-service,True,Bergen og Hordaland Turlag,61.0149233059352,5.9963734413157,1012,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,20
+590,10255,Torvedalshytta,self-service,True,Voss Utferdslag,60.8236774044093,6.33241726241349,811,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,24
+524,10457,Breidablik Turisthytte (Kvam),self-service,True,Bergen og Hordaland Turlag,60.4658629221738,6.12568823165929,1160,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,31
+589,10256,Volahytta,self-service,True,Voss Utferdslag,60.7392526498237,6.30548312085904,940,"Stølsheimen, Bergsdalen og Vossafjelli",unlocked,0,0,18
+617,10213,Trygvebu,no-service,True,Bodø og Omegns Turistforening,66.8007597584971,15.6889489063872,412,Sulitjelmafjellan,dnt-key,0,18,0
+637,10121,Mourkihytta,no-service,True,Sulitjelma og Omegn Turistforening,67.0539565289425,16.3728746163834,720,Sulitjelmafjellan,dnt-key,0,8,0
+290,10955,Ny-Sulitjelma fjellstue,no-service,True,Sulitjelma og Omegn Turistforening,67.1401305360024,16.1375180937513,597,Sulitjelmafjellan,dnt-key,0,19,0
+578,10308,Balvasshyttene,no-service,True,Sulitjelma og Omegn Turistforening,66.924921804627,15.870959161149,606,Sulitjelmafjellan,dnt-key,0,12,0
+490,10512,Tjoarvihytta,no-service,True,Sulitjelma og Omegn Turistforening,66.9947293902061,15.9668099166902,601,Sulitjelmafjellan,dnt-key,0,9,0
+491,10511,Tjalalveshytta,no-service,True,Sulitjelma og Omegn Turistforening,67.0543961812579,16.0946564201475,564,Sulitjelmafjellan,dnt-key,0,17,0
+285,10964,Lomihytta,no-service,True,Sulitjelma og Omegn Turistforening,67.1236344472924,16.2037020127901,711,Sulitjelmafjellan,dnt-key,0,4,0
+630,10153,Storeng Fjellgård,no-service,True,Storeng Fjellgård,66.92638299564075,15.518485052058992,410,Sulitjelmafjellan,special key,0,4,0
+561,10366,Argaladhytta,no-service,True,Bodø og Omegns Turistforening,66.847969024464,15.7873357953453,568,Sulitjelmafjellan,unlocked,0,8,0
+284,10965,Sorjushyttene,no-service,True,Sulitjelma og Omegn Turistforening,67.206843,16.255926,826,Sulitjelmafjellan,dnt-key,0,16,0
+54,101071942,Stovegolvet Turisthytte,no-service,True,Bergen og Hordaland Turlag,59.853447875849184,5.469640707191672,695,Sunnhordland,unlocked,0,21,0
+165,101243,Lundastøl Turisthytte,no-service,True,Bergen og Hordaland Turlag,59.845813,5.483835,213,Sunnhordland,special key,0,10,0
+80,10881073,Flokehyttene,no-service,True,Haugesund Turistforening,59.525931,5.226836,13,Sunnhordland,,0,30,0
+313,10893,Runde fyr,self-service,True,DNT Sunnmøre,62.413768,5.586491,13,Sunnmøre,dnt-key,0,0,24
+38,101145540,Kolåstindhytta,no-service,True,DNT Sunnmøre,62.247907355173595,6.353515868144541,381,Sunnmøre,special key,0,11,0
+22,101225968,Toralfbuda,no-service,True,DNT Sunnmøre,62.25076141415519,5.875972259498781,1,Sunnmøre,special key,0,8,0
+480,10545,Patchellhytta,self-service,True,DNT Sunnmøre,62.2115257200266,6.72013018042409,818,Sunnmøre,unlocked,0,0,72
+477,10548,Tyssenaustet,no-service,True,DNT Sunnmøre,62.094612838922,6.60685740685706,662,Sunnmøre,dnt-key,0,6,0
+475,10550,Velleseter,no-service,True,DNT Sunnmøre,62.268025,6.670494,410,Sunnmøre,dnt-key,0,11,0
+516,10467,Kjølihytta,self-service,True,Trondhjems Turistforening,62.8683382513024,11.6485179534731,1046,Sylan / Bealjehkh,dnt-key,0,0,10
+514,10469,Græslihytta,self-service,True,Trondhjems Turistforening,63.0699957289028,11.4722501829557,594,Sylan / Bealjehkh,dnt-key,0,0,12
+512,10475,Ramsjøhytta,self-service,True,Trondhjems Turistforening,63.1639078023723,11.7221569785424,771,Sylan / Bealjehkh,dnt-key,0,0,34
+511,10477,Kvitfjellhytta,self-service,True,DNT Nord-Trøndelag,63.34395556,11.255825,500,Sylan / Bealjehkh,dnt-key,0,0,11
+416,10683,Storerikvollen,staffed,True,Trondhjems Turistforening,63.1116333616318,11.9829976059092,766,Sylan / Bealjehkh,dnt-key,65,0,16
+417,10682,Schulzhytta,staffed,True,Trondhjems Turistforening,63.2119173179375,11.5065487410346,569,Sylan / Bealjehkh,dnt-key,30,0,33
+510,10478,Prestøyhytta,self-service,True,DNT Nord-Trøndelag,63.2891516195295,11.3416223603131,623,Sylan / Bealjehkh,dnt-key,0,0,16
+419,10679,Nedalshytta,staffed,True,Trondhjems Turistforening,62.978695978355205,12.101837821886818,783,Sylan / Bealjehkh,dnt-key,60,0,28
+63,101007690,"Bjørneggen, Biernerånhtjoe",self-service,True,DNT Nord-Trøndelag,63.27327772744235,11.806197365879115,597,Sylan / Bealjehkh,dnt-key,0,0,38
+322,10829,Lyngør fyr,no-service,True,Aust-Agder Turistforening,58.63693,9.14876,6,Sørlandskysten,special key,0,22,0
+193,101150,Furøya Forpakterboligen,no-service,True,Aust-Agder Turistforening,58.59903973,8.95724332,5,Sørlandskysten,,0,8,0
+553,10383,Olandsbu,no-service,True,Aust-Agder Turistforening,58.664702276793,8.49196265311697,387,Sørlandskysten,dnt-key,0,4,0
+594,10248,Våningshuset på Li,no-service,True,Flekkefjord og Oplands Turistforening,58.2506,6.547967,116,Sørlandskysten,special key,0,16,0
+9,101298781,Stegeløa på Li,no-service,True,Flekkefjord og Oplands Turistforening,58.250206,6.548461,119,Sørlandskysten,dnt-key,0,15,0
+466,10562,Store Torungen,no-service,True,Aust-Agder Turistforening,58.39889,8.7897,12,Sørlandskysten,,0,26,0
+12,101291037,Randvik Kystledhytte,no-service,True,Aust-Agder Turistforening,58.70866003837381,9.218231990865718,8,Sørlandskysten,special key,0,24,0
+56,101032483,Furøya Gjestehuset,no-service,True,Aust-Agder Turistforening,58.598721946039035,8.957148405398726,4,Sørlandskysten,,0,18,0
+149,101281,Gammeløya,no-service,True,DNT Sør,58.0860974,7.9840524,8,Sørlandskysten,special key,0,8,0
+86,10718795,Tjortedal,no-service,True,DNT Sør,58.0523,7.4817,87,Sørlandskysten,dnt-key,0,5,0
+142,101293,Seilerhytta i Tvedestrand,no-service,True,Aust-Agder Turistforening,58.5681813,9.016204,3,Sørlandskysten,special key,0,12,0
+13,101287877,Dåtten,no-service,True,Flekkefjord og Oplands Turistforening,58.24846895552278,6.545909069451341,5,Sørlandskysten,special key,0,7,0
+207,101126,Tømmerstø,no-service,True,DNT Sør,58.12169092,8.09318635,15,Sørlandskysten,special key,0,10,0
+390,10739,Reindalseter,staffed,True,DNT Sunnmøre,62.1871694929022,7.57831700386485,703,Tafjordfjella og Reinheimen,dnt-key,76,0,58
+609,10228,Torsbu,self-service,True,DNT Oslo og Omegn,62.1241588004332,7.84828394507612,1345,Tafjordfjella og Reinheimen,dnt-key,0,0,14
+388,10741,Kaldhusseter selvbetjent,self-service,True,DNT Sunnmøre,62.173019,7.42896,605,Tafjordfjella og Reinheimen,dnt-key,0,0,30
+481,10544,Danskehytta,self-service,True,DNT Sunnmøre,62.1051772402285,7.52833923932374,1450,Tafjordfjella og Reinheimen,unlocked,0,0,26
+82,10866658,Kaldhusseter utleiehytte,no-service,True,DNT Sunnmøre,62.1727938,7.4291999,602,Tafjordfjella og Reinheimen,special key,0,33,0
+479,10546,Pyttbua,self-service,True,DNT Sunnmøre,62.212726019234,7.79858669554683,1158,Tafjordfjella og Reinheimen,unlocked,0,0,51
+476,10549,Vakkerstøylen,self-service,True,DNT Sunnmøre,62.2686322652274,7.83169117326046,871,Tafjordfjella og Reinheimen,unlocked,0,0,24
+273,101012,Jakobselet,no-service,True,DNT Sunnmøre,62.18838967386026,7.577038692743116,705,Tafjordfjella og Reinheimen,dnt-key,0,7,0
+473,10552,Veltdalshytta,self-service,True,DNT Sunnmøre,62.159378,7.720627,1184,Tafjordfjella og Reinheimen,unlocked,0,0,51
+482,10543,Tjønnebu,no-service,True,DNT Sunnmøre,62.3209833684591,7.66774646750388,982,Tafjordfjella og Reinheimen,unlocked,0,8,0
+275,101001,Krokan Turisthytte,no-service,True,DNT Telemark,59.8660586,8.4733128,748,Telemark,special key,0,8,0
+65,10973113,Skarpenæring,no-service,True,Kragerø Turlag,58.94535,9.23099995,229,Telemark,dnt-key,0,2,0
+151,101279,Himingsjå Turisthytte,no-service,True,Notodden og Hjartdal Turlag,59.5523508,8.9351393,712,Telemark,dnt-key,0,50,0
+155,101273,Øitangen,no-service,True,DNT Telemark,58.881964,9.609895,6,Telemark,special key,0,52,0
+233,101065,Gaustatoppen Turisthytte,staffed,True,DNT Telemark,59.8504151578813,8.65568677568729,1834,Telemark,,11,0,0
+431,10657,Koboltkoia,no-service,True,DNT Drammen og Omegn,59.9794,9.8656,378,Trillemarka og Holtefjell,dnt-key,0,12,0
+308,10919,Trollheimshytta,staffed,True,Trondhjems Turistforening,62.8288973155973,9.23967792366923,534,Trollheimen,dnt-key,80,0,28
+283,10966,Gjevilvasshytta,staffed,True,Trondhjems Turistforening,62.6985376226584,9.42035093862709,717,Trollheimen,dnt-key,64,10,0
+518,10463,Eiriksvollen,self-service,True,Kristiansund og Nordmøre Turistforening,62.634397,8.842302,131,Trollheimen,dnt-key,0,0,14
+342,10799,Vassendsetra,self-service,True,Trondhjems Turistforening,62.71344365752432,9.195165605494537,680,Trollheimen,dnt-key,0,0,27
+276,10975,Jøldalshytta,staffed,True,Trondhjems Turistforening,62.862465485826,9.50922528755131,740,Trollheimen,dnt-key,94,0,33
+489,10513,Bårdsgarden,self-service,True,Trondhjems Turistforening,62.6802550851663,9.15066687996331,631,Trollheimen,unlocked,0,0,20
+341,10800,Sætersetra,self-service,True,Kristiansund og Nordmøre Turistforening,62.9879972,9.0006487,320,Trollheimen,unlocked,0,0,8
+339,10802,Kårvatn,self-service,True,Trondhjems Turistforening,62.7815342220489,8.87462448641685,208,Trollheimen,unlocked,0,0,18
+298,10940,Innerdalshytta,staffed,True,Kristiansund og Nordmøre Turistforening,62.72177857100121,8.774296288349433,405,Trollheimen,dnt-key,81,0,34
+338,10803,Todalshytta,staffed,True,Kristiansund og Nordmøre Turistforening,62.8038305783249,8.73354669074088,45,Trollheimen,dnt-key,27,0,7
+330,10818,Vindølbu,self-service,True,Kristiansund og Nordmøre Turistforening,62.9215892,9.0092934,479,Trollheimen,unlocked,0,0,15
+337,10804,Vollasetra,self-service,True,Kristiansund og Nordmøre Turistforening,62.579658,9.124355,766,Trollheimen,unlocked,0,0,22
+444,10625,Annekset på Trollsvann,no-service,True,DNT Tønsberg og Omegn,59.3581,10.0314,171,Vestfoldmarka,dnt-key,0,8,0
+274,101005,Hoggerstua på Lindsverkseter,no-service,True,DNT Tønsberg og Omegn,59.3888645968212,10.0399339494394,331,Vestfoldmarka,special key,0,11,0
+198,101138,Heisetra,no-service,True,DNT Sandefjord,59.27191834691848,10.014927244048721,103,Vestfoldmarka,special key,0,25,0
+81,10876250,Hundehotellet på Trollsvann,no-service,True,DNT Tønsberg og Omegn,59.35802847309023,10.031222411899932,172,Vestfoldmarka,special key,0,2,0
+448,10606,Hannevoldhytta,no-service,True,DNT Tønsberg og Omegn,59.38336,10.02643,341,Vestfoldmarka,special key,0,4,0
+138,101298,Slirabu,no-service,True,DNT Sandefjord,59.2715193854516,10.0157302583472,99,Vestfoldmarka,special key,0,9,0
+411,10704,Nonsbu,no-service,True,Troms Turlag,69.7048293018902,19.3155485690148,279,Ytre Troms,,0,6,0
+412,10703,Blåkollkoia,no-service,True,Troms Turlag,69.6809337240665,19.2087846410212,240,Ytre Troms,dnt-key,0,9,0
+186,101187,Gammelhuset i Skipsfjorden,no-service,True,Troms Turlag,70.16872,19.80553,5,Ytre Troms,special key,0,6,0
+280,10971,Senjabu,no-service,True,Troms Turlag,69.344713427255,17.4375812109215,157,Ytre Troms,special key,0,8,0
+279,10972,Jægervasshytta,no-service,True,Troms Turlag,69.7204854747972,19.9247238835627,8,Ytre Troms,special key,0,7,0
+409,10707,Trollvassbu,no-service,True,Troms Turlag,69.7370095218372,19.4900303586616,272,Ytre Troms,dnt-key,0,16,0
+472,10553,Ringvassbu,no-service,True,Troms Turlag,69.8963653129625,19.1289208516921,394,Ytre Troms,dnt-key,0,12,0
+410,10705,Skarvassbu,no-service,True,Troms Turlag,69.63805557,19.20111111,580,Ytre Troms,dnt-key,0,11,0
+91,10315242,Arnbjørnrud,no-service,True,DNT Indre Østfold,59.49459,11.47435,262,Østfold,dnt-key,0,12,0
+161,101261,"Ravnsjøholmen med lavvo, gapahuker og dagsturhytte",no-service,True,DNT Vansjø,59.400821,11.00042,91,Østfold,dnt-key,0,0,0
+164,101244,Østtorphytta,no-service,True,DNT Nedre Glomma,59.331583,11.293,140,Østfold,dnt-key,0,20,0
+60,101023132,Frøne,no-service,True,DNT Indre Østfold,59.42486482464429,11.556526136264921,169,Østfold,dnt-key,0,14,0
+567,10351,Haukenestårnet,no-service,True,DNT Indre Østfold,59.7162631,11.7559918,333,Østfold,dnt-key,0,6,0
+39,101135046,Ertekroken,no-service,True,Tistedalen Friluftslag,59.11047247703027,11.505223522700817,189,Østfold,dnt-key,0,5,0
+382,10755,Ravnsjøhytta,no-service,True,DNT Vansjø,59.403925,11.0041778,90,Østfold,dnt-key,0,13,0
+566,10352,Budalsvika,no-service,True,Tistedalen Friluftslag,59.0522110141592,11.7372663033021,169,Østfold,dnt-key,0,15,0
