@@ -95,7 +95,14 @@ public class GenericDataService
                 return new TableEntry
                 {
                     OwningTable = tableDefinition,
-                    Values = properties.ToDictionary(column => column.Name, column => column.GetValue(entry)?.ToString() ?? string.Empty)
+                    Values = properties.ToDictionary(
+                        column => column.Name,
+                        column => column.PropertyType switch
+                        {
+                            Type t when t == typeof(DateTime) => (column.GetValue(entry) as DateTime?)?.ToString("yyyy-MM-ddTHH:mm:ss") ?? string.Empty,
+                            _ => column.GetValue(entry)?.ToString()
+                        } ?? string.Empty
+                    ),
                 };
             })
             .ToList();
