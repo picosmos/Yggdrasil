@@ -90,27 +90,29 @@ public class GenericDataService
 
         var properties = tableDefinition.EntityType.ClrType.GetProperties()!;
         var entries = NonGenericSet(tableDefinition.EntityType.ClrType).AsQueryable().OfType<object>().ToList()
-            .Select(entry =>
-            {
-                return new TableEntry
-                {
-                    OwningTable = tableDefinition,
-                    Values = properties.ToDictionary(
-                        column => column.Name,
-                        column => column.PropertyType switch
-                        {
-                            Type t when t == typeof(DateTime) => (column.GetValue(entry) as DateTime?)?.ToString("yyyy-MM-ddTHH:mm:ss") ?? string.Empty,
-                            _ => column.GetValue(entry)?.ToString()
-                        } ?? string.Empty
-                    ),
-                };
-            })
+            .Select(entry => TableEntryFromObject(entry, tableDefinition, properties))
             .ToList();
 
         return new TableDefinitionWithContent
         {
             Table = tableDefinition,
             Entries = entries
+        };
+    }
+
+    private static TableEntry TableEntryFromObject(object entry, TableDefinition tableDefinition, System.Reflection.PropertyInfo[] properties)
+    {
+        return new TableEntry
+        {
+            OwningTable = tableDefinition,
+            Values = properties.ToDictionary(
+                                column => column.Name,
+                                column => column.PropertyType switch
+                                {
+                                    Type t when t == typeof(DateTime) => (column.GetValue(entry) as DateTime?)?.ToString("yyyy-MM-ddTHH:mm:ss") ?? string.Empty,
+                                    _ => column.GetValue(entry)?.ToString()
+                                } ?? string.Empty
+                            ),
         };
     }
 
@@ -147,10 +149,6 @@ public class GenericDataService
             throw new ArgumentException("Entry not found.", nameof(value));
         }
 
-        return new TableEntry
-        {
-            OwningTable = definition,
-            Values = properties.ToDictionary(column => column.Name, column => column.GetValue(entry)?.ToString() ?? string.Empty)
-        };
+        return TableEntryFromObject(entry, definition, properties);
     }
 }

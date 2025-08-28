@@ -11,7 +11,9 @@ builder.Services.AddDbContext<MimirDbContext>(options =>
 builder.Services.RegisterOdinServices();
 builder.Services.AddScoped<TrackDatabaseService>();
 builder.Services.AddScoped<ProtegearService>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+				.AddApplicationPart(typeof(Himinbjorg.Controllers.TrackController).Assembly)
+				.AddApplicationPart(typeof(Odin.Controllers.HomeController).Assembly);
 
 var app = builder.Build();
 
