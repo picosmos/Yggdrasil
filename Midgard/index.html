@@ -87,7 +87,6 @@
 
         L.control.scale().addTo(map);
 
-        const cacheDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
         const hueShiftAfter = 4 * 60 * 60 * 1000; // 4 hours in milliseconds, the time after which the track is visually separated
         const hueShiftDegrees = 77; // degrees added to the current colour hue if the last point is more than hueShiftAfter older
 
@@ -106,41 +105,6 @@
 
             errorDiv.style.display = "block";
         }
-
-        function isCacheValid(key) {
-            const cachedData = localStorage.getItem(key);
-            if (cachedData) {
-                const { timestamp } = JSON.parse(cachedData);
-                return Date.now() - timestamp < cacheDuration;
-            }
-            return false;
-        }
-
-        function getCache(key) {
-            const cachedData = localStorage.getItem(key);
-            return cachedData ? JSON.parse(cachedData).data : null;
-        }
-
-        function setCache(key, data) {
-            const cachedData = {
-                timestamp: Date.now(),
-                data: data
-            };
-            localStorage.setItem(key, JSON.stringify(cachedData));
-        }
-
-        (function cleanCache() {
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                const cachedData = localStorage.getItem(key);
-                if (cachedData) {
-                    const { timestamp } = JSON.parse(cachedData);
-                    if (Date.now() - timestamp > cacheDuration) {
-                        localStorage.removeItem(key);
-                    }
-                }
-            });
-        })();
 
         const hueToColour = (hue/*in degrees*/) => {
             const saturation = 100;
@@ -285,11 +249,6 @@
             return response.json();
         })
             .then(data => {
-                const { name, from, to } = getParams();
-                const cacheKey = `${name}-${from}-${to}`;
-                // Cache the response for future use
-                setCache(cacheKey, data);
-
                 // Display the points on the map
                 displayPoints(data);
             })
