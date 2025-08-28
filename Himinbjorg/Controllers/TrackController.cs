@@ -1,4 +1,4 @@
-namespace Odin.Controllers;
+namespace Himinbjorg.Controllers;
 
 using Himinbjorg.Services;
 using Microsoft.AspNetCore.Mvc;
