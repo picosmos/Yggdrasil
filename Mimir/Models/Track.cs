@@ -1,7 +1,12 @@
+using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+
 namespace Mimir.Models;
 
+[Index(nameof(Secret), IsUnique = true)]
 public class Track
 {
+    [ReadOnly(true)]
     public long Id { get; set; }
 
     public long UserId { get; set; }

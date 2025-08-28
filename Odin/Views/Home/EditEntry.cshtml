@@ -1,0 +1,33 @@
+﻿@model TableEntry
+@{
+    ViewData["Title"] = "Add or edit Entry in " + Model.OwningTable.Name;
+}
+<h1>Add or edit Entry in @Model.OwningTable.Name</h1>
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div style="color:red">@Model.ErrorMessage</div>
+}
+
+<form method="post" asp-action="AddOrEdit" asp-route-table="@Model.OwningTable.Name" asp-route-id="@Model.Id">
+    <table>
+        @foreach (var column in Model.OwningTable.Columns)
+        {
+            <tr>
+                <th>@column.Name
+                    @if (column.IsReadOnly)
+                    {
+                        <span>(readonly)</span>
+                    }
+                </th>
+                <th>
+                    @{
+                        var val = Model.Values[column.Name];
+                    }
+                    <input type="@column.HtmlInputType" id="@column.Name" name="updatedValues[@column.Name]" value="@val"
+                        @(column.IsReadOnly ? "readonly" : "") />
+                </th>
+            </tr>
+        }
+    </table>
+    <button type="submit">Submit</button>
+</form>

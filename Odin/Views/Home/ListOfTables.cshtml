@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Table Index";
+}
+@model IEnumerable<TableDefinition>
+
+<h1>Table Index</h1>
+
+@foreach (var table in Model)
+{
+    <div>
+        <a asp-action="ShowTable" asp-route-table="@table.Name">@table.Name</a>
+    </div>
+}

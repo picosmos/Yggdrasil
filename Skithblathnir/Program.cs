@@ -12,6 +12,12 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+	var db = scope.ServiceProvider.GetRequiredService<MimirDbContext>();
+	db.Database.Migrate();
+}
+
 app.RegisterOdinAuth();
 app.Use(async (context, next) =>
 {
@@ -19,10 +25,11 @@ app.Use(async (context, next) =>
 	{
 		context.Request.Path = "/index.html";
 	}
+	
 	await next();
 });
+app.RegisterOdinRoutes();
 app.UseStaticFiles();
 app.UseRouting();
-app.RegisterOdinRoutes();
 
 app.Run();

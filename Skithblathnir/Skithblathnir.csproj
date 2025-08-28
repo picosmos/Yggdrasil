@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,22 +27,8 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="CopyOdinStaticFiles" AfterTargets="Build;Publish">
-    <Copy SourceFiles="@(Content)"
-      DestinationFiles="@(Content->'$(OutDir)wwwroot/%(RecursiveDir)%(Filename)%(Extension)')"
-      SkipUnchangedFiles="true" />
+  <Target Name="CopyMidgardStaticFiles" AfterTargets="Build;Publish">
+    <Copy SourceFiles="@(Content)" DestinationFiles="@(Content->'$(OutDir)wwwroot/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
-  <!-- Make static files from Odin accessible at runtime -->
-  <ItemGroup>
-    <Content Include="../Odin/wwwroot/odin/**/*" CopyToOutputDirectory="PreserveNewest">
-      <Link>wwwroot/odin/%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Content>
-  </ItemGroup>
-
-  <Target Name="CopyOdinStaticFiles" AfterTargets="Build;Publish">
-    <Copy SourceFiles="@(Content)"
-      DestinationFiles="@(Content->'$(OutDir)wwwroot/odin/%(RecursiveDir)%(Filename)%(Extension)')"
-      SkipUnchangedFiles="true" />
-  </Target>
 </Project>

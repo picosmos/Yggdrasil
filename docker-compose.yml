@@ -2,7 +2,7 @@ services:
   yggdrasil:
     build: .
     ports:
-      - "27179:8080"
+      - "1339:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME}
@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - db_data:/app/mimir.db
+      - db_data:/data
     # Uncomment the following lines if you want to mount code for hot-reload during development
     #   - .:/app
     #   - ~/.aspnet/https:/https:ro

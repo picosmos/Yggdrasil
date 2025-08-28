@@ -22,8 +22,8 @@ namespace Odin
         public static void RegisterOdinRoutes(this WebApplication app)
         {
             app.MapControllerRoute(
-                name: "areas",
-                pattern: "odin/{controller=Home}/{action=Index}/{id?}");
+                name: "Odin",
+                pattern: "Odin/{controller=Home}/{action=Index}/{table?}/{id?}");
         }
     }
 }
