@@ -18,7 +18,7 @@ namespace Himinbjorg.Services
 
         internal Track? GetTrackById(string id)
         {
-            var track = _dbContext.Tracks.Include(x => x.User).Where(t => t.Secret == id).FirstOrDefault();
+            var track = _dbContext.Tracks.Include(x => x.User).Where(t => t.Secret.ToLower() == id.ToLower()).FirstOrDefault();
             return track;
         }
     }
