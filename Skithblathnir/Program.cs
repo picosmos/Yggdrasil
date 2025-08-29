@@ -6,37 +6,37 @@ using Himinbjorg.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MimirDbContext>(options =>
-	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.RegisterOdinServices();
 builder.Services.AddScoped<TrackDatabaseService>();
 builder.Services.AddScoped<ProtegearService>();
 builder.Services.AddScoped<CachedRequestService>();
 builder.Services.AddControllersWithViews()
-				.AddApplicationPart(typeof(Himinbjorg.Controllers.TrackController).Assembly)
-				.AddApplicationPart(typeof(Odin.Controllers.HomeController).Assembly);
+                .AddApplicationPart(typeof(Himinbjorg.Controllers.TrackController).Assembly)
+                .AddApplicationPart(typeof(Odin.Controllers.HomeController).Assembly);
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-	var db = scope.ServiceProvider.GetRequiredService<MimirDbContext>();
-	db.Database.Migrate();
+    var db = scope.ServiceProvider.GetRequiredService<MimirDbContext>();
+    db.Database.Migrate();
 }
 
 app.RegisterOdinAuth();
 app.Use(async (context, next) =>
 {
-	if (context.Request.Path == "/")
-	{
-		context.Request.Path = "/index.html";
-	}
+    if (context.Request.Path == "/")
+    {
+        context.Request.Path = "/index.html";
+    }
 
-	await next();
+    await next();
 });
 app.MapControllerRoute(
-	name: "Himinbjorg",
-	pattern: "Himinbjorg/{controller=Track}/{action=Index}/{id?}");
+    name: "Himinbjorg",
+    pattern: "Himinbjorg/{controller=Track}/{action=Index}/{id?}");
 app.RegisterOdinRoutes();
 app.UseStaticFiles();
 app.UseRouting();

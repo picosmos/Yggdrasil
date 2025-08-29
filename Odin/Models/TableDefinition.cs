@@ -1,7 +1,6 @@
 
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System.Linq;
 using System.Reflection;
 namespace Odin.Models;
 
@@ -19,7 +18,7 @@ public class TableDefinition
         {
             Name = entityType.Name,
             EntityType = entityType,
-            Columns = entityType.GetProperties().Select(propertyInfo => new ColumnDefinition
+            Columns = [.. entityType.GetProperties().Select(propertyInfo => new ColumnDefinition
             {
                 Name = propertyInfo.Name,
                 IsReadOnly = propertyInfo.PropertyInfo?.GetCustomAttribute<ReadOnlyAttribute>() != null,
@@ -32,7 +31,7 @@ public class TableDefinition
                     Type t when t == typeof(bool) => "checkbox",
                     _ => "text"
                 },
-            }).ToList()
+            })]
         };
     }
 }

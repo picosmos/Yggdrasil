@@ -1,11 +1,11 @@
-namespace Mimir;
 
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Mimir.Models;
 
-public class MimirDbContext : DbContext
+namespace Mimir;
+
+public class MimirDbContext(DbContextOptions<MimirDbContext> options) : DbContext(options)
 {
-    public MimirDbContext(DbContextOptions<MimirDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
 

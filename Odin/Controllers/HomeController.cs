@@ -1,33 +1,26 @@
-namespace Odin.Controllers;
-
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Odin.Models;
 using Odin.Services;
 
-public class HomeController : Controller
-{
-    private readonly ILogger<HomeController> _logger;
-    private readonly GenericDataService _genericDataService;
+namespace Odin.Controllers;
 
-    public HomeController(ILogger<HomeController> logger, GenericDataService genericDataService)
-    {
-        _logger = logger;
-        _genericDataService = genericDataService;
-    }
+public class HomeController(ILogger<HomeController> logger, GenericDataService genericDataService) : Controller
+{
+    private readonly ILogger<HomeController> _logger = logger;
+    private readonly GenericDataService _genericDataService = genericDataService;
 
     [HttpGet]
     public IActionResult Index()
     {
-        var definitions = _genericDataService.GetAllTableDefinitions();
-        return View("ListOfTables", definitions);
+        var definitions = this._genericDataService.GetAllTableDefinitions();
+        return this.View("ListOfTables", definitions);
     }
 
     [HttpGet]
     public IActionResult ShowTable(string table)
     {
-        var definition = _genericDataService.GetTableDefinitionWithContent(table);
-        return View("TableContent", definition);
+        var definition = this._genericDataService.GetTableDefinitionWithContent(table);
+        return this.View("TableContent", definition);
     }
 
     [HttpGet]
@@ -41,7 +34,7 @@ public class HomeController : Controller
         TableEntry model;
         if ((id ?? 0) == 0)
         {
-            var tableDefinition = _genericDataService.GetTableDefinition(table);
+            var tableDefinition = this._genericDataService.GetTableDefinition(table);
             model = new TableEntry
             {
                 OwningTable = tableDefinition,
@@ -50,10 +43,10 @@ public class HomeController : Controller
         }
         else
         {
-            model = _genericDataService.GetTableEntry(table, id!.Value);
+            model = this._genericDataService.GetTableEntry(table, id!.Value);
         }
 
-        return View("EditEntry", model);
+        return this.View("EditEntry", model);
     }
 
     [HttpPost]
@@ -64,25 +57,25 @@ public class HomeController : Controller
             return this.BadRequest("Table name is required.");
         }
 
-        _logger.LogInformation($"AddOrEdit for table {table} for id {id}. Received values: {string.Join(",", updatedValues.Select(x => x.Key + "=" + x.Value))}");
+        this._logger.LogInformation("AddOrEdit for table {Table} for id {Id}. Received values: {Values}", table, id, updatedValues);
 
         try
         {
-            _genericDataService.AddOrUpdate(table, id, updatedValues);
+            this._genericDataService.AddOrUpdate(table, id, updatedValues);
         }
         catch (Exception ex)
         {
-            var tableDefinition = _genericDataService.GetTableDefinition(table);
+            var tableDefinition = this._genericDataService.GetTableDefinition(table);
             var model = new TableEntry
             {
                 OwningTable = tableDefinition,
                 Values = updatedValues,
+                ErrorMessage = "An exception occurred: " + ex.ToString()
             };
-            model.ErrorMessage = "An exception occurred: " + ex.ToString();
-            return View("EditEntry", model);
+            return this.View("EditEntry", model);
         }
 
-        return RedirectToAction("ShowTable", new { table });
+        return this.RedirectToAction("ShowTable", new { table });
     }
 
     [HttpPost]
@@ -93,8 +86,8 @@ public class HomeController : Controller
             return this.BadRequest("Table name is required.");
         }
 
-        _genericDataService.DeleteEntry(table, id);
+        this._genericDataService.DeleteEntry(table, id);
 
-        return RedirectToAction("ShowTable", new { table });
+        return this.RedirectToAction("ShowTable", new { table });
     }
 }

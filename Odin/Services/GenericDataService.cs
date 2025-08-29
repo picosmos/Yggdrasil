@@ -1,27 +1,20 @@
-namespace Odin.Services;
-
-using System;
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Mimir;
-using Mimir.Models;
 using Odin.Models;
 
-public class GenericDataService
-{
-    ILogger<GenericDataService> _logger;
-    MimirDbContext _mimirDbContext;
+namespace Odin.Services;
 
-    public GenericDataService(ILogger<GenericDataService> logger, MimirDbContext mimirDbContext)
-    {
-        _logger = logger;
-        _mimirDbContext = mimirDbContext;
-    }
+public class GenericDataService(ILogger<GenericDataService> logger, MimirDbContext mimirDbContext)
+{
+    private readonly ILogger<GenericDataService> _logger = logger;
+    private readonly MimirDbContext _mimirDbContext = mimirDbContext;
 
     public void AddOrUpdate(string table, long? id, Dictionary<string, string> updatedValues)
     {
         var tableDefinition = this.GetTableDefinition(table);
 
-        var entry = _mimirDbContext.Find(tableDefinition.EntityType.ClrType, id);
+        var entry = this._mimirDbContext.Find(tableDefinition.EntityType.ClrType, id);
         if (entry == null)
         {
             entry = Activator.CreateInstance(tableDefinition.EntityType.ClrType);
@@ -30,13 +23,13 @@ public class GenericDataService
                 throw new InvalidOperationException("Could not create instance of entity type.");
             }
 
-            _mimirDbContext.Add(entry);
+            this._mimirDbContext.Add(entry);
         }
 
 
         foreach (var kvp in updatedValues)
         {
-            var column = tableDefinition.Columns.FirstOrDefault(c => c.Name.Equals(kvp.Key, StringComparison.InvariantCultureIgnoreCase));
+            var column = tableDefinition.Columns.FirstOrDefault(c => c.Name.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase));
             if (column == null || column.IsReadOnly)
             {
                 continue;
@@ -51,45 +44,35 @@ public class GenericDataService
             object? targetValue = null;
             try
             {
-                targetValue = Convert.ChangeType(kvp.Value, property.PropertyType);
+                targetValue = Convert.ChangeType(kvp.Value, property.PropertyType, CultureInfo.InvariantCulture);
             }
             catch { }
             property?.SetValue(entry, targetValue);
         }
 
-        _mimirDbContext.SaveChanges();
+        this._mimirDbContext.SaveChanges();
     }
 
     public void DeleteEntry(string table, long id)
     {
         var tableDefinition = this.GetTableDefinition(table);
-        var entry = _mimirDbContext.Find(tableDefinition.EntityType.ClrType, id);
-        if (entry == null)
-        {
-            throw new InvalidOperationException("Entry not found.");
-        }
+        var entry = this._mimirDbContext.Find(tableDefinition.EntityType.ClrType, id) ?? throw new InvalidOperationException("Entry not found.");
 
-        _mimirDbContext.Remove(entry);
-        _mimirDbContext.SaveChanges();
+        this._mimirDbContext.Remove(entry);
+        this._mimirDbContext.SaveChanges();
     }
 
     internal IReadOnlyList<TableDefinition> GetAllTableDefinitions()
     {
-        return _mimirDbContext.Model.GetEntityTypes()
-            .Select(TableDefinition.FromEntityType)
-            .ToList();
+        return [.. this._mimirDbContext.Model.GetEntityTypes().Select(TableDefinition.FromEntityType)];
     }
 
     internal TableDefinitionWithContent GetTableDefinitionWithContent(string? table)
     {
-        var tableDefinition = this.GetTableDefinition(table);
-        if (tableDefinition == null)
-        {
-            throw new ArgumentException("Table not found.", nameof(table));
-        }
+        var tableDefinition = this.GetTableDefinition(table) ?? throw new ArgumentException("Table not found.", nameof(table));
 
         var properties = tableDefinition.EntityType.ClrType.GetProperties()!;
-        var entries = NonGenericSet(tableDefinition.EntityType.ClrType).AsQueryable().OfType<object>().ToList()
+        var entries = this.NonGenericSet(tableDefinition.EntityType.ClrType).AsQueryable().OfType<object>().ToList()
             .Select(entry => TableEntryFromObject(entry, tableDefinition, properties))
             .ToList();
 
@@ -109,7 +92,7 @@ public class GenericDataService
                                 column => column.Name,
                                 column => column.PropertyType switch
                                 {
-                                    Type t when t == typeof(DateTime) => (column.GetValue(entry) as DateTime?)?.ToString("yyyy-MM-ddTHH:mm:ss") ?? string.Empty,
+                                    Type t when t == typeof(DateTime) => (column.GetValue(entry) as DateTime?)?.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) ?? string.Empty,
                                     _ => column.GetValue(entry)?.ToString()
                                 } ?? string.Empty
                             ),
@@ -118,9 +101,9 @@ public class GenericDataService
 
     public TableDefinition GetTableDefinition(string? table)
     {
-        this._logger.LogInformation($"Getting table definition for {table}");
-        return _mimirDbContext.Model.GetEntityTypes()
-            .Where(entityType => entityType.Name.Equals(table, StringComparison.InvariantCultureIgnoreCase) || entityType.Name.Equals(table + "s", StringComparison.InvariantCultureIgnoreCase))
+        this._logger.LogInformation("Getting table definition for {Table}", table);
+        return this._mimirDbContext.Model.GetEntityTypes()
+            .Where(entityType => entityType.Name.Equals(table, StringComparison.OrdinalIgnoreCase) || entityType.Name.Equals(table + "s", StringComparison.OrdinalIgnoreCase))
             .Select(TableDefinition.FromEntityType)
             .First();
     }
@@ -135,19 +118,11 @@ public class GenericDataService
 
     internal TableEntry GetTableEntry(string table, long? value)
     {
-        this._logger.LogInformation($"Getting table entry for table {table} with ID={value}");
-        var definition = this.GetTableDefinition(table);
-        if (definition == null)
-        {
-            throw new ArgumentException("Table not found.", nameof(table));
-        }
+        this._logger.LogInformation("Getting table entry for table {Table} with ID={Id}", table, value);
+        var definition = this.GetTableDefinition(table) ?? throw new ArgumentException("Table not found.", nameof(table));
 
         var properties = definition.EntityType.ClrType.GetProperties()!;
-        var entry = NonGenericSet(definition.EntityType.ClrType).AsQueryable().OfType<object>().ToList().FirstOrDefault(x => (long?)definition.EntityType.FindPrimaryKey()!.Properties.Select(p => p.PropertyInfo).First()?.GetValue(x) == value);
-        if (entry == null)
-        {
-            throw new ArgumentException("Entry not found.", nameof(value));
-        }
+        var entry = this.NonGenericSet(definition.EntityType.ClrType).AsQueryable().OfType<object>().ToList().FirstOrDefault(x => (long?)definition.EntityType.FindPrimaryKey()!.Properties.Select(p => p.PropertyInfo).First()?.GetValue(x) == value) ?? throw new ArgumentException("Entry not found.", nameof(value));
 
         return TableEntryFromObject(entry, definition, properties);
     }

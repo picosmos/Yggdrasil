@@ -2,27 +2,26 @@
 
 #nullable disable
 
-namespace Mimir.Mimir.Migrations
+namespace Mimir.Mimir.Migrations;
+
+/// <inheritdoc />
+public partial class AddUniqueIndexToTrackSecret : Migration
 {
     /// <inheritdoc />
-    public partial class AddUniqueIndexToTrackSecret : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateIndex(
-                name: "IX_Tracks_Secret",
-                table: "Tracks",
-                column: "Secret",
-                unique: true);
-        }
+        migrationBuilder.CreateIndex(
+            name: "IX_Tracks_Secret",
+            table: "Tracks",
+            column: "Secret",
+            unique: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropIndex(
-                name: "IX_Tracks_Secret",
-                table: "Tracks");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropIndex(
+            name: "IX_Tracks_Secret",
+            table: "Tracks");
     }
 }

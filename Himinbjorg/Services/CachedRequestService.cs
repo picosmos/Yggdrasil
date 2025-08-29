@@ -10,14 +10,14 @@ public class CachedRequestService(ILogger<CachedRequestService> logger, MimirDbC
 
     public CachedRequest? GetCached(string url)
     {
-        var cached = _mimirDbContext.CachedRequests.FirstOrDefault(cr => cr.RequestUrl == url);
+        var cached = this._mimirDbContext.CachedRequests.FirstOrDefault(cr => cr.RequestUrl == url);
         if (cached != null)
         {
-            _logger.LogInformation($"Cache hit for URL: {url}");
+            this._logger.LogInformation("Cache hit for URL: {Url}", url);
         }
         else
         {
-            _logger.LogInformation($"Cache miss for URL: {url}");
+            this._logger.LogInformation("Cache miss for URL: {Url}", url);
         }
         return cached;
     }
@@ -31,8 +31,8 @@ public class CachedRequestService(ILogger<CachedRequestService> logger, MimirDbC
             LastRequestTimestamp = DateTime.UtcNow
         };
 
-        _mimirDbContext.CachedRequests.Add(cachedRequest);
-        _mimirDbContext.SaveChanges();
-        _logger.LogInformation($"Added response to cache for URL: {url}");
+        this._mimirDbContext.CachedRequests.Add(cachedRequest);
+        this._mimirDbContext.SaveChanges();
+        this._logger.LogInformation("Added response to cache for URL: {Url}", url);
     }
 }

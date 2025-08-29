@@ -3,23 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Mimir;
 using Mimir.Models;
 
-namespace Himinbjorg.Services
+namespace Himinbjorg.Services;
+
+public class TrackDatabaseService(ILogger<TrackDatabaseService> logger, MimirDbContext dbContext)
 {
-    public class TrackDatabaseService
+    private readonly ILogger<TrackDatabaseService> _logger = logger;
+    private readonly MimirDbContext _dbContext = dbContext;
+
+    internal Track? GetTrackById(string id)
     {
-        private readonly ILogger<TrackDatabaseService> _logger;
-        private readonly MimirDbContext _dbContext;
-
-        public TrackDatabaseService(ILogger<TrackDatabaseService> logger, MimirDbContext dbContext)
-        {
-            _logger = logger;
-            _dbContext = dbContext;
-        }
-
-        internal Track? GetTrackById(string id)
-        {
-            var track = _dbContext.Tracks.Include(x => x.User).Where(t => t.Secret.ToLower() == id.ToLower()).FirstOrDefault();
-            return track;
-        }
+        var track = this._dbContext.Tracks.Include(x => x.User).Where(t => t.Secret.ToLower() == id.ToLower()).FirstOrDefault();
+        return track;
     }
 }
