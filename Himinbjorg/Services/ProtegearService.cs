@@ -28,7 +28,7 @@ public class ProtegearService(ILogger<ProtegearService> logger, CachedRequestSer
             var response = this.httpClient.SendAsync(request).Result;
             response.EnsureSuccessStatusCode();
             var json = response.Content.ReadAsStringAsync().Result;
-            this._cachedRequestService.AddToCache(apiUrl, json);
+            this._cachedRequestService.AddOrReplaceCacheEntry(apiUrl, json);
             return json;
         }
         catch (Exception ex)

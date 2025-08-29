@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Mimir;
 using Mimir.Models;
 
@@ -22,8 +23,10 @@ public class CachedRequestService(ILogger<CachedRequestService> logger, MimirDbC
         return cached;
     }
 
-    public void AddToCache(string url, string response)
+    public void AddOrReplaceCacheEntry(string url, string response)
     {
+        this._mimirDbContext.CachedRequests.Where(x => x.RequestUrl == url).ExecuteDelete();
+
         var cachedRequest = new CachedRequest
         {
             RequestUrl = url,
