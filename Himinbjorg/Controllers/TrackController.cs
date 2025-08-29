@@ -9,7 +9,10 @@ public class TrackController : Controller
     private readonly TrackDatabaseService _trackService;
     private readonly ProtegearService _protegearService;
 
-    public TrackController(ILogger<TrackController> logger, TrackDatabaseService trackService, ProtegearService protegearService)
+    public TrackController(
+        ILogger<TrackController> logger,
+        TrackDatabaseService trackService,
+        ProtegearService protegearService)
     {
         _logger = logger;
         _trackService = trackService;

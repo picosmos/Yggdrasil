@@ -26,3 +26,10 @@
   The project it self.
 
 When running through docker, the default port is 1339. Yggdrasil is the 1 world tree, having 3 roots and 3 levels with 9 worlds.
+
+# Todo
+
+- editorconfig
+- fixing routing/areas
+- UI for changing settings like color
+- do not reload map on tile source change

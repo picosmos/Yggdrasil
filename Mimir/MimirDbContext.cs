@@ -10,4 +10,6 @@ public class MimirDbContext : DbContext
     public DbSet<User> Users { get; set; }
 
     public DbSet<Track> Tracks { get; set; }
+
+    public DbSet<CachedRequest> CachedRequests { get; set; }
 }
