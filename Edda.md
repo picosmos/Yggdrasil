@@ -73,4 +73,3 @@ Thus, the three roots of Yggdrasil are not merely symbolic, but serve as the liv
 - User interface for adjusting settings such as colour
 - Prevent map reload upon tile source change
 - Script to facilitate initial setup
-- Purge obsolete cache entries via `IHostedService`

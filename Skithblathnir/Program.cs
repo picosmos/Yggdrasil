@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Mimir;
 using Odin;
 using Himinbjorg.Services;
+using Himinbjorg.HostedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.RegisterOdinServices();
 builder.Services.AddScoped<TrackDatabaseService>();
 builder.Services.AddScoped<ProtegearService>();
 builder.Services.AddScoped<CachedRequestService>();
+builder.Services.AddHostedService<PurgeCacheHostedService>();
 builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(Himinbjorg.Controllers.TrackController).Assembly)
                 .AddApplicationPart(typeof(Odin.Controllers.HomeController).Assembly);
