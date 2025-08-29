@@ -20,8 +20,23 @@
         <tr>
             @foreach (var column in Model.Table.Columns)
             {
-                var content = @row.Values[column.Name];
-                <td>@content</td>
+                var content = row.Values[column.Name]?.ToString();
+                if (!string.IsNullOrEmpty(content) && content.Length > 200)
+                {
+                    var truncated = content.Substring(0, 200);
+                    var cellId = $"cell_{row.Id}_{column.Name}";
+                    <td>
+                        <span id="@cellId-short">@truncated...</span>
+                        <span id="@cellId-full" style="display:none;">@content</span>
+                        <button type="button"
+                            onclick="document.getElementById('@cellId-short').style.display='none';document.getElementById('@cellId-full').style.display='inline';this.style.display='none';">Show
+                            everything</button>
+                    </td>
+                }
+                else
+                {
+                    <td>@content</td>
+                }
             }
             <td>
                 <a asp-action="AddOrEdit" asp-route-table="@Model.Table.Name" asp-route-id="@row.Id">Edit</a>&nbsp;

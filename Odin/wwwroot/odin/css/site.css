@@ -25,8 +25,18 @@ body {
   margin-bottom: 60px;
 }
 
+nav li {
+  list-style: none;
+}
+
+table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
 table tr td,
 table tr th {
   border: 1px solid #555555;
   padding: 2px 5px;
+  vertical-align: top;
 }
