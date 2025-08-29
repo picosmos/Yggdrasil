@@ -1,7 +1,9 @@
 using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mimir.Models;
 
+[Index(nameof(Name), IsUnique = true)]
 public class User
 {
     [ReadOnly(true)]
