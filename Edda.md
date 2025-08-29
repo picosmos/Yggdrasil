@@ -29,7 +29,5 @@ When running through docker, the default port is 1339. Yggdrasil is the 1 world 
 
 # Todo
 
-- editorconfig
-- fixing routing/areas
 - UI for changing settings like color
 - do not reload map on tile source change

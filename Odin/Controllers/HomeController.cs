@@ -4,6 +4,7 @@ using Odin.Services;
 
 namespace Odin.Controllers;
 
+[Area("Odin")]
 public class HomeController(ILogger<HomeController> logger, GenericDataService genericDataService) : Controller
 {
     private readonly ILogger<HomeController> _logger = logger;

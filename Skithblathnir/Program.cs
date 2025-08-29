@@ -36,7 +36,7 @@ app.Use(async (context, next) =>
 });
 app.MapControllerRoute(
     name: "Himinbjorg",
-    pattern: "Himinbjorg/{controller=Track}/{action=Index}/{id?}");
+    pattern: "{area}/{controller=Track}/{action=Index}/{id?}");
 app.RegisterOdinRoutes();
 app.UseStaticFiles();
 app.UseRouting();

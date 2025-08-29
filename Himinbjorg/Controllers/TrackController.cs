@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Himinbjorg.Controllers;
 
+[Area("Himinbjorg")]
 public class TrackController(
     TrackDatabaseService trackService,
     ProtegearService protegearService) : Controller

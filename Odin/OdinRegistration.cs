@@ -13,8 +13,8 @@ public static class OdinRegistration
     {
         app.UseWhen(context => context.Request.Path.StartsWithSegments("/odin"), appBuilder =>
         {
-            appBuilder.UseMiddleware<Odin.Middleware.LoggingMiddleware>();
-            appBuilder.UseMiddleware<Odin.Middleware.BasicAuthMiddleware>();
+            appBuilder.UseMiddleware<Middleware.LoggingMiddleware>();
+            appBuilder.UseMiddleware<Middleware.BasicAuthMiddleware>();
         });
     }
 
@@ -22,6 +22,6 @@ public static class OdinRegistration
     {
         app.MapControllerRoute(
             name: "Odin",
-            pattern: "Odin/{controller=Home}/{action=Index}/{table?}/{id?}");
+            pattern: "{area}/{controller=Home}/{action=Index}/{table?}/{id?}");
     }
 }
