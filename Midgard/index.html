@@ -55,9 +55,10 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const srcMap = {
-            "osm": "{s}.tile.openstreetmap.org",
-            "opentpo": "{s}.tile.opentopomap.org",
-            "tracetrack": "tile.tracetrack.com/topo__"
+            "kartverket": "cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png",
+            "osm": "{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "opentpo": "{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+            "tracetrack": "tile.tracetrack.com/topo__/{z}/{x}/{y}.png"
         };
 
         const reverseSrcMap = Object.fromEntries(
@@ -72,10 +73,10 @@
             let osmTilSource = params.get("src");
 
             if (!osmTilSource) {
-                osmTilSource = "{s}.tile.openstreetmap.org";
-            } else {
-                osmTilSource = srcMap[osmTilSource] || decodeURIComponent(osmTilSource);
+                osmTilSource = "kartverket";
             }
+
+            osmTilSource = srcMap[osmTilSource] || decodeURIComponent(osmTilSource);
 
             return { id, colour, osmTilSource };
         }
@@ -83,9 +84,12 @@
         const map = L.map("map").setView([60.39299, 5.32415], 12);
 
         const { osmTilSource } = getParams();
-        L.tileLayer("https://" + osmTilSource + "/{z}/{x}/{y}.png", {
-            maxZoom: 19
-        }).addTo(map);
+        let options = { maxZoom: 19 };
+        if (osmTilSource == "kartverket") {
+            options.attribution = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
+            options.maxZoom = 18;
+        }
+        L.tileLayer("https://" + osmTilSource, options).addTo(map);
 
         L.control.scale().addTo(map);
 
@@ -301,7 +305,7 @@
 
         function getCurrentSrcKey() {
             const params = new URLSearchParams(window.location.search);
-            const raw = params.get("src") || "osm";
+            const raw = params.get("src") || "kartverket";
             const decoded = srcMap[raw] || decodeURIComponent(raw);
             return reverseSrcMap[decoded] || null;
         }
@@ -316,6 +320,7 @@
     </script>
 
     <div class="segmented-menu">
+        <button data-src="kartverket" onclick="changeUrlParameter('src', 'kartverket')">Kartverket</button>
         <button data-src="osm" onclick="changeUrlParameter('src', 'osm')">Classic</button>
         <button data-src="opentpo" onclick="changeUrlParameter('src', 'opentpo')">Topo</button>
         <button data-src="tracetrack" onclick="changeUrlParameter('src', 'tracetrack')">TracesTrack</button>
