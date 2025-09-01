@@ -61,6 +61,13 @@
             "tracetrack": "tile.tracetrack.com/topo__/{z}/{x}/{y}.png"
         };
 
+        const srcOptions = {
+            "kartverket": { maxZoom: 18, attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' },
+            "osm": { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>' },
+            "opentpo": { maxZoom: 19, attribution: '&copy; <a href="https://opentopomap.org/">OpenTopoMap</a> (CC-BY-SA)' },
+            "tracetrack": { maxZoom: 19, attribution: '&copy; <a href="https://tracetrack.com/">TracesTrack</a>' }
+        }
+
         const reverseSrcMap = Object.fromEntries(
             Object.entries(srcMap).map(([k, v]) => [v, k])
         );
@@ -84,11 +91,8 @@
         const map = L.map("map").setView([60.39299, 5.32415], 12);
 
         const { osmTilSource } = getParams();
-        let options = { maxZoom: 19 };
-        if (osmTilSource == "kartverket") {
-            options.attribution = '&copy; <a href="http://www.kartverket.no/">Kartverket</a>';
-            options.maxZoom = 18;
-        }
+        let key = Object.keys(srcMap).filter(x => srcMap[x] == osmTilSource)[0];
+        let options = (key ? srcOptions[key] : null) || { maxZoom: 19, attribution: "&copy; map creators" };
         L.tileLayer("https://" + osmTilSource, options).addTo(map);
 
         L.control.scale().addTo(map);
