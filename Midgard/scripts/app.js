@@ -1,94 +1,10 @@
-import * as Leaflet from "../node_modules/leaflet/dist/leaflet-src.esm.js";
-import { makeColorScale } from "./colors.js";
-import { normalizeMapSource, readUrlState, writeUrlState } from "./url.js";
-import { prepareTrackPoints } from "./trackpoints.js";
-import { distanceBetweenPoints } from "./coordinates.js";
-
-const L = Leaflet;
-
-const DEFAULT_BASE_COLOR = "#0077cc";
-const HEX_COLOR_PATTERN = /^#([0-9a-f]{6})$/i;
-
-const COOKIE_KEYS = {
-	menuOpen: "midgard_menu_open",
-	shenanigansColor: "midgard_shenanigans_color"
-};
-
-const COOKIE_TTL_DAYS = 30;
-
-const setCookie = (key, value, days = COOKIE_TTL_DAYS) => {
-	if (typeof document === "undefined") {
-		return;
-	}
-
-	const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-	const encoded = encodeURIComponent(value ?? "");
-	document.cookie = `${key}=${encoded}; expires=${expires.toUTCString()}; path=/`;
-};
-
-const readCookie = (key) => {
-	if (typeof document === "undefined") {
-		return null;
-	}
-
-	const cookies = document.cookie.split(";").map((entry) => entry.trim());
-	for (const cookie of cookies) {
-		if (!cookie) {
-			continue;
-		}
-		const [name, ...rest] = cookie.split("=");
-		if (name === key) {
-			return decodeURIComponent(rest.join("="));
-		}
-	}
-
-	return null;
-};
-
-const sanitizeHexColor = (value, fallback = DEFAULT_BASE_COLOR) => {
-	if (typeof value !== "string") {
-		return fallback;
-	}
-
-	let next = value.trim();
-	if (!next) {
-		return fallback;
-	}
-
-	if (!next.startsWith("#")) {
-		next = `#${next}`;
-	}
-
-	if (!HEX_COLOR_PATTERN.test(next)) {
-		return fallback;
-	}
-
-	return next.toLowerCase();
-};
-
-const readColorToken = () => {
-	if (typeof window === "undefined") {
-		return "";
-	}
-
-	const params = new URLSearchParams(window.location.search);
-	return params.get("color") ?? "";
-};
-
-const writeColorToken = (token) => {
-	if (typeof window === "undefined") {
-		return;
-	}
-
-	const url = new URL(window.location.href);
-	if (!token) {
-		url.searchParams.delete("color");
-	} else {
-		url.searchParams.set("color", token);
-	}
-
-	window.history.replaceState({}, "", url.toString());
-};
+import { normalizeMapSource } from "./url.js";
+import { MapManager } from "./mapManager.js";
+import { ColorManager } from "./colorManager.js";
+import { StateManager } from "./stateManager.js";
+import { createSliderHandler, formatBreakHours, formatSegmentLength, createSegmentLengthHandler } from "./sliders.js";
+import { renderTrack } from "./trackRenderer.js";
+import { renderHuts, loadHuts } from "./hutRenderer.js";
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -138,10 +54,8 @@ const DEFAULT_VIEW = {
 const DEFAULT_STATE = {
 	id: "",
 	mapSource: MAP_SOURCES[0].key,
-	colorEnabled: false,
 	breakHours: 4,
 	speedCutoff: 130,
-	baseColor: DEFAULT_BASE_COLOR,
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
 	zoom: DEFAULT_VIEW.zoom,
@@ -156,72 +70,50 @@ const urlStateOptions = {
 	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts"]
 };
 
-const getInitialState = () => {
-	const state = readUrlState(DEFAULT_STATE, urlStateOptions);
-	const colorToken = readColorToken();
-	const menuCookie = readCookie(COOKIE_KEYS.menuOpen);
-	const shenanigansColorCookie = readCookie(COOKIE_KEYS.shenanigansColor);
-
-	let colorEnabled = false;
-	let baseColor = DEFAULT_BASE_COLOR;
-	let menuOpen = false;
-
-	if (typeof menuCookie === "string" && menuCookie.length > 0) {
-		menuOpen = menuCookie === "1";
-	}
-
-	if (typeof colorToken === "string" && colorToken) {
-		if (colorToken.toLowerCase() === "shenanigans") {
-			colorEnabled = true;
-			const sanitized = sanitizeHexColor(shenanigansColorCookie ?? DEFAULT_BASE_COLOR, DEFAULT_BASE_COLOR);
-			baseColor = sanitized;
-		} else {
-			baseColor = sanitizeHexColor(colorToken, DEFAULT_BASE_COLOR);
-		}
-	} else if (typeof shenanigansColorCookie === "string" && shenanigansColorCookie) {
-		baseColor = sanitizeHexColor(shenanigansColorCookie, DEFAULT_BASE_COLOR);
-	}
-
-	return {
-		...DEFAULT_STATE,
-		...state,
-		mapSource: normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource),
-		baseColor,
-		colorEnabled,
-		menuOpen
-	};
-};
-
 const createAppState = () => {
-	const initialState = getInitialState();
+	const stateManager = new StateManager(DEFAULT_STATE, urlStateOptions);
+	const { state, menuOpen } = stateManager.initialize();
+
+	const colorManager = new ColorManager();
+	const { colorEnabled, baseColor } = colorManager.initialize();
+
+	const mapManager = new MapManager();
+
+	const breakHoursSlider = createSliderHandler(BREAK_HOUR_VALUES);
+	const speedCutoffSlider = createSliderHandler(SPEED_CUTOFF_VALUES);
+	const segmentLengthHandler = createSegmentLengthHandler(MIN_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM, SEGMENT_LENGTH_SLIDER_STEPS);
+
 	const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
 	const initialViewFromUrl = Boolean(searchParams && (searchParams.has("lat") || searchParams.has("lng") || searchParams.has("zoom")));
 
 	return {
 		mapSources: MAP_SOURCES,
-		menuOpen: initialState.menuOpen,
+		menuOpen,
 		hasInitializedMenu: false,
-		state: initialState,
-		pendingId: "",
+		state,
+		pendingId: state.id,
 		hasError: false,
 		errorMessage: "",
 		mapStatus: "",
-		mapInstance: null,
-		tileLayer: null,
-		trackLayer: null,
-		pointLayer: null,
-		hutLayer: null,
-		hutData: [],
+		colorEnabled,
+		baseColor,
 		trackEvents: [],
+		hutData: [],
 		breakHourOptions: BREAK_HOUR_VALUES,
 		speedCutoffOptions: SPEED_CUTOFF_VALUES,
 		segmentLengthSliderSteps: SEGMENT_LENGTH_SLIDER_STEPS,
-		isProgrammaticMove: false,
 		hasUserAdjustedView: initialViewFromUrl,
 		initialViewFromUrl,
 
+		// Managers
+		stateManager,
+		colorManager,
+		mapManager,
+		breakHoursSlider,
+		speedCutoffSlider,
+		segmentLengthHandler,
+
 		init() {
-			this.menuOpen = this.state.menuOpen;
 			this.pendingId = this.state.id;
 			if (!this.state.id) {
 				this.mapStatus = "Enter an ID to load a track.";
@@ -231,41 +123,29 @@ const createAppState = () => {
 			}
 			this.setupMap();
 			this.$nextTick(() => {
-				if (this.mapInstance) {
-					this.mapInstance.invalidateSize();
-				}
+				this.mapManager.invalidateSize();
 				this.hasInitializedMenu = true;
 			});
 			if (this.state.id) {
 				this.loadTrack();
 			}
-			this.loadHuts();
-			setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
+			this.loadHutsAsync();
+		},
+
+		setMenuOpen(isOpen) {
+			this.menuOpen = isOpen;
+			this.stateManager.persistMenuState(isOpen);
+			this.$nextTick(() => this.mapManager.invalidateSize());
 		},
 
 		toggleMenu() {
-			this.menuOpen = !this.menuOpen;
-			this.state.menuOpen = this.menuOpen;
-			setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
-			this.$nextTick(() => {
-				if (this.mapInstance) {
-					this.mapInstance.invalidateSize();
-				}
-			});
+			this.setMenuOpen(!this.menuOpen);
 		},
 
 		ensureMenuOpen() {
-			if (this.menuOpen) {
-				return;
+			if (!this.menuOpen) {
+				this.setMenuOpen(true);
 			}
-			this.menuOpen = true;
-			this.state.menuOpen = true;
-			setCookie(COOKIE_KEYS.menuOpen, "1");
-			this.$nextTick(() => {
-				if (this.mapInstance) {
-					this.mapInstance.invalidateSize();
-				}
-			});
 		},
 
 		applyId() {
@@ -281,270 +161,114 @@ const createAppState = () => {
 			this.hasError = false;
 			this.errorMessage = "";
 			this.state.id = trimmed;
-			writeUrlState(DEFAULT_STATE, { id: trimmed }, urlStateOptions);
+			this.stateManager.persistState({ id: trimmed });
 			this.loadTrack();
 		},
 
-		withProgrammaticMove(action) {
-			this.isProgrammaticMove = true;
-			try {
-				action();
-			} finally {
-				setTimeout(() => {
-					this.isProgrammaticMove = false;
-				}, 0);
-			}
-		},
-
 		setupMap() {
-			if (this.mapInstance) {
-				return;
-			}
-
 			const container = this.$refs.map;
 			if (!container) {
 				return;
 			}
 
-			if (container._leaflet_id) {
-				container._leaflet_id = null;
-			}
+			this.mapManager.initialize(container, this.state, MAP_SOURCES, this.state.mapSource);
 
-			const mapOptions = {
-				center: [this.state.lat, this.state.lng],
-				zoom: this.state.zoom,
-				zoomControl: true
-			};
-
-			this.mapInstance = L.map(container, mapOptions);
-			this.updateTileLayer();
 			if (!this.initialViewFromUrl) {
-				this.restoreView();
+				this.mapManager.setView(this.state.lat, this.state.lng, this.state.zoom);
 			}
 
-			this.trackLayer = L.layerGroup().addTo(this.mapInstance);
-			this.pointLayer = L.layerGroup().addTo(this.mapInstance);
+			this.mapManager.onViewChange = (viewData) => {
+				this.state.lat = viewData.lat;
+				this.state.lng = viewData.lng;
+				this.state.zoom = viewData.zoom;
+				this.stateManager.persistState({ 
+					lat: viewData.lat, 
+					lng: viewData.lng, 
+					zoom: viewData.zoom 
+				});
 
-			// cspell:ignore: moveend
-			this.mapInstance.on("moveend", () => {
-				const center = this.mapInstance.getCenter();
-				const zoom = this.mapInstance.getZoom();
-				this.state.lat = Number(center.lat.toFixed(5));
-				this.state.lng = Number(center.lng.toFixed(5));
-				this.state.zoom = zoom;
-				writeUrlState(DEFAULT_STATE, { lat: this.state.lat, lng: this.state.lng, zoom }, urlStateOptions);
-
-				if (!this.isProgrammaticMove) {
+				if (!viewData.isProgrammatic) {
 					this.hasUserAdjustedView = true;
 				}
-			});
-
-			L.control.scale().addTo(this.mapInstance);
-		},
-
-		updateTileLayer() {
-			const source = MAP_SOURCES.find((item) => item.key === this.state.mapSource) ?? MAP_SOURCES[0];
-
-			if (this.tileLayer) {
-				this.tileLayer.remove();
-			}
-
-			this.tileLayer = L.tileLayer(source.url, source.options);
-			this.tileLayer.addTo(this.mapInstance);
-			this.restoreView();
-			writeUrlState(DEFAULT_STATE, { mapSource: source.key }, urlStateOptions);
+			};
 		},
 
 		updateMapSource() {
 			this.state.mapSource = normalizeMapSource(this.state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource);
-			this.updateTileLayer();
-			this.renderTrack();
-		},
-
-		restoreView() {
-			if (!this.mapInstance) {
-				return;
-			}
-
-			this.withProgrammaticMove(() => {
-				this.mapInstance.setView([this.state.lat, this.state.lng], this.state.zoom, { animate: false });
-			});
+			this.mapManager.updateTileLayer(MAP_SOURCES, this.state.mapSource);
+			this.stateManager.persistState({ mapSource: this.state.mapSource });
+			this.renderTrackData();
 		},
 
 		setColorMode(enabled) {
 			const next = Boolean(enabled);
-			if (this.state.colorEnabled !== next) {
-				this.state.colorEnabled = next;
-				this.syncColorParam();
-				this.renderTrack();
-				return;
-			}
-
-			this.syncColorParam();
-		},
-
-		syncColorParam() {
-			if (this.state.colorEnabled) {
-				setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-				writeColorToken("shenanigans");
-				return;
-			}
-
-			this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
-			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-			if (this.state.baseColor === DEFAULT_BASE_COLOR) {
-				writeColorToken("");
-			} else {
-				writeColorToken(this.state.baseColor);
+			if (this.colorEnabled !== next) {
+				this.colorEnabled = next;
+				this.colorManager.setColorMode(next, this.baseColor);
+				this.renderTrackData();
 			}
 		},
 
 		setShowHuts(value) {
 			const flag = Boolean(value);
 			if (this.state.showHuts === flag) {
-				this.updateHutVisibility();
 				return;
 			}
 
 			this.state.showHuts = flag;
-			writeUrlState(DEFAULT_STATE, { showHuts: flag ? "true" : "false" }, urlStateOptions);
+			this.stateManager.persistState({ showHuts: flag ? "true" : "false" });
 			this.updateHutVisibility();
 		},
 
 		updateHutVisibility() {
-			if (!this.mapInstance || !this.hutLayer) {
-				return;
-			}
-
 			if (this.state.showHuts) {
-				if (!this.mapInstance.hasLayer(this.hutLayer)) {
-					this.hutLayer.addTo(this.mapInstance);
-				}
+				this.mapManager.showHutLayer();
 			} else {
-				this.hutLayer.remove();
+				this.mapManager.hideHutLayer();
 			}
 		},
 
 		breakHoursIndex() {
-			const current = this.state.breakHours;
-			const matchIndex = this.breakHourOptions.findIndex((value) => value === current);
-			if (matchIndex !== -1) {
-				return matchIndex;
-			}
-
-			let nearestIndex = 0;
-			let smallestDiff = Number.POSITIVE_INFINITY;
-			this.breakHourOptions.forEach((value, index) => {
-				const diff = Math.abs(value - current);
-				if (diff < smallestDiff) {
-					smallestDiff = diff;
-					nearestIndex = index;
-				}
-			});
-			return nearestIndex;
+			return this.breakHoursSlider.getIndex(this.state.breakHours);
 		},
 
 		setBreakHours(rawIndex) {
-			const index = Math.round(Number(rawIndex));
-			const clampedIndex = Math.min(Math.max(index, 0), this.breakHourOptions.length - 1);
-			this.state.breakHours = this.breakHourOptions[clampedIndex];
-			this.updateBreakHours();
+			this.state.breakHours = this.breakHoursSlider.setValue(rawIndex);
+			this.stateManager.persistState({ breakHours: this.state.breakHours });
+			this.renderTrackData();
 		},
 
 		formatBreakHours(hours) {
-			const totalMinutes = Math.round(hours * 60);
-			const wholeHours = Math.floor(totalMinutes / 60);
-			const remainingMinutes = totalMinutes % 60;
-			const parts = [];
-			if (wholeHours > 0) {
-				parts.push(`${wholeHours}h`);
-			}
-			if (remainingMinutes > 0) {
-				parts.push(`${remainingMinutes}min`);
-			}
-			if (parts.length === 0) {
-				return "0 min";
-			}
-			return parts.join(" ");
+			return formatBreakHours(hours);
 		},
 
 		speedCutoffIndex() {
-			const current = this.state.speedCutoff;
-			const matchIndex = this.speedCutoffOptions.findIndex((value) => value === current);
-			if (matchIndex !== -1) {
-				return matchIndex;
-			}
-
-			let nearestIndex = 0;
-			let smallestDiff = Number.POSITIVE_INFINITY;
-			this.speedCutoffOptions.forEach((value, index) => {
-				const diff = Math.abs(value - current);
-				if (diff < smallestDiff) {
-					smallestDiff = diff;
-					nearestIndex = index;
-				}
-			});
-			return nearestIndex;
+			return this.speedCutoffSlider.getIndex(this.state.speedCutoff);
 		},
 
 		setSpeedCutoff(rawIndex) {
-			const index = Math.round(Number(rawIndex));
-			const clampedIndex = Math.min(Math.max(index, 0), this.speedCutoffOptions.length - 1);
-			this.state.speedCutoff = this.speedCutoffOptions[clampedIndex];
-			this.updateSpeedCutoff();
+			this.state.speedCutoff = this.speedCutoffSlider.setValue(rawIndex);
+			this.stateManager.persistState({ speedCutoff: this.state.speedCutoff });
+			this.renderTrackData();
 		},
 
 		segmentLengthSliderValue() {
-			const value = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM));
-			const ratio = Math.log(value / MIN_SEGMENT_LENGTH_KM) / Math.log(MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM);
-			if (!Number.isFinite(ratio)) {
-				return this.segmentLengthSliderSteps;
-			}
-			return Math.round(ratio * this.segmentLengthSliderSteps);
+			return this.segmentLengthHandler.getSliderValue(this.state.segmentLengthLimitKm);
 		},
 
 		setSegmentLengthLimit(rawValue) {
-			const sliderPosition = Math.max(0, Math.min(Number(rawValue), this.segmentLengthSliderSteps));
-			const ratio = sliderPosition / this.segmentLengthSliderSteps;
-			const rawKm = MIN_SEGMENT_LENGTH_KM * ((MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM) ** ratio);
-			const roundedKm = Math.round(rawKm * 10) / 10;
-			const constrainedKm = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(roundedKm, MAX_SEGMENT_LENGTH_KM));
-			this.state.segmentLengthLimitKm = constrainedKm;
-			writeUrlState(DEFAULT_STATE, { segmentLengthLimitKm: this.state.segmentLengthLimitKm }, urlStateOptions);
-			this.renderTrack();
+			this.state.segmentLengthLimitKm = this.segmentLengthHandler.getKmValue(rawValue);
+			this.stateManager.persistState({ segmentLengthLimitKm: this.state.segmentLengthLimitKm });
+			this.renderTrackData();
 		},
 
 		formatSegmentLength(kilometers) {
-			const km = Number(kilometers);
-			if (!Number.isFinite(km)) {
-				return "n/a";
-			}
-			if (km >= 10) {
-				return `${Math.round(km)}km`;
-			}
-			if (km >= 3) {
-				return `${km.toFixed(1)}km`;
-			}
-			return `${Math.round(km * 1000)}m`;
-		},
-
-		updateBreakHours() {
-			writeUrlState(DEFAULT_STATE, { breakHours: this.state.breakHours }, urlStateOptions);
-			this.renderTrack();
-		},
-
-		updateSpeedCutoff() {
-			writeUrlState(DEFAULT_STATE, { speedCutoff: this.state.speedCutoff }, urlStateOptions);
-			this.renderTrack();
+			return formatSegmentLength(kilometers);
 		},
 
 		updateBaseColor() {
-			this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
-			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-			if (!this.state.colorEnabled) {
-				this.syncColorParam();
-			}
-			this.renderTrack();
+			this.colorManager.updateBaseColor(this.baseColor);
+			this.renderTrackData();
 		},
 
 		loadTrack() {
@@ -582,214 +306,41 @@ const createAppState = () => {
 					}
 					this.hasUserAdjustedView = this.initialViewFromUrl;
 					this.initialViewFromUrl = false;
-					this.renderTrack();
+					this.renderTrackData();
 				})
 				.catch((error) => {
 					this.hasError = true;
 					this.errorMessage = error.message || "Something went wrong.";
 					this.mapStatus = this.errorMessage;
 					this.ensureMenuOpen();
-					this.clearTrackLayers();
+					this.mapManager.clearTrackLayers();
 				});
 		},
 
-		clearTrackLayers() {
-			if (this.trackLayer) {
-				this.trackLayer.clearLayers();
-			}
-			if (this.pointLayer) {
-				this.pointLayer.clearLayers();
-			}
-		},
-
-		renderTrack() {
-			if (!this.mapInstance) {
-				return;
-			}
-
-			this.clearTrackLayers();
-
-			if (!Array.isArray(this.trackEvents) || this.trackEvents.length === 0) {
-				return;
-			}
-
-			const points = prepareTrackPoints(this.trackEvents, { breakHours: this.state.breakHours });
-			if (points.length === 0) {
-				this.mapStatus = "No usable points.";
-				return;
-			}
-
-			const colorScale = makeColorScale(this.state.colorEnabled, this.state.baseColor);
-			const groups = Object.values(points.reduce((acc, point) => {
-				const key = point.groupId ?? 0;
-				if (!acc[key]) {
-					acc[key] = [];
-				}
-				acc[key].push(point);
-				return acc;
-			}, {}));
-
-			const speedLimit = this.state.speedCutoff;
-			const segmentLimitKm = Math.max(
-				MIN_SEGMENT_LENGTH_KM,
-				Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM)
-			);
-			const maxSegmentLengthMeters = segmentLimitKm * 1000;
-
-			groups.forEach((group) => {
-				const groupColor = colorScale(group[0].groupId ?? 0);
-				const segments = [];
-				let currentSegment = [];
-				let previousPoint = null;
-
-				group.forEach((point) => {
-					const withinSpeedLimit = !Number.isFinite(point.speed) || point.speed < speedLimit;
-					if (!withinSpeedLimit) {
-						if (currentSegment.length > 1) {
-							segments.push(currentSegment);
-						}
-						currentSegment = [];
-						previousPoint = null;
-						return;
-					}
-
-					if (!previousPoint) {
-						currentSegment = [point];
-						previousPoint = point;
-						return;
-					}
-
-					const separation = distanceBetweenPoints(previousPoint, point);
-					if (separation > maxSegmentLengthMeters) {
-						if (currentSegment.length > 1) {
-							segments.push(currentSegment);
-						}
-						currentSegment = [point];
-						previousPoint = point;
-						return;
-					}
-
-					currentSegment.push(point);
-					previousPoint = point;
-				});
-
-				if (currentSegment.length > 1) {
-					segments.push(currentSegment);
-				}
-
-				segments.forEach((segment) => {
-					if (segment.length < 2) {
-						return;
-					}
-					const polyline = L.polyline(segment.map((point) => [point.lat, point.lon]), {
-						color: groupColor,
-						weight: 3,
-						opacity: 0.7
-					});
-					polyline.addTo(this.trackLayer);
-				});
-
-				group.forEach((point) => {
-					const colorValue = colorScale(point.groupId ?? 0);
-					const marker = L.circleMarker([point.lat, point.lon], {
-						radius: Number.isFinite(point.speed) && point.speed >= speedLimit ? 3 : 5,
-						color: colorValue,
-						fillColor: colorValue,
-						fillOpacity: 0.85,
-						weight: 1
-					});
-
-					const timeFormatter = new Intl.DateTimeFormat("en-GB", {
-						year: "numeric",
-						month: "2-digit",
-						day: "2-digit",
-						hour: "2-digit",
-						minute: "2-digit",
-						second: "2-digit",
-						timeZone: "Europe/Oslo",
-						timeZoneName: "short"
-					});
-
-					const formattedTime = timeFormatter.format(point.time).replace(",", "");
-					const speedInfo = Number.isFinite(point.speed) ? `${point.speed.toFixed(1)}km/h` : "n/a";
-					marker.bindPopup(`Time: ${formattedTime}<br />Speed: ${speedInfo}`);
-					marker.addTo(this.pointLayer);
-				});
+		renderTrackData() {
+			const result = renderTrack(this.mapManager, this.trackEvents, {
+				breakHours: this.state.breakHours,
+				speedCutoff: this.state.speedCutoff,
+				segmentLengthLimitKm: this.state.segmentLengthLimitKm,
+				minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
+				maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
+				colorEnabled: this.colorEnabled,
+				baseColor: this.baseColor,
+				hasUserAdjustedView: this.hasUserAdjustedView
 			});
 
-			const bounds = L.latLngBounds(points.map((point) => [point.lat, point.lon]));
-			if (bounds.isValid() && !this.hasUserAdjustedView) {
-				this.withProgrammaticMove(() => {
-					this.mapInstance.fitBounds(bounds.pad(0.1));
-				});
-			}
-
-			this.mapStatus = `${points.length} points rendered.`;
+			this.mapStatus = result.message;
 		},
 
-		loadHuts() {
-			fetch("./data/hytter.csv")
-				.then((response) => {
-					if (!response.ok) {
-						throw new Error("Could not fetch hut info");
-					}
-					return response.text();
-				})
-				.then((csvText) => {
-					if (!window.Papa) {
-						throw new Error("PapaParse not available");
-					}
-					const parsed = window.Papa.parse(csvText, {
-						header: true,
-						skipEmptyLines: true
-					});
-					this.hutData = Array.isArray(parsed.data) ? parsed.data : [];
-					this.renderHuts(this.hutData);
-				})
-				.catch((error) => {
-					console.warn(error.message);
-				});
-		},
-
-		renderHuts(huts) {
-			if (!this.mapInstance || !Array.isArray(huts)) {
-				return;
-			}
-
-			if (this.hutLayer) {
-				this.hutLayer.remove();
-			}
-
-			this.hutLayer = L.layerGroup();
-
-			const icon = L.icon({
-				iconUrl: "./assets/hut.png",
-				iconSize: [20, 20],
-				iconAnchor: [10, 10],
-				popupAnchor: [0, -10]
-			});
-
-			huts.forEach((hut) => {
-				const lat = Number(hut.latitude);
-				const lon = Number(hut.longitude);
-				if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-					return;
+		async loadHutsAsync() {
+			try {
+				this.hutData = await loadHuts("./data/hytter.csv");
+				renderHuts(this.mapManager, this.hutData, "./assets/hut.png");
+				if (this.state.showHuts) {
+					this.mapManager.showHutLayer();
 				}
-
-				L.marker([lat, lon], { icon })
-					.bindPopup(`
-					<strong>${hut.name ?? "Unknown hut"}</strong><br />
-					Owner: ${hut.ownername ?? "n/a"}<br />
-					Height: ${hut.height ?? "-"} m<br />
-					Type: ${hut.serviceLevel ?? "-"}${hut.dntKey && hut.dntKey !== "unlocked" ? ` (${hut.dntKey})` : ""}<br />
-					Area: ${hut.areaName ?? "-"}<br />
-					${lat.toFixed(5)}, ${lon.toFixed(5)}
-				`)
-					.addTo(this.hutLayer);
-			});
-
-			if (this.state.showHuts) {
-				this.hutLayer.addTo(this.mapInstance);
+			} catch (error) {
+				console.warn(error.message);
 			}
 		}
 	};
