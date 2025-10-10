@@ -124,7 +124,7 @@ const MAP_SOURCES = [
 	{
 		key: "tracetrack",
 		label: "TracesTrack",
-		url: "https://tile.tracetrack.com/topo__/{z}/{x}/{y}.png",
+		url: "https://tile.tracestrack.com/topo__/{z}/{x}/{y}.webp?key=93c82c5a9cfbfe0b23d580ec3b4752ed",
 		options: { maxZoom: 19, attribution: '&copy; <a href="https://tracetrack.com/">TracesTrack</a>' }
 	}
 ];
@@ -297,13 +297,26 @@ const createAppState = () => {
 	},
 
 	setupMap() {
+		if (this.mapInstance) {
+			return;
+		}
+
+		const container = this.$refs.map;
+		if (!container) {
+			return;
+		}
+
+		if (container._leaflet_id) {
+			container._leaflet_id = null;
+		}
+
 		const mapOptions = {
 			center: [this.state.lat, this.state.lng],
 			zoom: this.state.zoom,
 			zoomControl: true
 		};
 
-		this.mapInstance = L.map(this.$refs.map, mapOptions);
+		this.mapInstance = L.map(container, mapOptions);
 		this.updateTileLayer();
 		if (!this.initialViewFromUrl) {
 			this.restoreView();
