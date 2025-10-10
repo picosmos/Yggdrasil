@@ -174,6 +174,11 @@ const createAppState = () => {
 		this.menuOpen = true;
 		this.pendingId = this.state.id;
 		this.setupMap();
+		this.$nextTick(() => {
+			if (this.mapInstance) {
+				this.mapInstance.invalidateSize();
+			}
+		});
 		if (this.state.id) {
 			this.loadTrack();
 		} else {
@@ -184,6 +189,11 @@ const createAppState = () => {
 
 	toggleMenu() {
 		this.menuOpen = !this.menuOpen;
+		this.$nextTick(() => {
+			if (this.mapInstance) {
+				this.mapInstance.invalidateSize();
+			}
+		});
 	},
 
 	applyId() {

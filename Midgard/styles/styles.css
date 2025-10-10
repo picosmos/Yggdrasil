@@ -1,3 +1,37 @@
+.app-layout.app-layout--map-full {
+    grid-template-columns: 1fr;
+}
+
+.settings.settings--overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: clamp(280px, 70vw, 360px);
+    background: rgba(255, 255, 255, 0.97);
+    border-right: 1px solid rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(6px);
+}
+
+.settings:not(.is-open) .settings__content {
+    pointer-events: none;
+}
+
+.settings.is-open .settings__content {
+    pointer-events: auto;
+}
+
+.settings:not(.is-open) .menu-toggle {
+    right: -52px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 6px rgba(15, 23, 42, 0.16);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.settings:not(.is-open) .menu-toggle:hover,
+.settings:not(.is-open) .menu-toggle:focus {
+    background: rgba(241, 245, 249, 0.95);
+}
 * {
     box-sizing: border-box;
 }
@@ -10,12 +44,14 @@ body {
     font-family: "Inter", "Segoe UI", Roboto, sans-serif;
     color: #1f2933;
     background-color: #f5f7fa;
+    max-height: 100vh;
+    overflow: hidden;
 }
 
 .app-layout {
     display: grid;
     grid-template-columns: minmax(280px, 360px) 1fr;
-    height: 100%;
+    height: 100vh;
 }
 
 .settings {
@@ -29,7 +65,7 @@ body {
 }
 
 .settings:not(.is-open) {
-    transform: translateX(calc(-100% + 52px));
+    transform: translateX(-100%);
     box-shadow: none;
 }
 
@@ -242,12 +278,11 @@ input[type="color"][disabled] {
 
 .map-wrapper {
     position: relative;
-    height: 100%;
 }
 
 #map {
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
 }
 
 #error {
@@ -298,9 +333,5 @@ input[type="color"][disabled] {
         left: 0;
         bottom: 0;
         width: clamp(280px, 70vw, 360px);
-    }
-
-    .map-wrapper {
-        height: 100vh;
     }
 }
