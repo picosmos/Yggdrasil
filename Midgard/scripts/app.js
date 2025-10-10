@@ -224,8 +224,13 @@ const createAppState = () => {
 		});
 	},
 
-	toggleColoring() {
-		const nextColor = this.state.colorEnabled ? "shenanigans" : "";
+	setColorMode(enabled) {
+		if (this.state.colorEnabled === enabled) {
+			return;
+		}
+
+		this.state.colorEnabled = enabled;
+		const nextColor = enabled ? "shenanigans" : "";
 		this.state.colorParam = nextColor;
 		writeUrlState(DEFAULT_STATE, { colorParam: nextColor }, urlStateOptions);
 		this.renderTrack();

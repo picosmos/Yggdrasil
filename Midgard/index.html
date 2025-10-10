@@ -50,12 +50,29 @@
                             </select>
                         </label>
 
-                        <label class="field checkbox">
-                            <input type="checkbox" x-model="state.colorEnabled" @change="toggleColoring">
-                            <span>Enable colour shenanigans</span>
-                        </label>
+                        <div class="field">
+                            <span>Colour mode</span>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="colorMode" :checked="!state.colorEnabled" @change="setColorMode(false)">
+                                    <span>Single colour</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="colorMode" :checked="state.colorEnabled" @change="setColorMode(true)">
+                                    <span>Shenanigans</span>
+                                    <div class="radio-option__picker">
+                                        <input type="color"
+                                            x-model="state.baseColor"
+                                            @input="updateBaseColor"
+                                            :disabled="!state.colorEnabled"
+                                            :title="state.colorEnabled ? 'Pick the base colour' : 'Enable colour shenanigans to choose a colour'">
+                                    </div>
+                                </label>
+                            </div>
+                            <p class="field__hint" x-show="!state.colorEnabled">Enable colour shenanigans to choose a base colour.</p>
+                        </div>
 
-                        <div class="field" :class="{ 'field--disabled': !state.colorEnabled }">
+                        <div class="field field--nested" :class="{ 'field--disabled': !state.colorEnabled }">
                             <label>
                                 <span>New colour after</span>
                                 <div class="slider-line">
@@ -84,11 +101,6 @@
                                 </div>
                             </label>
                         </div>
-
-                        <label class="field">
-                            <span>Colour</span>
-                            <input type="color" x-model="state.baseColor" @input="updateBaseColor" :disabled="state.colorEnabled">
-                        </label>
                     </div>
                 </template>
             </div>
