@@ -17,10 +17,7 @@
 
 <body x-data="app()" x-init="init()">
     <div class="app-layout">
-    <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--no-animate': !hasInitializedMenu }">
-            <button class="menu-toggle" type="button" @click="toggleMenu" aria-label="Toggle settings">
-                ☰
-            </button>
+        <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--no-animate': !hasInitializedMenu }">
             <div class="settings__content">
                 <h1>Miðgarðr</h1>
                 <template x-if="!state.id">
@@ -134,6 +131,10 @@
                 <img src="./assets/guillaume.png" alt="Rubberduck" />
             </div>
         </main>
+        
+        <button class="menu-toggle" type="button" @click="toggleMenu" aria-label="Toggle settings">
+            ☰
+        </button>
     </div>
 
     <template x-if="state.id">
