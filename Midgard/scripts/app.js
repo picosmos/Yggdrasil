@@ -2,12 +2,25 @@ import * as Leaflet from "../node_modules/leaflet/dist/leaflet-src.esm.js";
 import { makeColorScale } from "./colors.js";
 import { normalizeMapSource, parseBooleanToken, readUrlState, writeUrlState } from "./url.js";
 import { prepareTrackPoints } from "./trackpoints.js";
+import { distanceBetweenPoints } from "./coordinates.js";
 
 const L = Leaflet;
 // Ensure backwards compatibility for any scripts expecting a global Leaflet instance.
 if (typeof window !== "undefined" && !window.L) {
 	window.L = L;
 }
+
+const BREAK_HOUR_VALUES = [
+	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
+	...Array.from({ length: 21 }, (_, index) => 4 + index),
+	...Array.from({ length: 8 }, (_, index) => 30 + index * 6)
+];
+
+const SPEED_CUTOFF_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 50, 80, 100, 130];
+
+const MIN_SEGMENT_LENGTH_KM = 0.1;
+const MAX_SEGMENT_LENGTH_KM = 50;
+const SEGMENT_LENGTH_SLIDER_STEPS = 120;
 
 const MAP_SOURCES = [
 	{
@@ -47,17 +60,18 @@ const DEFAULT_STATE = {
 	mapSource: MAP_SOURCES[0].key,
 	colorEnabled: false,
 	breakHours: 4,
-	speedCutoff: 120,
+	speedCutoff: 130,
 	baseColor: "#0077cc",
 	colorParam: "",
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
-	zoom: DEFAULT_VIEW.zoom
+	zoom: DEFAULT_VIEW.zoom,
+	segmentLengthLimitKm: MAX_SEGMENT_LENGTH_KM
 };
 
 const urlStateOptions = {
 	alias: { mapSource: "src", colorParam: "color" },
-	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom"],
+	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
 	tokenParsers: {
 		colorEnabled: (params, fallback) => {
 			const token = params.get("color") ?? params.get("colour");
@@ -66,7 +80,7 @@ const urlStateOptions = {
 		colorParam: (params) => params.get("color") ?? params.get("colour") ?? "",
 		baseColor: (params, fallback) => params.get("baseColor") ?? params.get("baseColour") ?? fallback
 	},
-	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "baseColor", "lat", "lng", "zoom", "colorParam"]
+	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "baseColor", "lat", "lng", "zoom", "colorParam", "segmentLengthLimitKm"]
 };
 
 const getInitialState = () => {
@@ -74,20 +88,31 @@ const getInitialState = () => {
 	return { ...DEFAULT_STATE, ...state, mapSource: normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource) };
 };
 
-const createAppState = () => ({
-	mapSources: MAP_SOURCES,
-	menuOpen: true,
-	state: getInitialState(),
-	pendingId: "",
-	hasError: false,
-	errorMessage: "",
-	mapStatus: "",
-	mapInstance: null,
-	tileLayer: null,
-	trackLayer: null,
-	pointLayer: null,
-	hutLayer: null,
-	trackEvents: [],
+const createAppState = () => {
+	const initialState = getInitialState();
+	const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+	const initialViewFromUrl = Boolean(searchParams && (searchParams.has("lat") || searchParams.has("lng") || searchParams.has("zoom")));
+
+	return {
+		mapSources: MAP_SOURCES,
+		menuOpen: true,
+		state: initialState,
+		pendingId: "",
+		hasError: false,
+		errorMessage: "",
+		mapStatus: "",
+		mapInstance: null,
+		tileLayer: null,
+		trackLayer: null,
+		pointLayer: null,
+		hutLayer: null,
+		trackEvents: [],
+		breakHourOptions: BREAK_HOUR_VALUES,
+		speedCutoffOptions: SPEED_CUTOFF_VALUES,
+		segmentLengthSliderSteps: SEGMENT_LENGTH_SLIDER_STEPS,
+		isProgrammaticMove: false,
+		hasUserAdjustedView: initialViewFromUrl,
+		initialViewFromUrl,
 
 	init() {
 		this.menuOpen = true;
@@ -120,6 +145,17 @@ const createAppState = () => ({
 		this.loadTrack();
 	},
 
+	withProgrammaticMove(action) {
+		this.isProgrammaticMove = true;
+		try {
+			action();
+		} finally {
+			setTimeout(() => {
+				this.isProgrammaticMove = false;
+			}, 0);
+		}
+	},
+
 	setupMap() {
 		if (!window.L) {
 			this.errorMessage = "Leaflet failed to load.";
@@ -135,6 +171,9 @@ const createAppState = () => ({
 
 		this.mapInstance = L.map(this.$refs.map, mapOptions);
 		this.updateTileLayer();
+		if (!this.initialViewFromUrl) {
+			this.restoreView();
+		}
 
 		this.trackLayer = L.layerGroup().addTo(this.mapInstance);
 		this.pointLayer = L.layerGroup().addTo(this.mapInstance);
@@ -147,6 +186,10 @@ const createAppState = () => ({
 			this.state.lng = Number(center.lng.toFixed(5));
 			this.state.zoom = zoom;
 			writeUrlState(DEFAULT_STATE, { lat: this.state.lat, lng: this.state.lng, zoom }, urlStateOptions);
+
+			if (!this.isProgrammaticMove) {
+				this.hasUserAdjustedView = true;
+			}
 		});
 
 		L.control.scale().addTo(this.mapInstance);
@@ -161,6 +204,7 @@ const createAppState = () => ({
 
 		this.tileLayer = L.tileLayer(source.url, source.options);
 		this.tileLayer.addTo(this.mapInstance);
+		this.restoreView();
 		writeUrlState(DEFAULT_STATE, { mapSource: source.key }, urlStateOptions);
 	},
 
@@ -170,11 +214,124 @@ const createAppState = () => ({
 		this.renderTrack();
 	},
 
+	restoreView() {
+		if (!this.mapInstance) {
+			return;
+		}
+
+		this.withProgrammaticMove(() => {
+			this.mapInstance.setView([this.state.lat, this.state.lng], this.state.zoom, { animate: false });
+		});
+	},
+
 	toggleColoring() {
 		const nextColor = this.state.colorEnabled ? "shenanigans" : "";
 		this.state.colorParam = nextColor;
 		writeUrlState(DEFAULT_STATE, { colorParam: nextColor }, urlStateOptions);
 		this.renderTrack();
+	},
+
+	breakHoursIndex() {
+		const current = this.state.breakHours;
+		const matchIndex = this.breakHourOptions.findIndex((value) => value === current);
+		if (matchIndex !== -1) {
+			return matchIndex;
+		}
+
+		let nearestIndex = 0;
+		let smallestDiff = Number.POSITIVE_INFINITY;
+		this.breakHourOptions.forEach((value, index) => {
+			const diff = Math.abs(value - current);
+			if (diff < smallestDiff) {
+				smallestDiff = diff;
+				nearestIndex = index;
+			}
+		});
+		return nearestIndex;
+	},
+
+	setBreakHours(rawIndex) {
+		const index = Math.round(Number(rawIndex));
+		const clampedIndex = Math.min(Math.max(index, 0), this.breakHourOptions.length - 1);
+		this.state.breakHours = this.breakHourOptions[clampedIndex];
+		this.updateBreakHours();
+	},
+
+	formatBreakHours(hours) {
+		const totalMinutes = Math.round(hours * 60);
+		const wholeHours = Math.floor(totalMinutes / 60);
+		const remainingMinutes = totalMinutes % 60;
+		const parts = [];
+		if (wholeHours > 0) {
+			parts.push(`${wholeHours} h`);
+		}
+		if (remainingMinutes > 0) {
+			parts.push(`${remainingMinutes} min`);
+		}
+		if (parts.length === 0) {
+			return "0 min";
+		}
+		return parts.join(" ");
+	},
+
+	speedCutoffIndex() {
+		const current = this.state.speedCutoff;
+		const matchIndex = this.speedCutoffOptions.findIndex((value) => value === current);
+		if (matchIndex !== -1) {
+			return matchIndex;
+		}
+
+		let nearestIndex = 0;
+		let smallestDiff = Number.POSITIVE_INFINITY;
+		this.speedCutoffOptions.forEach((value, index) => {
+			const diff = Math.abs(value - current);
+			if (diff < smallestDiff) {
+				smallestDiff = diff;
+				nearestIndex = index;
+			}
+		});
+		return nearestIndex;
+	},
+
+	setSpeedCutoff(rawIndex) {
+		const index = Math.round(Number(rawIndex));
+		const clampedIndex = Math.min(Math.max(index, 0), this.speedCutoffOptions.length - 1);
+		this.state.speedCutoff = this.speedCutoffOptions[clampedIndex];
+		this.updateSpeedCutoff();
+	},
+
+	segmentLengthSliderValue() {
+		const value = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM));
+		const ratio = Math.log(value / MIN_SEGMENT_LENGTH_KM) / Math.log(MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM);
+		if (!Number.isFinite(ratio)) {
+			return this.segmentLengthSliderSteps;
+		}
+		return Math.round(ratio * this.segmentLengthSliderSteps);
+	},
+
+	setSegmentLengthLimit(rawValue) {
+		const sliderPosition = Math.max(0, Math.min(Number(rawValue), this.segmentLengthSliderSteps));
+		const ratio = sliderPosition / this.segmentLengthSliderSteps;
+		const rawKm = MIN_SEGMENT_LENGTH_KM * ((MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM) ** ratio);
+		const roundedKm = Math.round(rawKm * 10) / 10;
+		const constrainedKm = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(roundedKm, MAX_SEGMENT_LENGTH_KM));
+		this.state.segmentLengthLimitKm = constrainedKm;
+		writeUrlState(DEFAULT_STATE, { segmentLengthLimitKm: this.state.segmentLengthLimitKm }, urlStateOptions);
+		this.renderTrack();
+	},
+
+	formatSegmentLength(kilometres) {
+		const km = Number(kilometres);
+		if (!Number.isFinite(km)) {
+			return "n/a";
+		}
+		if (km >= 10) {
+			return `${Math.round(km)} km`;
+		}
+		if (km >= 1) {
+			return `${km.toFixed(1)} km`;
+		}
+		return `${Math.round(km * 1000)} m`;
 	},
 
 	updateBreakHours() {
@@ -223,6 +380,8 @@ const createAppState = () => ({
 				} else {
 					this.mapStatus = `${this.trackEvents.length} events loaded.`;
 				}
+				this.hasUserAdjustedView = this.initialViewFromUrl;
+				this.initialViewFromUrl = false;
 				this.renderTrack();
 			})
 			.catch((error) => {
@@ -270,25 +429,64 @@ const createAppState = () => ({
 		}, {}));
 
 		const speedLimit = this.state.speedCutoff;
+		const segmentLimitKm = Math.max(
+			MIN_SEGMENT_LENGTH_KM,
+			Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM)
+		);
+		const maxSegmentLengthMeters = segmentLimitKm * 1000;
 
 		groups.forEach((group) => {
 			const groupColor = colorScale(group[0].groupId ?? 0);
+			const segments = [];
+			let currentSegment = [];
+			let previousPoint = null;
 
-			const visibleSegments = group.filter((point) => {
-				if (!Number.isFinite(point.speed)) {
-					return true;
+			group.forEach((point) => {
+				const withinSpeedLimit = !Number.isFinite(point.speed) || point.speed < speedLimit;
+				if (!withinSpeedLimit) {
+					if (currentSegment.length > 1) {
+						segments.push(currentSegment);
+					}
+					currentSegment = [];
+					previousPoint = null;
+					return;
 				}
-				return point.speed < speedLimit;
+
+				if (!previousPoint) {
+					currentSegment = [point];
+					previousPoint = point;
+					return;
+				}
+
+				const separation = distanceBetweenPoints(previousPoint, point);
+				if (separation > maxSegmentLengthMeters) {
+					if (currentSegment.length > 1) {
+						segments.push(currentSegment);
+					}
+					currentSegment = [point];
+					previousPoint = point;
+					return;
+				}
+
+				currentSegment.push(point);
+				previousPoint = point;
 			});
 
-			if (visibleSegments.length > 1) {
-				const polyline = L.polyline(visibleSegments.map((point) => [point.lat, point.lon]), {
+			if (currentSegment.length > 1) {
+				segments.push(currentSegment);
+			}
+
+			segments.forEach((segment) => {
+				if (segment.length < 2) {
+					return;
+				}
+				const polyline = L.polyline(segment.map((point) => [point.lat, point.lon]), {
 					color: groupColor,
 					weight: 3,
 					opacity: 0.7
 				});
 				polyline.addTo(this.trackLayer);
-			}
+			});
 
 			group.forEach((point) => {
 				const colorValue = colorScale(point.groupId ?? 0);
@@ -319,8 +517,10 @@ const createAppState = () => ({
 		});
 
 		const bounds = L.latLngBounds(points.map((point) => [point.lat, point.lon]));
-		if (bounds.isValid()) {
-			this.mapInstance.fitBounds(bounds.pad(0.1));
+		if (bounds.isValid() && !this.hasUserAdjustedView) {
+			this.withProgrammaticMove(() => {
+				this.mapInstance.fitBounds(bounds.pad(0.1));
+			});
 		}
 
 		this.mapStatus = `${points.length} points rendered.`;
@@ -388,7 +588,8 @@ const createAppState = () => ({
 
 		this.hutLayer.addTo(this.mapInstance);
 	}
-});
+	};
+};
 
 document.addEventListener("alpine:init", () => {
 	if (!window.Alpine) {

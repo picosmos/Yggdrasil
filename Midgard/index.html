@@ -59,18 +59,28 @@
                             <label>
                                 <span>New colour after</span>
                                 <div class="slider-line">
-                                    <input type="range" min="1" max="48" step="1" x-model.number="state.breakHours" @input="updateBreakHours" :disabled="!state.colorEnabled" />
-                                    <output x-text="state.breakHours + ' h'"></output>
+                                    <input type="range" :min="0" :max="breakHourOptions.length - 1" :value="breakHoursIndex()" @input="setBreakHours($event.target.value)" :disabled="!state.colorEnabled" />
+                                    <output x-text="formatBreakHours(state.breakHours)"></output>
                                 </div>
                             </label>
                         </div>
 
-                        <div class="field" :class="{ 'field--disabled': !state.colorEnabled }">
+                        <div class="field">
                             <label>
-                                <span>Hide tracks from speed ≥</span>
+                                <span>Hide segments with speed over</span>
                                 <div class="slider-line">
-                                    <input type="range" min="0" max="200" step="5" x-model.number="state.speedCutoff" @input="updateSpeedCutoff" :disabled="!state.colorEnabled" />
+                                    <input type="range" :min="0" :max="speedCutoffOptions.length - 1" :value="speedCutoffIndex()" @input="setSpeedCutoff($event.target.value)" />
                                     <output x-text="state.speedCutoff + ' km/h'"></output>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                <span>Hide segment lines longer than</span>
+                                <div class="slider-line">
+                                    <input type="range" min="0" :max="segmentLengthSliderSteps" :value="segmentLengthSliderValue()" @input="setSegmentLengthLimit($event.target.value)" />
+                                    <output x-text="formatSegmentLength(state.segmentLengthLimitKm)"></output>
                                 </div>
                             </label>
                         </div>
