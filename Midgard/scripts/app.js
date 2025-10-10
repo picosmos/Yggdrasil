@@ -54,12 +54,12 @@ const DEFAULT_VIEW = {
 const DEFAULT_STATE = {
 	id: "",
 	mapSource: MAP_SOURCES[0].key,
-	breakHours: 4,
-	speedCutoff: 130,
+	breakHours: 3.0,
+	speedCutoff: 8.0,
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
 	zoom: DEFAULT_VIEW.zoom,
-	segmentLengthLimitKm: MAX_SEGMENT_LENGTH_KM,
+	segmentLengthLimitKm: 1.0,
 	showHuts: true
 };
 
