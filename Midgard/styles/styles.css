@@ -1,16 +1,51 @@
-.app-layout.app-layout--map-full {
-    grid-template-columns: 1fr;
+* {
+    box-sizing: border-box;
 }
 
-.settings.settings--overlay {
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+    color: #1f2933;
+    background-color: #f5f7fa;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.app-layout {
+    position: relative;
+    height: 100vh;
+}
+
+.settings {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     width: clamp(280px, 70vw, 360px);
     background: rgba(255, 255, 255, 0.97);
-    border-right: 1px solid rgba(15, 23, 42, 0.08);
+    border-right: 1px solid rgba(15, 23, 42, 0.12);
+    transition: transform 180ms ease;
+    display: flex;
+    flex-direction: column;
+    z-index: 1100;
     backdrop-filter: blur(6px);
+    box-shadow: 3px 0 16px rgba(15, 23, 42, 0.12);
+}
+
+.settings.settings--no-animate {
+    transition: none;
+}
+
+.settings:not(.is-open) {
+    transform: translateX(-100%);
+    box-shadow: none;
+}
+
+.settings.is-open {
+    transform: translateX(0);
 }
 
 .settings:not(.is-open) .settings__content {
@@ -31,46 +66,6 @@
 .settings:not(.is-open) .menu-toggle:hover,
 .settings:not(.is-open) .menu-toggle:focus {
     background: rgba(241, 245, 249, 0.95);
-}
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
-    color: #1f2933;
-    background-color: #f5f7fa;
-    max-height: 100vh;
-    overflow: hidden;
-}
-
-.app-layout {
-    display: grid;
-    grid-template-columns: minmax(280px, 360px) 1fr;
-    height: 100vh;
-}
-
-.settings {
-    position: relative;
-    background: #ffffff;
-    border-right: 1px solid rgba(15, 23, 42, 0.08);
-    transition: transform 180ms ease;
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-.settings:not(.is-open) {
-    transform: translateX(-100%);
-    box-shadow: none;
-}
-
-.settings.is-open {
-    box-shadow: 3px 0 16px rgba(15, 23, 42, 0.08);
 }
 
 .settings__content {
@@ -156,25 +151,56 @@ body {
     font-weight: 500;
 }
 
-.radio-group {
+
+.app-layout {
+    position: relative;
+    height: 100vh;
+}
+
+.settings {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: clamp(280px, 70vw, 360px);
+    background: rgba(255, 255, 255, 0.97);
+    border-right: 1px solid rgba(15, 23, 42, 0.1);
+    transition: transform 180ms ease;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    z-index: 1100;
+    backdrop-filter: blur(4px);
+    box-shadow: 3px 0 16px rgba(15, 23, 42, 0.12);
 }
 
-.radio-group--stacked {
-    gap: 12px;
+.settings:not(.is-open) {
+    transform: translateX(-100%);
+    box-shadow: none;
 }
 
-.radio-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+
+.settings.is-open {
+    transform: translateX(0);
 }
 
-.radio-option input[type="radio"] {
-    accent-color: #2563eb;
-    margin: 0;
+.settings:not(.is-open) .settings__content {
+    pointer-events: none;
+}
+
+.settings.is-open .settings__content {
+    pointer-events: auto;
+}
+
+.settings:not(.is-open) .menu-toggle {
+    right: -52px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 6px rgba(15, 23, 42, 0.16);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.settings:not(.is-open) .menu-toggle:hover,
+.settings:not(.is-open) .menu-toggle:focus {
+    background: rgba(241, 245, 249, 0.95);
 }
 
 .radio-option__picker {

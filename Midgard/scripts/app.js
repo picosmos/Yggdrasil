@@ -9,6 +9,42 @@ const L = Leaflet;
 const DEFAULT_BASE_COLOR = "#0077cc";
 const HEX_COLOR_PATTERN = /^#([0-9a-f]{6})$/i;
 
+const COOKIE_KEYS = {
+	menuOpen: "midgard_menu_open",
+	shenanigansColor: "midgard_shenanigans_color"
+};
+
+const COOKIE_TTL_DAYS = 30;
+
+const setCookie = (key, value, days = COOKIE_TTL_DAYS) => {
+	if (typeof document === "undefined") {
+		return;
+	}
+
+	const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+	const encoded = encodeURIComponent(value ?? "");
+	document.cookie = `${key}=${encoded}; expires=${expires.toUTCString()}; path=/`;
+};
+
+const readCookie = (key) => {
+	if (typeof document === "undefined") {
+		return null;
+	}
+
+	const cookies = document.cookie.split(";").map((entry) => entry.trim());
+	for (const cookie of cookies) {
+		if (!cookie) {
+			continue;
+		}
+		const [name, ...rest] = cookie.split("=");
+		if (name === key) {
+			return decodeURIComponent(rest.join("="));
+		}
+	}
+
+	return null;
+};
+
 const sanitizeHexColor = (value, fallback = DEFAULT_BASE_COLOR) => {
 	if (typeof value !== "string") {
 		return fallback;
@@ -123,15 +159,27 @@ const urlStateOptions = {
 const getInitialState = () => {
 	const state = readUrlState(DEFAULT_STATE, urlStateOptions);
 	const colorToken = readColorToken();
+	const menuCookie = readCookie(COOKIE_KEYS.menuOpen);
+	const shenanigansColorCookie = readCookie(COOKIE_KEYS.shenanigansColor);
+
 	let colorEnabled = false;
 	let baseColor = DEFAULT_BASE_COLOR;
+	let menuOpen = true;
+
+	if (typeof menuCookie === "string" && menuCookie.length > 0) {
+		menuOpen = menuCookie === "1";
+	}
 
 	if (typeof colorToken === "string" && colorToken) {
 		if (colorToken.toLowerCase() === "shenanigans") {
 			colorEnabled = true;
+			const sanitized = sanitizeHexColor(shenanigansColorCookie ?? DEFAULT_BASE_COLOR, DEFAULT_BASE_COLOR);
+			baseColor = sanitized;
 		} else {
 			baseColor = sanitizeHexColor(colorToken, DEFAULT_BASE_COLOR);
 		}
+	} else if (typeof shenanigansColorCookie === "string" && shenanigansColorCookie) {
+		baseColor = sanitizeHexColor(shenanigansColorCookie, DEFAULT_BASE_COLOR);
 	}
 
 	return {
@@ -139,7 +187,8 @@ const getInitialState = () => {
 		...state,
 		mapSource: normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource),
 		baseColor,
-		colorEnabled
+		colorEnabled,
+		menuOpen
 	};
 };
 
@@ -151,6 +200,7 @@ const createAppState = () => {
 	return {
 		mapSources: MAP_SOURCES,
 		menuOpen: true,
+		hasInitializedMenu: false,
 		state: initialState,
 		pendingId: "",
 		hasError: false,
@@ -171,13 +221,15 @@ const createAppState = () => {
 		initialViewFromUrl,
 
 	init() {
-		this.menuOpen = true;
+		setCookie(COOKIE_KEYS.menuOpen, this.state.menuOpen ? "1" : "0");
+		this.menuOpen = this.state.menuOpen;
 		this.pendingId = this.state.id;
 		this.setupMap();
 		this.$nextTick(() => {
 			if (this.mapInstance) {
 				this.mapInstance.invalidateSize();
 			}
+			this.hasInitializedMenu = true;
 		});
 		if (this.state.id) {
 			this.loadTrack();
@@ -189,6 +241,7 @@ const createAppState = () => {
 
 	toggleMenu() {
 		this.menuOpen = !this.menuOpen;
+		setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
 		this.$nextTick(() => {
 			if (this.mapInstance) {
 				this.mapInstance.invalidateSize();
@@ -298,11 +351,13 @@ const createAppState = () => {
 
 	syncColorParam() {
 		if (this.state.colorEnabled) {
+			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
 			writeColorToken("shenanigans");
 			return;
 		}
 
 		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+		setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
 		if (this.state.baseColor === DEFAULT_BASE_COLOR) {
 			writeColorToken("");
 		} else {
@@ -451,6 +506,7 @@ const createAppState = () => {
 
 	updateBaseColor() {
 		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+		setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
 		if (!this.state.colorEnabled) {
 			this.syncColorParam();
 		}

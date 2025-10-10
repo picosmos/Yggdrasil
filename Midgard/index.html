@@ -16,8 +16,8 @@
 </head>
 
 <body x-data="app()" x-init="init()">
-    <div class="app-layout" :class="{ 'app-layout--map-full': !menuOpen }">
-        <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--overlay': !menuOpen }">
+    <div class="app-layout">
+    <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--no-animate': !hasInitializedMenu }">
             <button class="menu-toggle" type="button" @click="toggleMenu" aria-label="Toggle settings">
                 ☰
             </button>
