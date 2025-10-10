@@ -41,6 +41,8 @@
                             <input type="text" :value="state.id" readonly />
                         </label>
 
+                        <hr/>
+
                         <label class="field">
                             <span>Base map</span>
                             <select x-model="state.mapSource" @change="updateMapSource">
@@ -50,31 +52,36 @@
                             </select>
                         </label>
 
-                        <label class="field checkbox">
-                            <input type="checkbox" :checked="state.showHuts" @change="setShowHuts($event.target.checked)">
-                            <span>Show huts</span>
-                        </label>
+                        <hr/>
 
                         <div class="field">
-                            <span>Colour mode</span>
-                            <div class="radio-group">
+                            <div class="radio-group radio-group--stacked">
                                 <label class="radio-option">
                                     <input type="radio" name="colorMode" :checked="!state.colorEnabled" @change="setColorMode(false)">
                                     <span>Single colour</span>
                                 </label>
+                            </div>
+                        </div>
+
+                        <div class="field field--nested color-picker-field" :class="{ 'color-picker-field--inactive': state.colorEnabled }">
+                            <label class="color-picker-field__label">
+                                <span>Base colour</span>
+                                <input class="color-picker-field__input"
+                                    type="color"
+                                    x-model="state.baseColor"
+                                    @input="updateBaseColor"
+                                    :disabled="state.colorEnabled"
+                                    :title="state.colorEnabled ? 'Shenanigans cycles colours around this base colour' : 'Applies to every segment while Shenanigans is off'">
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <div class="radio-group radio-group--stacked">
                                 <label class="radio-option">
                                     <input type="radio" name="colorMode" :checked="state.colorEnabled" @change="setColorMode(true)">
                                     <span>Shenanigans</span>
-                                    <div class="radio-option__picker">
-                                        <input type="color"
-                                            x-model="state.baseColor"
-                                            @input="updateBaseColor"
-                                            :disabled="!state.colorEnabled"
-                                            :title="state.colorEnabled ? 'Pick the base colour' : 'Enable colour shenanigans to choose a colour'">
-                                    </div>
                                 </label>
                             </div>
-                            <p class="field__hint" x-show="!state.colorEnabled">Enable colour shenanigans to choose a base colour.</p>
                         </div>
 
                         <div class="field field--nested" :class="{ 'field--disabled': !state.colorEnabled }">
@@ -86,6 +93,8 @@
                                 </div>
                             </label>
                         </div>
+
+                        <hr/>
 
                         <div class="field">
                             <label>
@@ -106,6 +115,13 @@
                                 </div>
                             </label>
                         </div>
+
+                        <hr/>
+
+                        <label class="field checkbox">
+                            <input type="checkbox" :checked="state.showHuts" @change="setShowHuts($event.target.checked)">
+                            <span>Show huts</span>
+                        </label>
                     </div>
                 </template>
             </div>

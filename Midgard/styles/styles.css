@@ -126,6 +126,10 @@ body {
     gap: 10px;
 }
 
+.radio-group--stacked {
+    gap: 12px;
+}
+
 .radio-option {
     display: flex;
     align-items: center;
@@ -144,7 +148,9 @@ body {
     margin-left: 12px;
 }
 
-.radio-option__picker input[type="color"]:disabled {
+
+.radio-option__picker input[type="color"]:disabled,
+input[type="color"][disabled] {
     opacity: 0.45;
     cursor: not-allowed;
 }
@@ -163,6 +169,38 @@ body {
 
 .field--disabled {
     opacity: 0.4;
+}
+
+.color-picker-field {
+    gap: 8px;
+}
+
+.color-picker-field__label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-picker-field__input {
+    height: 36px;
+    width: 56px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+
+.color-picker-field--inactive .color-picker-field__label span {
+    color: #64748b;
+}
+
+.color-picker-field--inactive .color-picker-field__input {
+    filter: grayscale(0.65);
+    opacity: 0.8;
+}
+
+.color-picker-field__input--inactive {
+    filter: grayscale(0.65);
+    opacity: 0.8;
 }
 
 .slider-line {

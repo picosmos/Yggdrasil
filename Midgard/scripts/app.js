@@ -1,10 +1,58 @@
 import * as Leaflet from "../node_modules/leaflet/dist/leaflet-src.esm.js";
 import { makeColorScale } from "./colors.js";
-import { normalizeMapSource, parseBooleanToken, readUrlState, writeUrlState } from "./url.js";
+import { normalizeMapSource, readUrlState, writeUrlState } from "./url.js";
 import { prepareTrackPoints } from "./trackpoints.js";
 import { distanceBetweenPoints } from "./coordinates.js";
 
 const L = Leaflet;
+
+const DEFAULT_BASE_COLOR = "#0077cc";
+const HEX_COLOR_PATTERN = /^#([0-9a-f]{6})$/i;
+
+const sanitizeHexColor = (value, fallback = DEFAULT_BASE_COLOR) => {
+	if (typeof value !== "string") {
+		return fallback;
+	}
+
+	let next = value.trim();
+	if (!next) {
+		return fallback;
+	}
+
+	if (!next.startsWith("#")) {
+		next = `#${next}`;
+	}
+
+	if (!HEX_COLOR_PATTERN.test(next)) {
+		return fallback;
+	}
+
+	return next.toLowerCase();
+};
+
+const readColorToken = () => {
+	if (typeof window === "undefined") {
+		return "";
+	}
+
+	const params = new URLSearchParams(window.location.search);
+	return params.get("color") ?? "";
+};
+
+const writeColorToken = (token) => {
+	if (typeof window === "undefined") {
+		return;
+	}
+
+	const url = new URL(window.location.href);
+	if (!token) {
+		url.searchParams.delete("color");
+	} else {
+		url.searchParams.set("color", token);
+	}
+
+	window.history.replaceState({}, "", url.toString());
+};
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -57,8 +105,7 @@ const DEFAULT_STATE = {
 	colorEnabled: false,
 	breakHours: 4,
 	speedCutoff: 130,
-	baseColor: "#0077cc",
-	colorParam: "",
+	baseColor: DEFAULT_BASE_COLOR,
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
 	zoom: DEFAULT_VIEW.zoom,
@@ -67,23 +114,33 @@ const DEFAULT_STATE = {
 };
 
 const urlStateOptions = {
-	alias: { mapSource: "src", colorParam: "color" },
+	alias: { mapSource: "src" },
 	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
 	booleanKeys: ["showHuts"],
-	tokenParsers: {
-		colorEnabled: (params, fallback) => {
-			const token = params.get("color") ?? params.get("colour");
-			return parseBooleanToken(token, fallback);
-		},
-		colorParam: (params) => params.get("color") ?? params.get("colour") ?? "",
-		baseColor: (params, fallback) => params.get("baseColor") ?? params.get("baseColour") ?? fallback
-	},
-	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "baseColor", "lat", "lng", "zoom", "colorParam", "segmentLengthLimitKm", "showHuts"]
+	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts"]
 };
 
 const getInitialState = () => {
 	const state = readUrlState(DEFAULT_STATE, urlStateOptions);
-	return { ...DEFAULT_STATE, ...state, mapSource: normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource) };
+	const colorToken = readColorToken();
+	let colorEnabled = false;
+	let baseColor = DEFAULT_BASE_COLOR;
+
+	if (typeof colorToken === "string" && colorToken) {
+		if (colorToken.toLowerCase() === "shenanigans") {
+			colorEnabled = true;
+		} else {
+			baseColor = sanitizeHexColor(colorToken, DEFAULT_BASE_COLOR);
+		}
+	}
+
+	return {
+		...DEFAULT_STATE,
+		...state,
+		mapSource: normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource),
+		baseColor,
+		colorEnabled
+	};
 };
 
 const createAppState = () => {
@@ -218,15 +275,29 @@ const createAppState = () => {
 	},
 
 	setColorMode(enabled) {
-		if (this.state.colorEnabled === enabled) {
+		const next = Boolean(enabled);
+		if (this.state.colorEnabled !== next) {
+			this.state.colorEnabled = next;
+			this.syncColorParam();
+			this.renderTrack();
 			return;
 		}
 
-		this.state.colorEnabled = enabled;
-		const nextColor = enabled ? "shenanigans" : "";
-		this.state.colorParam = nextColor;
-		writeUrlState(DEFAULT_STATE, { colorParam: nextColor }, urlStateOptions);
-		this.renderTrack();
+		this.syncColorParam();
+	},
+
+	syncColorParam() {
+		if (this.state.colorEnabled) {
+			writeColorToken("shenanigans");
+			return;
+		}
+
+		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+		if (this.state.baseColor === DEFAULT_BASE_COLOR) {
+			writeColorToken("");
+		} else {
+			writeColorToken(this.state.baseColor);
+		}
 	},
 
 	setShowHuts(value) {
@@ -369,7 +440,10 @@ const createAppState = () => {
 	},
 
 	updateBaseColor() {
-		writeUrlState(DEFAULT_STATE, { baseColor: this.state.baseColor }, urlStateOptions);
+		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+		if (!this.state.colorEnabled) {
+			this.syncColorParam();
+		}
 		this.renderTrack();
 	},
 
