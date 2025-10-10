@@ -220,564 +220,564 @@ const createAppState = () => {
 		hasUserAdjustedView: initialViewFromUrl,
 		initialViewFromUrl,
 
-	init() {
-		this.menuOpen = this.state.menuOpen;
-		this.pendingId = this.state.id;
-		if (!this.state.id) {
-			this.mapStatus = "Enter an ID to load a track.";
-			this.ensureMenuOpen();
-		} else {
-			this.mapStatus = "";
-		}
-		this.setupMap();
-		this.$nextTick(() => {
-			if (this.mapInstance) {
-				this.mapInstance.invalidateSize();
+		init() {
+			this.menuOpen = this.state.menuOpen;
+			this.pendingId = this.state.id;
+			if (!this.state.id) {
+				this.mapStatus = "Enter an ID to load a track.";
+				this.ensureMenuOpen();
+			} else {
+				this.mapStatus = "";
 			}
-			this.hasInitializedMenu = true;
-		});
-		if (this.state.id) {
-			this.loadTrack();
-		}
-		this.loadHuts();
-		setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
-	},
-
-	toggleMenu() {
-		this.menuOpen = !this.menuOpen;
-		this.state.menuOpen = this.menuOpen;
-		setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
-		this.$nextTick(() => {
-			if (this.mapInstance) {
-				this.mapInstance.invalidateSize();
-			}
-		});
-	},
-
-	ensureMenuOpen() {
-		if (this.menuOpen) {
-			return;
-		}
-		this.menuOpen = true;
-		this.state.menuOpen = true;
-		setCookie(COOKIE_KEYS.menuOpen, "1");
-		this.$nextTick(() => {
-			if (this.mapInstance) {
-				this.mapInstance.invalidateSize();
-			}
-		});
-	},
-
-	applyId() {
-		const trimmed = (this.pendingId || "").trim();
-		if (!trimmed) {
-			this.errorMessage = "Please enter a valid track id.";
-			this.hasError = true;
-			this.mapStatus = this.errorMessage;
-			this.ensureMenuOpen();
-			return;
-		}
-
-		this.hasError = false;
-		this.errorMessage = "";
-		this.state.id = trimmed;
-		writeUrlState(DEFAULT_STATE, { id: trimmed }, urlStateOptions);
-		this.loadTrack();
-	},
-
-	withProgrammaticMove(action) {
-		this.isProgrammaticMove = true;
-		try {
-			action();
-		} finally {
-			setTimeout(() => {
-				this.isProgrammaticMove = false;
-			}, 0);
-		}
-	},
-
-	setupMap() {
-		if (this.mapInstance) {
-			return;
-		}
-
-		const container = this.$refs.map;
-		if (!container) {
-			return;
-		}
-
-		if (container._leaflet_id) {
-			container._leaflet_id = null;
-		}
-
-		const mapOptions = {
-			center: [this.state.lat, this.state.lng],
-			zoom: this.state.zoom,
-			zoomControl: true
-		};
-
-		this.mapInstance = L.map(container, mapOptions);
-		this.updateTileLayer();
-		if (!this.initialViewFromUrl) {
-			this.restoreView();
-		}
-
-		this.trackLayer = L.layerGroup().addTo(this.mapInstance);
-		this.pointLayer = L.layerGroup().addTo(this.mapInstance);
-
-		// cspell:ignore: moveend
-		this.mapInstance.on("moveend", () => {
-			const center = this.mapInstance.getCenter();
-			const zoom = this.mapInstance.getZoom();
-			this.state.lat = Number(center.lat.toFixed(5));
-			this.state.lng = Number(center.lng.toFixed(5));
-			this.state.zoom = zoom;
-			writeUrlState(DEFAULT_STATE, { lat: this.state.lat, lng: this.state.lng, zoom }, urlStateOptions);
-
-			if (!this.isProgrammaticMove) {
-				this.hasUserAdjustedView = true;
-			}
-		});
-
-		L.control.scale().addTo(this.mapInstance);
-	},
-
-	updateTileLayer() {
-		const source = MAP_SOURCES.find((item) => item.key === this.state.mapSource) ?? MAP_SOURCES[0];
-
-		if (this.tileLayer) {
-			this.tileLayer.remove();
-		}
-
-		this.tileLayer = L.tileLayer(source.url, source.options);
-		this.tileLayer.addTo(this.mapInstance);
-		this.restoreView();
-		writeUrlState(DEFAULT_STATE, { mapSource: source.key }, urlStateOptions);
-	},
-
-	updateMapSource() {
-		this.state.mapSource = normalizeMapSource(this.state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource);
-		this.updateTileLayer();
-		this.renderTrack();
-	},
-
-	restoreView() {
-		if (!this.mapInstance) {
-			return;
-		}
-
-		this.withProgrammaticMove(() => {
-			this.mapInstance.setView([this.state.lat, this.state.lng], this.state.zoom, { animate: false });
-		});
-	},
-
-	setColorMode(enabled) {
-		const next = Boolean(enabled);
-		if (this.state.colorEnabled !== next) {
-			this.state.colorEnabled = next;
-			this.syncColorParam();
-			this.renderTrack();
-			return;
-		}
-
-		this.syncColorParam();
-	},
-
-	syncColorParam() {
-		if (this.state.colorEnabled) {
-			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-			writeColorToken("shenanigans");
-			return;
-		}
-
-		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
-		setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-		if (this.state.baseColor === DEFAULT_BASE_COLOR) {
-			writeColorToken("");
-		} else {
-			writeColorToken(this.state.baseColor);
-		}
-	},
-
-	setShowHuts(value) {
-		const flag = Boolean(value);
-		if (this.state.showHuts === flag) {
-			this.updateHutVisibility();
-			return;
-		}
-
-		this.state.showHuts = flag;
-		writeUrlState(DEFAULT_STATE, { showHuts: flag ? "true" : "false" }, urlStateOptions);
-		this.updateHutVisibility();
-	},
-
-	updateHutVisibility() {
-		if (!this.mapInstance || !this.hutLayer) {
-			return;
-		}
-
-		if (this.state.showHuts) {
-			if (!this.mapInstance.hasLayer(this.hutLayer)) {
-				this.hutLayer.addTo(this.mapInstance);
-			}
-		} else {
-			this.hutLayer.remove();
-		}
-	},
-
-	breakHoursIndex() {
-		const current = this.state.breakHours;
-		const matchIndex = this.breakHourOptions.findIndex((value) => value === current);
-		if (matchIndex !== -1) {
-			return matchIndex;
-		}
-
-		let nearestIndex = 0;
-		let smallestDiff = Number.POSITIVE_INFINITY;
-		this.breakHourOptions.forEach((value, index) => {
-			const diff = Math.abs(value - current);
-			if (diff < smallestDiff) {
-				smallestDiff = diff;
-				nearestIndex = index;
-			}
-		});
-		return nearestIndex;
-	},
-
-	setBreakHours(rawIndex) {
-		const index = Math.round(Number(rawIndex));
-		const clampedIndex = Math.min(Math.max(index, 0), this.breakHourOptions.length - 1);
-		this.state.breakHours = this.breakHourOptions[clampedIndex];
-		this.updateBreakHours();
-	},
-
-	formatBreakHours(hours) {
-		const totalMinutes = Math.round(hours * 60);
-		const wholeHours = Math.floor(totalMinutes / 60);
-		const remainingMinutes = totalMinutes % 60;
-		const parts = [];
-		if (wholeHours > 0) {
-			parts.push(`${wholeHours}h`);
-		}
-		if (remainingMinutes > 0) {
-			parts.push(`${remainingMinutes}min`);
-		}
-		if (parts.length === 0) {
-			return "0 min";
-		}
-		return parts.join(" ");
-	},
-
-	speedCutoffIndex() {
-		const current = this.state.speedCutoff;
-		const matchIndex = this.speedCutoffOptions.findIndex((value) => value === current);
-		if (matchIndex !== -1) {
-			return matchIndex;
-		}
-
-		let nearestIndex = 0;
-		let smallestDiff = Number.POSITIVE_INFINITY;
-		this.speedCutoffOptions.forEach((value, index) => {
-			const diff = Math.abs(value - current);
-			if (diff < smallestDiff) {
-				smallestDiff = diff;
-				nearestIndex = index;
-			}
-		});
-		return nearestIndex;
-	},
-
-	setSpeedCutoff(rawIndex) {
-		const index = Math.round(Number(rawIndex));
-		const clampedIndex = Math.min(Math.max(index, 0), this.speedCutoffOptions.length - 1);
-		this.state.speedCutoff = this.speedCutoffOptions[clampedIndex];
-		this.updateSpeedCutoff();
-	},
-
-	segmentLengthSliderValue() {
-		const value = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM));
-		const ratio = Math.log(value / MIN_SEGMENT_LENGTH_KM) / Math.log(MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM);
-		if (!Number.isFinite(ratio)) {
-			return this.segmentLengthSliderSteps;
-		}
-		return Math.round(ratio * this.segmentLengthSliderSteps);
-	},
-
-	setSegmentLengthLimit(rawValue) {
-		const sliderPosition = Math.max(0, Math.min(Number(rawValue), this.segmentLengthSliderSteps));
-		const ratio = sliderPosition / this.segmentLengthSliderSteps;
-		const rawKm = MIN_SEGMENT_LENGTH_KM * ((MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM) ** ratio);
-		const roundedKm = Math.round(rawKm * 10) / 10;
-		const constrainedKm = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(roundedKm, MAX_SEGMENT_LENGTH_KM));
-		this.state.segmentLengthLimitKm = constrainedKm;
-		writeUrlState(DEFAULT_STATE, { segmentLengthLimitKm: this.state.segmentLengthLimitKm }, urlStateOptions);
-		this.renderTrack();
-	},
-
-	formatSegmentLength(kilometers) {
-		const km = Number(kilometers);
-		if (!Number.isFinite(km)) {
-			return "n/a";
-		}
-		if (km >= 10) {
-			return `${Math.round(km)}km`;
-		}
-		if (km >= 3) {
-			return `${km.toFixed(1)}km`;
-		}
-		return `${Math.round(km * 1000)}m`;
-	},
-
-	updateBreakHours() {
-		writeUrlState(DEFAULT_STATE, { breakHours: this.state.breakHours }, urlStateOptions);
-		this.renderTrack();
-	},
-
-	updateSpeedCutoff() {
-		writeUrlState(DEFAULT_STATE, { speedCutoff: this.state.speedCutoff }, urlStateOptions);
-		this.renderTrack();
-	},
-
-	updateBaseColor() {
-		this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
-		setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
-		if (!this.state.colorEnabled) {
-			this.syncColorParam();
-		}
-		this.renderTrack();
-	},
-
-	loadTrack() {
-		if (!this.state.id) {
-			this.mapStatus = "Enter an ID to load a track.";
-			this.ensureMenuOpen();
-			return;
-		}
-
-		this.mapStatus = "Loading track…";
-		this.hasError = false;
-		this.errorMessage = "";
-
-		fetch(`/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
-			method: "GET"
-		})
-			.then((response) => {
-				if (response.status === 403) {
-					throw new Error("403 - Access denied");
+			this.setupMap();
+			this.$nextTick(() => {
+				if (this.mapInstance) {
+					this.mapInstance.invalidateSize();
 				}
-				if (response.status === 404) {
-					throw new Error("404 - Track not found");
+				this.hasInitializedMenu = true;
+			});
+			if (this.state.id) {
+				this.loadTrack();
+			}
+			this.loadHuts();
+			setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
+		},
+
+		toggleMenu() {
+			this.menuOpen = !this.menuOpen;
+			this.state.menuOpen = this.menuOpen;
+			setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
+			this.$nextTick(() => {
+				if (this.mapInstance) {
+					this.mapInstance.invalidateSize();
 				}
-				if (!response.ok) {
-					throw new Error("Failed to load track");
+			});
+		},
+
+		ensureMenuOpen() {
+			if (this.menuOpen) {
+				return;
+			}
+			this.menuOpen = true;
+			this.state.menuOpen = true;
+			setCookie(COOKIE_KEYS.menuOpen, "1");
+			this.$nextTick(() => {
+				if (this.mapInstance) {
+					this.mapInstance.invalidateSize();
 				}
-				return response.json();
-			})
-			.then((data) => {
-				this.trackEvents = Array.isArray(data) ? data : [];
-				if (this.trackEvents.length === 0) {
-					this.mapStatus = "No track points available.";
-				} else {
-					this.mapStatus = `${this.trackEvents.length} events loaded.`;
-				}
-				this.hasUserAdjustedView = this.initialViewFromUrl;
-				this.initialViewFromUrl = false;
-				this.renderTrack();
-			})
-			.catch((error) => {
+			});
+		},
+
+		applyId() {
+			const trimmed = (this.pendingId || "").trim();
+			if (!trimmed) {
+				this.errorMessage = "Please enter a valid track id.";
 				this.hasError = true;
-				this.errorMessage = error.message || "Something went wrong.";
 				this.mapStatus = this.errorMessage;
-					this.ensureMenuOpen();
-				this.clearTrackLayers();
-			});
-	},
-
-	clearTrackLayers() {
-		if (this.trackLayer) {
-			this.trackLayer.clearLayers();
-		}
-		if (this.pointLayer) {
-			this.pointLayer.clearLayers();
-		}
-	},
-
-	renderTrack() {
-		if (!this.mapInstance) {
-			return;
-		}
-
-		this.clearTrackLayers();
-
-		if (!Array.isArray(this.trackEvents) || this.trackEvents.length === 0) {
-			return;
-		}
-
-		const points = prepareTrackPoints(this.trackEvents, { breakHours: this.state.breakHours });
-		if (points.length === 0) {
-			this.mapStatus = "No usable points.";
-			return;
-		}
-
-		const colorScale = makeColorScale(this.state.colorEnabled, this.state.baseColor);
-		const groups = Object.values(points.reduce((acc, point) => {
-			const key = point.groupId ?? 0;
-			if (!acc[key]) {
-				acc[key] = [];
-			}
-			acc[key].push(point);
-			return acc;
-		}, {}));
-
-		const speedLimit = this.state.speedCutoff;
-		const segmentLimitKm = Math.max(
-			MIN_SEGMENT_LENGTH_KM,
-			Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM)
-		);
-		const maxSegmentLengthMeters = segmentLimitKm * 1000;
-
-		groups.forEach((group) => {
-			const groupColor = colorScale(group[0].groupId ?? 0);
-			const segments = [];
-			let currentSegment = [];
-			let previousPoint = null;
-
-			group.forEach((point) => {
-				const withinSpeedLimit = !Number.isFinite(point.speed) || point.speed < speedLimit;
-				if (!withinSpeedLimit) {
-					if (currentSegment.length > 1) {
-						segments.push(currentSegment);
-					}
-					currentSegment = [];
-					previousPoint = null;
-					return;
-				}
-
-				if (!previousPoint) {
-					currentSegment = [point];
-					previousPoint = point;
-					return;
-				}
-
-				const separation = distanceBetweenPoints(previousPoint, point);
-				if (separation > maxSegmentLengthMeters) {
-					if (currentSegment.length > 1) {
-						segments.push(currentSegment);
-					}
-					currentSegment = [point];
-					previousPoint = point;
-					return;
-				}
-
-				currentSegment.push(point);
-				previousPoint = point;
-			});
-
-			if (currentSegment.length > 1) {
-				segments.push(currentSegment);
-			}
-
-			segments.forEach((segment) => {
-				if (segment.length < 2) {
-					return;
-				}
-				const polyline = L.polyline(segment.map((point) => [point.lat, point.lon]), {
-					color: groupColor,
-					weight: 3,
-					opacity: 0.7
-				});
-				polyline.addTo(this.trackLayer);
-			});
-
-			group.forEach((point) => {
-				const colorValue = colorScale(point.groupId ?? 0);
-				const marker = L.circleMarker([point.lat, point.lon], {
-					radius: Number.isFinite(point.speed) && point.speed >= speedLimit ? 3 : 5,
-					color: colorValue,
-					fillColor: colorValue,
-					fillOpacity: 0.85,
-					weight: 1
-				});
-
-				const timeFormatter = new Intl.DateTimeFormat("en-GB", {
-					year: "numeric",
-					month: "2-digit",
-					day: "2-digit",
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-					timeZone: "Europe/Oslo",
-					timeZoneName: "short"
-				});
-
-				const formattedTime = timeFormatter.format(point.time).replace(",", "");
-				const speedInfo = Number.isFinite(point.speed) ? `${point.speed.toFixed(1)}km/h` : "n/a";
-				marker.bindPopup(`Time: ${formattedTime}<br />Speed: ${speedInfo}`);
-				marker.addTo(this.pointLayer);
-			});
-		});
-
-		const bounds = L.latLngBounds(points.map((point) => [point.lat, point.lon]));
-		if (bounds.isValid() && !this.hasUserAdjustedView) {
-			this.withProgrammaticMove(() => {
-				this.mapInstance.fitBounds(bounds.pad(0.1));
-			});
-		}
-
-		this.mapStatus = `${points.length} points rendered.`;
-	},
-
-	loadHuts() {
-		fetch("./data/hytter.csv")
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error("Could not fetch hut info");
-				}
-				return response.text();
-			})
-			.then((csvText) => {
-				if (!window.Papa) {
-					throw new Error("PapaParse not available");
-				}
-				const parsed = window.Papa.parse(csvText, {
-					header: true,
-					skipEmptyLines: true
-				});
-				this.hutData = Array.isArray(parsed.data) ? parsed.data : [];
-				this.renderHuts(this.hutData);
-			})
-			.catch((error) => {
-				console.warn(error.message);
-			});
-	},
-
-	renderHuts(huts) {
-		if (!this.mapInstance || !Array.isArray(huts)) {
-			return;
-		}
-
-		if (this.hutLayer) {
-			this.hutLayer.remove();
-		}
-
-		this.hutLayer = L.layerGroup();
-
-		const icon = L.icon({
-			iconUrl: "./assets/hut.png",
-			iconSize: [20, 20],
-			iconAnchor: [10, 10],
-			popupAnchor: [0, -10]
-		});
-
-		huts.forEach((hut) => {
-			const lat = Number(hut.latitude);
-			const lon = Number(hut.longitude);
-			if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+				this.ensureMenuOpen();
 				return;
 			}
 
-			L.marker([lat, lon], { icon })
-				.bindPopup(`
+			this.hasError = false;
+			this.errorMessage = "";
+			this.state.id = trimmed;
+			writeUrlState(DEFAULT_STATE, { id: trimmed }, urlStateOptions);
+			this.loadTrack();
+		},
+
+		withProgrammaticMove(action) {
+			this.isProgrammaticMove = true;
+			try {
+				action();
+			} finally {
+				setTimeout(() => {
+					this.isProgrammaticMove = false;
+				}, 0);
+			}
+		},
+
+		setupMap() {
+			if (this.mapInstance) {
+				return;
+			}
+
+			const container = this.$refs.map;
+			if (!container) {
+				return;
+			}
+
+			if (container._leaflet_id) {
+				container._leaflet_id = null;
+			}
+
+			const mapOptions = {
+				center: [this.state.lat, this.state.lng],
+				zoom: this.state.zoom,
+				zoomControl: true
+			};
+
+			this.mapInstance = L.map(container, mapOptions);
+			this.updateTileLayer();
+			if (!this.initialViewFromUrl) {
+				this.restoreView();
+			}
+
+			this.trackLayer = L.layerGroup().addTo(this.mapInstance);
+			this.pointLayer = L.layerGroup().addTo(this.mapInstance);
+
+			// cspell:ignore: moveend
+			this.mapInstance.on("moveend", () => {
+				const center = this.mapInstance.getCenter();
+				const zoom = this.mapInstance.getZoom();
+				this.state.lat = Number(center.lat.toFixed(5));
+				this.state.lng = Number(center.lng.toFixed(5));
+				this.state.zoom = zoom;
+				writeUrlState(DEFAULT_STATE, { lat: this.state.lat, lng: this.state.lng, zoom }, urlStateOptions);
+
+				if (!this.isProgrammaticMove) {
+					this.hasUserAdjustedView = true;
+				}
+			});
+
+			L.control.scale().addTo(this.mapInstance);
+		},
+
+		updateTileLayer() {
+			const source = MAP_SOURCES.find((item) => item.key === this.state.mapSource) ?? MAP_SOURCES[0];
+
+			if (this.tileLayer) {
+				this.tileLayer.remove();
+			}
+
+			this.tileLayer = L.tileLayer(source.url, source.options);
+			this.tileLayer.addTo(this.mapInstance);
+			this.restoreView();
+			writeUrlState(DEFAULT_STATE, { mapSource: source.key }, urlStateOptions);
+		},
+
+		updateMapSource() {
+			this.state.mapSource = normalizeMapSource(this.state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource);
+			this.updateTileLayer();
+			this.renderTrack();
+		},
+
+		restoreView() {
+			if (!this.mapInstance) {
+				return;
+			}
+
+			this.withProgrammaticMove(() => {
+				this.mapInstance.setView([this.state.lat, this.state.lng], this.state.zoom, { animate: false });
+			});
+		},
+
+		setColorMode(enabled) {
+			const next = Boolean(enabled);
+			if (this.state.colorEnabled !== next) {
+				this.state.colorEnabled = next;
+				this.syncColorParam();
+				this.renderTrack();
+				return;
+			}
+
+			this.syncColorParam();
+		},
+
+		syncColorParam() {
+			if (this.state.colorEnabled) {
+				setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
+				writeColorToken("shenanigans");
+				return;
+			}
+
+			this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
+			if (this.state.baseColor === DEFAULT_BASE_COLOR) {
+				writeColorToken("");
+			} else {
+				writeColorToken(this.state.baseColor);
+			}
+		},
+
+		setShowHuts(value) {
+			const flag = Boolean(value);
+			if (this.state.showHuts === flag) {
+				this.updateHutVisibility();
+				return;
+			}
+
+			this.state.showHuts = flag;
+			writeUrlState(DEFAULT_STATE, { showHuts: flag ? "true" : "false" }, urlStateOptions);
+			this.updateHutVisibility();
+		},
+
+		updateHutVisibility() {
+			if (!this.mapInstance || !this.hutLayer) {
+				return;
+			}
+
+			if (this.state.showHuts) {
+				if (!this.mapInstance.hasLayer(this.hutLayer)) {
+					this.hutLayer.addTo(this.mapInstance);
+				}
+			} else {
+				this.hutLayer.remove();
+			}
+		},
+
+		breakHoursIndex() {
+			const current = this.state.breakHours;
+			const matchIndex = this.breakHourOptions.findIndex((value) => value === current);
+			if (matchIndex !== -1) {
+				return matchIndex;
+			}
+
+			let nearestIndex = 0;
+			let smallestDiff = Number.POSITIVE_INFINITY;
+			this.breakHourOptions.forEach((value, index) => {
+				const diff = Math.abs(value - current);
+				if (diff < smallestDiff) {
+					smallestDiff = diff;
+					nearestIndex = index;
+				}
+			});
+			return nearestIndex;
+		},
+
+		setBreakHours(rawIndex) {
+			const index = Math.round(Number(rawIndex));
+			const clampedIndex = Math.min(Math.max(index, 0), this.breakHourOptions.length - 1);
+			this.state.breakHours = this.breakHourOptions[clampedIndex];
+			this.updateBreakHours();
+		},
+
+		formatBreakHours(hours) {
+			const totalMinutes = Math.round(hours * 60);
+			const wholeHours = Math.floor(totalMinutes / 60);
+			const remainingMinutes = totalMinutes % 60;
+			const parts = [];
+			if (wholeHours > 0) {
+				parts.push(`${wholeHours}h`);
+			}
+			if (remainingMinutes > 0) {
+				parts.push(`${remainingMinutes}min`);
+			}
+			if (parts.length === 0) {
+				return "0 min";
+			}
+			return parts.join(" ");
+		},
+
+		speedCutoffIndex() {
+			const current = this.state.speedCutoff;
+			const matchIndex = this.speedCutoffOptions.findIndex((value) => value === current);
+			if (matchIndex !== -1) {
+				return matchIndex;
+			}
+
+			let nearestIndex = 0;
+			let smallestDiff = Number.POSITIVE_INFINITY;
+			this.speedCutoffOptions.forEach((value, index) => {
+				const diff = Math.abs(value - current);
+				if (diff < smallestDiff) {
+					smallestDiff = diff;
+					nearestIndex = index;
+				}
+			});
+			return nearestIndex;
+		},
+
+		setSpeedCutoff(rawIndex) {
+			const index = Math.round(Number(rawIndex));
+			const clampedIndex = Math.min(Math.max(index, 0), this.speedCutoffOptions.length - 1);
+			this.state.speedCutoff = this.speedCutoffOptions[clampedIndex];
+			this.updateSpeedCutoff();
+		},
+
+		segmentLengthSliderValue() {
+			const value = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM));
+			const ratio = Math.log(value / MIN_SEGMENT_LENGTH_KM) / Math.log(MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM);
+			if (!Number.isFinite(ratio)) {
+				return this.segmentLengthSliderSteps;
+			}
+			return Math.round(ratio * this.segmentLengthSliderSteps);
+		},
+
+		setSegmentLengthLimit(rawValue) {
+			const sliderPosition = Math.max(0, Math.min(Number(rawValue), this.segmentLengthSliderSteps));
+			const ratio = sliderPosition / this.segmentLengthSliderSteps;
+			const rawKm = MIN_SEGMENT_LENGTH_KM * ((MAX_SEGMENT_LENGTH_KM / MIN_SEGMENT_LENGTH_KM) ** ratio);
+			const roundedKm = Math.round(rawKm * 10) / 10;
+			const constrainedKm = Math.max(MIN_SEGMENT_LENGTH_KM, Math.min(roundedKm, MAX_SEGMENT_LENGTH_KM));
+			this.state.segmentLengthLimitKm = constrainedKm;
+			writeUrlState(DEFAULT_STATE, { segmentLengthLimitKm: this.state.segmentLengthLimitKm }, urlStateOptions);
+			this.renderTrack();
+		},
+
+		formatSegmentLength(kilometers) {
+			const km = Number(kilometers);
+			if (!Number.isFinite(km)) {
+				return "n/a";
+			}
+			if (km >= 10) {
+				return `${Math.round(km)}km`;
+			}
+			if (km >= 3) {
+				return `${km.toFixed(1)}km`;
+			}
+			return `${Math.round(km * 1000)}m`;
+		},
+
+		updateBreakHours() {
+			writeUrlState(DEFAULT_STATE, { breakHours: this.state.breakHours }, urlStateOptions);
+			this.renderTrack();
+		},
+
+		updateSpeedCutoff() {
+			writeUrlState(DEFAULT_STATE, { speedCutoff: this.state.speedCutoff }, urlStateOptions);
+			this.renderTrack();
+		},
+
+		updateBaseColor() {
+			this.state.baseColor = sanitizeHexColor(this.state.baseColor, DEFAULT_BASE_COLOR);
+			setCookie(COOKIE_KEYS.shenanigansColor, this.state.baseColor);
+			if (!this.state.colorEnabled) {
+				this.syncColorParam();
+			}
+			this.renderTrack();
+		},
+
+		loadTrack() {
+			if (!this.state.id) {
+				this.mapStatus = "Enter an ID to load a track.";
+				this.ensureMenuOpen();
+				return;
+			}
+
+			this.mapStatus = "Loading track…";
+			this.hasError = false;
+			this.errorMessage = "";
+
+			fetch(`/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
+				method: "GET"
+			})
+				.then((response) => {
+					if (response.status === 403) {
+						throw new Error("403 - Access denied");
+					}
+					if (response.status === 404) {
+						throw new Error("404 - Track not found");
+					}
+					if (!response.ok) {
+						throw new Error("Failed to load track");
+					}
+					return response.json();
+				})
+				.then((data) => {
+					this.trackEvents = Array.isArray(data) ? data : [];
+					if (this.trackEvents.length === 0) {
+						this.mapStatus = "No track points available.";
+					} else {
+						this.mapStatus = `${this.trackEvents.length} events loaded.`;
+					}
+					this.hasUserAdjustedView = this.initialViewFromUrl;
+					this.initialViewFromUrl = false;
+					this.renderTrack();
+				})
+				.catch((error) => {
+					this.hasError = true;
+					this.errorMessage = error.message || "Something went wrong.";
+					this.mapStatus = this.errorMessage;
+					this.ensureMenuOpen();
+					this.clearTrackLayers();
+				});
+		},
+
+		clearTrackLayers() {
+			if (this.trackLayer) {
+				this.trackLayer.clearLayers();
+			}
+			if (this.pointLayer) {
+				this.pointLayer.clearLayers();
+			}
+		},
+
+		renderTrack() {
+			if (!this.mapInstance) {
+				return;
+			}
+
+			this.clearTrackLayers();
+
+			if (!Array.isArray(this.trackEvents) || this.trackEvents.length === 0) {
+				return;
+			}
+
+			const points = prepareTrackPoints(this.trackEvents, { breakHours: this.state.breakHours });
+			if (points.length === 0) {
+				this.mapStatus = "No usable points.";
+				return;
+			}
+
+			const colorScale = makeColorScale(this.state.colorEnabled, this.state.baseColor);
+			const groups = Object.values(points.reduce((acc, point) => {
+				const key = point.groupId ?? 0;
+				if (!acc[key]) {
+					acc[key] = [];
+				}
+				acc[key].push(point);
+				return acc;
+			}, {}));
+
+			const speedLimit = this.state.speedCutoff;
+			const segmentLimitKm = Math.max(
+				MIN_SEGMENT_LENGTH_KM,
+				Math.min(this.state.segmentLengthLimitKm ?? MAX_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM)
+			);
+			const maxSegmentLengthMeters = segmentLimitKm * 1000;
+
+			groups.forEach((group) => {
+				const groupColor = colorScale(group[0].groupId ?? 0);
+				const segments = [];
+				let currentSegment = [];
+				let previousPoint = null;
+
+				group.forEach((point) => {
+					const withinSpeedLimit = !Number.isFinite(point.speed) || point.speed < speedLimit;
+					if (!withinSpeedLimit) {
+						if (currentSegment.length > 1) {
+							segments.push(currentSegment);
+						}
+						currentSegment = [];
+						previousPoint = null;
+						return;
+					}
+
+					if (!previousPoint) {
+						currentSegment = [point];
+						previousPoint = point;
+						return;
+					}
+
+					const separation = distanceBetweenPoints(previousPoint, point);
+					if (separation > maxSegmentLengthMeters) {
+						if (currentSegment.length > 1) {
+							segments.push(currentSegment);
+						}
+						currentSegment = [point];
+						previousPoint = point;
+						return;
+					}
+
+					currentSegment.push(point);
+					previousPoint = point;
+				});
+
+				if (currentSegment.length > 1) {
+					segments.push(currentSegment);
+				}
+
+				segments.forEach((segment) => {
+					if (segment.length < 2) {
+						return;
+					}
+					const polyline = L.polyline(segment.map((point) => [point.lat, point.lon]), {
+						color: groupColor,
+						weight: 3,
+						opacity: 0.7
+					});
+					polyline.addTo(this.trackLayer);
+				});
+
+				group.forEach((point) => {
+					const colorValue = colorScale(point.groupId ?? 0);
+					const marker = L.circleMarker([point.lat, point.lon], {
+						radius: Number.isFinite(point.speed) && point.speed >= speedLimit ? 3 : 5,
+						color: colorValue,
+						fillColor: colorValue,
+						fillOpacity: 0.85,
+						weight: 1
+					});
+
+					const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+						year: "numeric",
+						month: "2-digit",
+						day: "2-digit",
+						hour: "2-digit",
+						minute: "2-digit",
+						second: "2-digit",
+						timeZone: "Europe/Oslo",
+						timeZoneName: "short"
+					});
+
+					const formattedTime = timeFormatter.format(point.time).replace(",", "");
+					const speedInfo = Number.isFinite(point.speed) ? `${point.speed.toFixed(1)}km/h` : "n/a";
+					marker.bindPopup(`Time: ${formattedTime}<br />Speed: ${speedInfo}`);
+					marker.addTo(this.pointLayer);
+				});
+			});
+
+			const bounds = L.latLngBounds(points.map((point) => [point.lat, point.lon]));
+			if (bounds.isValid() && !this.hasUserAdjustedView) {
+				this.withProgrammaticMove(() => {
+					this.mapInstance.fitBounds(bounds.pad(0.1));
+				});
+			}
+
+			this.mapStatus = `${points.length} points rendered.`;
+		},
+
+		loadHuts() {
+			fetch("./data/hytter.csv")
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error("Could not fetch hut info");
+					}
+					return response.text();
+				})
+				.then((csvText) => {
+					if (!window.Papa) {
+						throw new Error("PapaParse not available");
+					}
+					const parsed = window.Papa.parse(csvText, {
+						header: true,
+						skipEmptyLines: true
+					});
+					this.hutData = Array.isArray(parsed.data) ? parsed.data : [];
+					this.renderHuts(this.hutData);
+				})
+				.catch((error) => {
+					console.warn(error.message);
+				});
+		},
+
+		renderHuts(huts) {
+			if (!this.mapInstance || !Array.isArray(huts)) {
+				return;
+			}
+
+			if (this.hutLayer) {
+				this.hutLayer.remove();
+			}
+
+			this.hutLayer = L.layerGroup();
+
+			const icon = L.icon({
+				iconUrl: "./assets/hut.png",
+				iconSize: [20, 20],
+				iconAnchor: [10, 10],
+				popupAnchor: [0, -10]
+			});
+
+			huts.forEach((hut) => {
+				const lat = Number(hut.latitude);
+				const lon = Number(hut.longitude);
+				if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+					return;
+				}
+
+				L.marker([lat, lon], { icon })
+					.bindPopup(`
 					<strong>${hut.name ?? "Unknown hut"}</strong><br />
 					Owner: ${hut.ownername ?? "n/a"}<br />
 					Height: ${hut.height ?? "-"} m<br />
@@ -785,13 +785,13 @@ const createAppState = () => {
 					Area: ${hut.areaName ?? "-"}<br />
 					${lat.toFixed(5)}, ${lon.toFixed(5)}
 				`)
-				.addTo(this.hutLayer);
-		});
+					.addTo(this.hutLayer);
+			});
 
-		if (this.state.showHuts) {
-			this.hutLayer.addTo(this.mapInstance);
+			if (this.state.showHuts) {
+				this.hutLayer.addTo(this.mapInstance);
+			}
 		}
-	}
 	};
 };
 

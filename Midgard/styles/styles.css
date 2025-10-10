@@ -25,7 +25,7 @@ body {
     font-weight: 600;
 }
 
-.settings__section + .settings__section {
+.settings__section+.settings__section {
     margin-top: 24px;
     border-top: 1px solid rgba(15, 23, 42, 0.08);
     padding-top: 24px;
@@ -261,9 +261,10 @@ input[type="color"][disabled] {
     line-height: 1.4;
     margin-bottom: 16px;
     font-size: 1.6rem;
-.settings__section--status {
-    margin-top: 24px;
-}
+
+    .settings__section--status {
+        margin-top: 24px;
+    }
 }
 
 #error img {

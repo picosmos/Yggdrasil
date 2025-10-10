@@ -38,7 +38,7 @@
                             <input type="text" :value="state.id" readonly />
                         </label>
 
-                        <hr/>
+                        <hr />
 
                         <label class="field">
                             <span>Base map</span>
@@ -49,25 +49,24 @@
                             </select>
                         </label>
 
-                        <hr/>
+                        <hr />
 
                         <div class="field">
                             <div class="radio-group radio-group--stacked">
                                 <label class="radio-option">
-                                    <input type="radio" name="colorMode" :checked="!state.colorEnabled" @change="setColorMode(false)">
+                                    <input type="radio" name="colorMode" :checked="!state.colorEnabled"
+                                        @change="setColorMode(false)">
                                     <span>Single colour</span>
                                 </label>
                             </div>
                         </div>
 
-                        <div class="field field--nested color-picker-field" :class="{ 'color-picker-field--inactive': state.colorEnabled }">
+                        <div class="field field--nested color-picker-field"
+                            :class="{ 'color-picker-field--inactive': state.colorEnabled }">
                             <label class="color-picker-field__label">
                                 <span>Base colour</span>
-                                <input class="color-picker-field__input"
-                                    type="color"
-                                    x-model="state.baseColor"
-                                    @input="updateBaseColor"
-                                    :disabled="state.colorEnabled"
+                                <input class="color-picker-field__input" type="color" x-model="state.baseColor"
+                                    @input="updateBaseColor" :disabled="state.colorEnabled"
                                     :title="state.colorEnabled ? 'Shenanigans cycles colours around this base colour' : 'Applies to every segment while Shenanigans is off'">
                             </label>
                         </div>
@@ -75,7 +74,8 @@
                         <div class="field">
                             <div class="radio-group radio-group--stacked">
                                 <label class="radio-option">
-                                    <input type="radio" name="colorMode" :checked="state.colorEnabled" @change="setColorMode(true)">
+                                    <input type="radio" name="colorMode" :checked="state.colorEnabled"
+                                        @change="setColorMode(true)">
                                     <span>Shenanigans</span>
                                 </label>
                             </div>
@@ -85,19 +85,22 @@
                             <label>
                                 <span>New colour after</span>
                                 <div class="slider-line">
-                                    <input type="range" :min="0" :max="breakHourOptions.length - 1" :value="breakHoursIndex()" @input="setBreakHours($event.target.value)" :disabled="!state.colorEnabled" />
+                                    <input type="range" :min="0" :max="breakHourOptions.length - 1"
+                                        :value="breakHoursIndex()" @input="setBreakHours($event.target.value)"
+                                        :disabled="!state.colorEnabled" />
                                     <output x-text="formatBreakHours(state.breakHours)"></output>
                                 </div>
                             </label>
                         </div>
 
-                        <hr/>
+                        <hr />
 
                         <div class="field">
                             <label>
                                 <span>Hide segments with speed over</span>
                                 <div class="slider-line">
-                                    <input type="range" :min="0" :max="speedCutoffOptions.length - 1" :value="speedCutoffIndex()" @input="setSpeedCutoff($event.target.value)" />
+                                    <input type="range" :min="0" :max="speedCutoffOptions.length - 1"
+                                        :value="speedCutoffIndex()" @input="setSpeedCutoff($event.target.value)" />
                                     <output x-text="state.speedCutoff + 'km/h'"></output>
                                 </div>
                             </label>
@@ -107,16 +110,19 @@
                             <label>
                                 <span>Hide segment lines longer than</span>
                                 <div class="slider-line">
-                                    <input type="range" min="0" :max="segmentLengthSliderSteps" :value="segmentLengthSliderValue()" @input="setSegmentLengthLimit($event.target.value)" />
+                                    <input type="range" min="0" :max="segmentLengthSliderSteps"
+                                        :value="segmentLengthSliderValue()"
+                                        @input="setSegmentLengthLimit($event.target.value)" />
                                     <output x-text="formatSegmentLength(state.segmentLengthLimitKm)"></output>
                                 </div>
                             </label>
                         </div>
 
-                        <hr/>
+                        <hr />
 
                         <label class="field checkbox">
-                            <input type="checkbox" :checked="state.showHuts" @change="setShowHuts($event.target.checked)">
+                            <input type="checkbox" :checked="state.showHuts"
+                                @change="setShowHuts($event.target.checked)">
                             <span>Show huts</span>
                         </label>
                     </div>
@@ -135,7 +141,7 @@
                 <img src="./assets/guillaume.png" alt="Rubberduck" />
             </div>
         </main>
-        
+
         <button class="menu-toggle" type="button" @click="toggleMenu" aria-label="Toggle settings">
             ☰
         </button>
