@@ -423,10 +423,10 @@ const createAppState = () => {
 		const remainingMinutes = totalMinutes % 60;
 		const parts = [];
 		if (wholeHours > 0) {
-			parts.push(`${wholeHours} h`);
+			parts.push(`${wholeHours}h`);
 		}
 		if (remainingMinutes > 0) {
-			parts.push(`${remainingMinutes} min`);
+			parts.push(`${remainingMinutes}min`);
 		}
 		if (parts.length === 0) {
 			return "0 min";
@@ -480,18 +480,18 @@ const createAppState = () => {
 		this.renderTrack();
 	},
 
-	formatSegmentLength(kilometres) {
-		const km = Number(kilometres);
+	formatSegmentLength(kilometers) {
+		const km = Number(kilometers);
 		if (!Number.isFinite(km)) {
 			return "n/a";
 		}
 		if (km >= 10) {
-			return `${Math.round(km)} km`;
+			return `${Math.round(km)}km`;
 		}
-		if (km >= 1) {
-			return `${km.toFixed(1)} km`;
+		if (km >= 3) {
+			return `${km.toFixed(1)}km`;
 		}
-		return `${Math.round(km * 1000)} m`;
+		return `${Math.round(km * 1000)}m`;
 	},
 
 	updateBreakHours() {
@@ -674,7 +674,7 @@ const createAppState = () => {
 				});
 
 				const formattedTime = timeFormatter.format(point.time).replace(",", "");
-				const speedInfo = Number.isFinite(point.speed) ? `${point.speed.toFixed(1)} km/h` : "n/a";
+				const speedInfo = Number.isFinite(point.speed) ? `${point.speed.toFixed(1)}km/h` : "n/a";
 				marker.bindPopup(`Time: ${formattedTime}<br />Speed: ${speedInfo}`);
 				marker.addTo(this.pointLayer);
 			});

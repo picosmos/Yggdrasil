@@ -70,7 +70,4 @@ Thus, the three roots of Yggdrasil are not merely symbolic, but serve as the liv
 
 # To Do
 
-- User interface for adjusting settings such as colour
-- Prevent map reload upon tile source change
 - Script to facilitate initial setup
-- cut paths in UI for points which has travel speed > 35km/h. Still include the points. maybe make this adjustable, but Query parameters persistable again.
