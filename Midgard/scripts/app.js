@@ -164,7 +164,7 @@ const getInitialState = () => {
 
 	let colorEnabled = false;
 	let baseColor = DEFAULT_BASE_COLOR;
-	let menuOpen = true;
+	let menuOpen = false;
 
 	if (typeof menuCookie === "string" && menuCookie.length > 0) {
 		menuOpen = menuCookie === "1";
@@ -199,7 +199,7 @@ const createAppState = () => {
 
 	return {
 		mapSources: MAP_SOURCES,
-		menuOpen: true,
+		menuOpen: initialState.menuOpen,
 		hasInitializedMenu: false,
 		state: initialState,
 		pendingId: "",
@@ -221,9 +221,14 @@ const createAppState = () => {
 		initialViewFromUrl,
 
 	init() {
-		setCookie(COOKIE_KEYS.menuOpen, this.state.menuOpen ? "1" : "0");
 		this.menuOpen = this.state.menuOpen;
 		this.pendingId = this.state.id;
+		if (!this.state.id) {
+			this.mapStatus = "Enter an ID to load a track.";
+			this.ensureMenuOpen();
+		} else {
+			this.mapStatus = "";
+		}
 		this.setupMap();
 		this.$nextTick(() => {
 			if (this.mapInstance) {
@@ -233,15 +238,29 @@ const createAppState = () => {
 		});
 		if (this.state.id) {
 			this.loadTrack();
-		} else {
-			this.mapStatus = "Enter an ID to load a track.";
 		}
 		this.loadHuts();
+		setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
 	},
 
 	toggleMenu() {
 		this.menuOpen = !this.menuOpen;
+		this.state.menuOpen = this.menuOpen;
 		setCookie(COOKIE_KEYS.menuOpen, this.menuOpen ? "1" : "0");
+		this.$nextTick(() => {
+			if (this.mapInstance) {
+				this.mapInstance.invalidateSize();
+			}
+		});
+	},
+
+	ensureMenuOpen() {
+		if (this.menuOpen) {
+			return;
+		}
+		this.menuOpen = true;
+		this.state.menuOpen = true;
+		setCookie(COOKIE_KEYS.menuOpen, "1");
 		this.$nextTick(() => {
 			if (this.mapInstance) {
 				this.mapInstance.invalidateSize();
@@ -254,6 +273,8 @@ const createAppState = () => {
 		if (!trimmed) {
 			this.errorMessage = "Please enter a valid track id.";
 			this.hasError = true;
+			this.mapStatus = this.errorMessage;
+			this.ensureMenuOpen();
 			return;
 		}
 
@@ -515,6 +536,8 @@ const createAppState = () => {
 
 	loadTrack() {
 		if (!this.state.id) {
+			this.mapStatus = "Enter an ID to load a track.";
+			this.ensureMenuOpen();
 			return;
 		}
 
@@ -552,6 +575,7 @@ const createAppState = () => {
 				this.hasError = true;
 				this.errorMessage = error.message || "Something went wrong.";
 				this.mapStatus = this.errorMessage;
+					this.ensureMenuOpen();
 				this.clearTrackLayers();
 			});
 	},

@@ -121,6 +121,10 @@
                         </label>
                     </div>
                 </template>
+
+                <div class="settings__section settings__section--status" x-show="mapStatus">
+                    <p class="map-status" x-text="mapStatus" role="status"></p>
+                </div>
             </div>
         </aside>
 
@@ -136,12 +140,6 @@
             ☰
         </button>
     </div>
-
-    <template x-if="state.id">
-        <div class="map-status">
-            <span x-text="mapStatus"></span>
-        </div>
-    </template>
 </body>
 
 </html>
