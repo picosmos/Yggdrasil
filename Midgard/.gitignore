@@ -1,0 +1,2 @@
+# include node_modules to be able to compile it without npm being installed as only static pre-compiled files will be referenced.
+!node_modules

@@ -3,17 +3,21 @@
         "appsettings",
         "aspnet",
         "ASPNETCORE",
+        "colour",
         "Heimdallr",
         "Himinbjorg",
+        "hsluv",
         "imei",
         "Miðgarðr",
         "openstreetmap",
         "opentopomap",
         "opentpo",
+        "ownername",
         "Protegear",
         "Rubberduck",
         "Skithblathnir",
         "topo",
-        "tracetrack"
+        "tracetrack",
+        "trackpoints"
     ]
 }
