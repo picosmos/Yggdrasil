@@ -5,10 +5,6 @@ import { prepareTrackPoints } from "./trackpoints.js";
 import { distanceBetweenPoints } from "./coordinates.js";
 
 const L = Leaflet;
-// Ensure backwards compatibility for any scripts expecting a global Leaflet instance.
-if (typeof window !== "undefined" && !window.L) {
-	window.L = L;
-}
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -160,12 +156,6 @@ const createAppState = () => {
 	},
 
 	setupMap() {
-		if (!window.L) {
-			this.errorMessage = "Leaflet failed to load.";
-			this.hasError = true;
-			return;
-		}
-
 		const mapOptions = {
 			center: [this.state.lat, this.state.lng],
 			zoom: this.state.zoom,
