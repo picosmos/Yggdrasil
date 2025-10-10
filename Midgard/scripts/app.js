@@ -66,12 +66,14 @@ const DEFAULT_STATE = {
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
 	zoom: DEFAULT_VIEW.zoom,
-	segmentLengthLimitKm: MAX_SEGMENT_LENGTH_KM
+	segmentLengthLimitKm: MAX_SEGMENT_LENGTH_KM,
+	showHuts: true
 };
 
 const urlStateOptions = {
 	alias: { mapSource: "src", colorParam: "color" },
 	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
+	booleanKeys: ["showHuts"],
 	tokenParsers: {
 		colorEnabled: (params, fallback) => {
 			const token = params.get("color") ?? params.get("colour");
@@ -80,7 +82,7 @@ const urlStateOptions = {
 		colorParam: (params) => params.get("color") ?? params.get("colour") ?? "",
 		baseColor: (params, fallback) => params.get("baseColor") ?? params.get("baseColour") ?? fallback
 	},
-	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "baseColor", "lat", "lng", "zoom", "colorParam", "segmentLengthLimitKm"]
+	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "baseColor", "lat", "lng", "zoom", "colorParam", "segmentLengthLimitKm", "showHuts"]
 };
 
 const getInitialState = () => {
@@ -106,6 +108,7 @@ const createAppState = () => {
 		trackLayer: null,
 		pointLayer: null,
 		hutLayer: null,
+		hutData: [],
 		trackEvents: [],
 		breakHourOptions: BREAK_HOUR_VALUES,
 		speedCutoffOptions: SPEED_CUTOFF_VALUES,
@@ -234,6 +237,32 @@ const createAppState = () => {
 		this.state.colorParam = nextColor;
 		writeUrlState(DEFAULT_STATE, { colorParam: nextColor }, urlStateOptions);
 		this.renderTrack();
+	},
+
+	setShowHuts(value) {
+		const flag = Boolean(value);
+		if (this.state.showHuts === flag) {
+			this.updateHutVisibility();
+			return;
+		}
+
+		this.state.showHuts = flag;
+		writeUrlState(DEFAULT_STATE, { showHuts: flag ? "true" : "false" }, urlStateOptions);
+		this.updateHutVisibility();
+	},
+
+	updateHutVisibility() {
+		if (!this.mapInstance || !this.hutLayer) {
+			return;
+		}
+
+		if (this.state.showHuts) {
+			if (!this.mapInstance.hasLayer(this.hutLayer)) {
+				this.hutLayer.addTo(this.mapInstance);
+			}
+		} else {
+			this.hutLayer.remove();
+		}
 	},
 
 	breakHoursIndex() {
@@ -547,7 +576,8 @@ const createAppState = () => {
 					header: true,
 					skipEmptyLines: true
 				});
-				this.renderHuts(parsed.data ?? []);
+				this.hutData = Array.isArray(parsed.data) ? parsed.data : [];
+				this.renderHuts(this.hutData);
 			})
 			.catch((error) => {
 				console.warn(error.message);
@@ -591,7 +621,9 @@ const createAppState = () => {
 				.addTo(this.hutLayer);
 		});
 
-		this.hutLayer.addTo(this.mapInstance);
+		if (this.state.showHuts) {
+			this.hutLayer.addTo(this.mapInstance);
+		}
 	}
 	};
 };

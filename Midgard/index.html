@@ -50,6 +50,11 @@
                             </select>
                         </label>
 
+                        <label class="field checkbox">
+                            <input type="checkbox" :checked="state.showHuts" @change="setShowHuts($event.target.checked)">
+                            <span>Show huts</span>
+                        </label>
+
                         <div class="field">
                             <span>Colour mode</span>
                             <div class="radio-group">
