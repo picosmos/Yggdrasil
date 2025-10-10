@@ -83,27 +83,40 @@ const createAppState = () => {
 	const speedCutoffSlider = createSliderHandler(SPEED_CUTOFF_VALUES);
 	const segmentLengthHandler = createSegmentLengthHandler(MIN_SEGMENT_LENGTH_KM, MAX_SEGMENT_LENGTH_KM, SEGMENT_LENGTH_SLIDER_STEPS);
 
-	const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-	const initialViewFromUrl = Boolean(searchParams && (searchParams.has("lat") || searchParams.has("lng") || searchParams.has("zoom")));
+	// Check if view parameters differ from defaults (indicating URL parameters were provided)
+	const hasViewParams = (
+		state.lat !== DEFAULT_VIEW.lat ||
+		state.lng !== DEFAULT_VIEW.lng ||
+		state.zoom !== DEFAULT_VIEW.zoom
+	);
+
+	// Normalize map source to ensure it matches available options
+	const normalizedMapSource = normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource);
+
+	// Create a new state object with all normalized values for template binding
+	const appState = {
+		...state,
+		mapSource: normalizedMapSource,
+		colorEnabled,
+		baseColor
+	};
 
 	return {
 		mapSources: MAP_SOURCES,
 		menuOpen,
 		hasInitializedMenu: false,
-		state,
-		pendingId: state.id,
+		state: appState,
+		pendingId: appState.id,
 		hasError: false,
 		errorMessage: "",
 		mapStatus: "",
-		colorEnabled,
-		baseColor,
 		trackEvents: [],
 		hutData: [],
 		breakHourOptions: BREAK_HOUR_VALUES,
 		speedCutoffOptions: SPEED_CUTOFF_VALUES,
 		segmentLengthSliderSteps: SEGMENT_LENGTH_SLIDER_STEPS,
-		hasUserAdjustedView: initialViewFromUrl,
-		initialViewFromUrl,
+		hasUserAdjustedView: hasViewParams,
+		initialViewFromUrl: hasViewParams,
 
 		// Managers
 		stateManager,
@@ -171,11 +184,8 @@ const createAppState = () => {
 				return;
 			}
 
+			// MapManager.initialize will set the initial view from this.state (which includes URL params)
 			this.mapManager.initialize(container, this.state, MAP_SOURCES, this.state.mapSource);
-
-			if (!this.initialViewFromUrl) {
-				this.mapManager.setView(this.state.lat, this.state.lng, this.state.zoom);
-			}
 
 			this.mapManager.onViewChange = (viewData) => {
 				this.state.lat = viewData.lat;
@@ -202,9 +212,9 @@ const createAppState = () => {
 
 		setColorMode(enabled) {
 			const next = Boolean(enabled);
-			if (this.colorEnabled !== next) {
-				this.colorEnabled = next;
-				this.colorManager.setColorMode(next, this.baseColor);
+			if (this.state.colorEnabled !== next) {
+				this.state.colorEnabled = next;
+				this.colorManager.setColorMode(next, this.state.baseColor);
 				this.renderTrackData();
 			}
 		},
@@ -267,7 +277,7 @@ const createAppState = () => {
 		},
 
 		updateBaseColor() {
-			this.colorManager.updateBaseColor(this.baseColor);
+			this.colorManager.updateBaseColor(this.state.baseColor);
 			this.renderTrackData();
 		},
 
@@ -304,7 +314,11 @@ const createAppState = () => {
 					} else {
 						this.mapStatus = `${this.trackEvents.length} events loaded.`;
 					}
-					this.hasUserAdjustedView = this.initialViewFromUrl;
+					// Only reset hasUserAdjustedView if we didn't have view params initially
+					// This prevents fitBounds from overriding URL-specified positions
+					if (!this.hasUserAdjustedView) {
+						this.hasUserAdjustedView = this.initialViewFromUrl;
+					}
 					this.initialViewFromUrl = false;
 					this.renderTrackData();
 				})
@@ -324,8 +338,8 @@ const createAppState = () => {
 				segmentLengthLimitKm: this.state.segmentLengthLimitKm,
 				minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
 				maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
-				colorEnabled: this.colorEnabled,
-				baseColor: this.baseColor,
+				colorEnabled: this.state.colorEnabled,
+				baseColor: this.state.baseColor,
 				hasUserAdjustedView: this.hasUserAdjustedView
 			});
 

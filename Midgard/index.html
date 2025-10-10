@@ -44,7 +44,7 @@
                             <span>Base map</span>
                             <select x-model="state.mapSource" @change="updateMapSource">
                                 <template x-for="source in mapSources" :key="source.key">
-                                    <option :value="source.key" x-text="source.label"></option>
+                                    <option :value="source.key" x-text="source.label" :selected="source.key === state.mapSource"></option>
                                 </template>
                             </select>
                         </label>
