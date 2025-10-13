@@ -41,7 +41,8 @@ export const renderTrack = (mapManager, trackEvents, options) => {
                 lat: Number(pos.lat),
                 lon: Number(pos.lng),
                 time: new Date(event.sent ?? event.event.time ?? event.time ?? event.timestamp ?? Date.now()),
-                speed: Number(pos.speed ?? event.event.speed ?? event.speed ?? 0)
+                speed: Number(pos.speed ?? event.event.speed ?? event.speed ?? 0),
+                altitude: pos.altitude ?? pos.alt ?? null
             };
         })
         .filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lon))
@@ -79,17 +80,106 @@ export const renderTrack = (mapManager, trackEvents, options) => {
 
     const timeFormatter = new Intl.DateTimeFormat("en-GB", {
         year: "numeric",
-        month: "2-digit",
+        month: "short",
         day: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         timeZone: "Europe/Oslo",
-        timeZoneName: "short"
+        hour12: false
     });
 
     // Helper: Create pairs of consecutive elements like F# Seq.pairwise
     const pairwise = (arr) => arr.slice(0, -1).map((item, i) => [item, arr[i + 1]]);
+
+    // Helper: Format duration in a human-readable way
+    const formatDuration = (ms) => {
+        if (ms < 0) return "N/A";
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+        if (hours > 0) return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+        if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+        return `${seconds}s`;
+    };
+
+    // Helper: Format distance in a human-readable way
+    const formatDistance = (meters) => {
+        if (meters < 0) return "N/A";
+        if (meters < 1000) return `${Math.round(meters)}m`;
+        return `${(meters / 1000).toFixed(2)}km`;
+    };
+
+    // Helper: Create GeoHack URL for coordinates
+    const createGeoHackUrl = (lat, lon) => {
+        const latAbs = Math.abs(lat);
+        const lonAbs = Math.abs(lon);
+        const latDir = lat >= 0 ? 'N' : 'S';
+        const lonDir = lon >= 0 ? 'E' : 'W';
+        return `https://geohack.toolforge.org/geohack.php?params=${latAbs}_${latDir}_${lonAbs}_${lonDir}`;
+    };
+
+    // Helper: Create popup HTML content
+    const createPopupContent = (point, prevPoint, nextPoint) => {
+        // Format time as "dd MMM yyyy, hh:mm:ss"
+        const formattedParts = timeFormatter.formatToParts(point.time);
+        const day = formattedParts.find(p => p.type === 'day').value;
+        const month = formattedParts.find(p => p.type === 'month').value;
+        const year = formattedParts.find(p => p.type === 'year').value;
+        const hour = formattedParts.find(p => p.type === 'hour').value;
+        const minute = formattedParts.find(p => p.type === 'minute').value;
+        const second = formattedParts.find(p => p.type === 'second').value;
+        const time = `${day} ${month} ${year}, ${hour}:${minute}:${second}`;
+        
+        const geoHackUrl = createGeoHackUrl(point.lat, point.lon);
+        
+        let html = '<table class="track-point-info">';
+        
+        // Time with timezone
+        html += `<tr><th>Time:</th><td>${time}</td></tr>`;
+        
+        // Altitude
+        const altitudeText = point.altitude !== null && point.altitude !== undefined 
+            ? `${Math.round(point.altitude)} m` 
+            : 'N/A';
+        html += `<tr><th>Altitude:</th><td>${altitudeText}</td></tr>`;
+        
+        // Coordinates with GeoHack link
+        const latDir = point.lat >= 0 ? 'N' : 'S';
+        const lonDir = point.lon >= 0 ? 'E' : 'W';
+        const coordsText = `${Math.abs(point.lat).toFixed(6)}° ${latDir}, ${Math.abs(point.lon).toFixed(6)}° ${lonDir}`;
+        html += `<tr><th>Coordinates:</th><td><a href="${geoHackUrl}" target="_blank" rel="noopener noreferrer">${coordsText}</a></td></tr>`;
+        
+        // Distance to previous point
+        if (prevPoint) {
+            const distToPrev = distanceBetween(prevPoint, point);
+            html += `<tr><th>Distance from prev:</th><td>${formatDistance(distToPrev)}</td></tr>`;
+        }
+        
+        // Distance to next point
+        if (nextPoint) {
+            const distToNext = distanceBetween(point, nextPoint);
+            html += `<tr><th>Distance to next:</th><td>${formatDistance(distToNext)}</td></tr>`;
+        }
+        
+        // Time elapsed from previous point
+        if (prevPoint) {
+            const timeDelta = point.time - prevPoint.time;
+            html += `<tr><th>Time from prev:</th><td>${formatDuration(timeDelta)}</td></tr>`;
+        }
+        
+        // Time elapsed to next point
+        if (nextPoint) {
+            const timeDelta = nextPoint.time - point.time;
+            html += `<tr><th>Time to next:</th><td>${formatDuration(timeDelta)}</td></tr>`;
+        }
+        
+        html += '</table>';
+        return html;
+    };
 
     // Step 4: Render each sub-series
     subSeries.forEach((series) => {
@@ -133,8 +223,10 @@ export const renderTrack = (mapManager, trackEvents, options) => {
                 weight: 1
             });
 
-            const time = timeFormatter.format(point.time).replace(",", "");
-            marker.bindPopup(`Time: ${time}`);
+            const prevPoint = index > 0 ? series[index - 1] : null;
+            const nextPoint = index < series.length - 1 ? series[index + 1] : null;
+            const popupContent = createPopupContent(point, prevPoint, nextPoint);
+            marker.bindPopup(popupContent);
             marker.addTo(mapManager.pointLayer);
         });
 

@@ -16,7 +16,7 @@ const SPEED_CUTOFF_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 50, 
 
 const MIN_SEGMENT_LENGTH_KM = 0.1;
 const MAX_SEGMENT_LENGTH_KM = 50;
-const SEGMENT_LENGTH_SLIDER_STEPS = 120;
+const SEGMENT_LENGTH_SLIDER_STEPS = 123;
 
 const MAP_SOURCES = [
 	{
@@ -59,7 +59,7 @@ const DEFAULT_STATE = {
 	lat: DEFAULT_VIEW.lat,
 	lng: DEFAULT_VIEW.lng,
 	zoom: DEFAULT_VIEW.zoom,
-	segmentLengthLimitKm: 1.0,
+	segmentLengthLimitKm: 3.0,
 	showHuts: true
 };
 

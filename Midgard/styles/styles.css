@@ -531,3 +531,19 @@ button:not(.primary):not(.menu-toggle):active {
     width: 100%;
     height: auto;
 }
+
+/* Leaflet popup table styles */
+.leaflet-popup-content table.track-point-info {
+    font-size: 12px;
+    border-collapse: collapse;
+}
+
+.leaflet-popup-content table.track-point-info th {
+    text-align: left;
+    font-weight: bold;
+    padding: 2px 8px 2px 0;
+}
+
+.leaflet-popup-content table.track-point-info td {
+    padding: 2px 0;
+}
