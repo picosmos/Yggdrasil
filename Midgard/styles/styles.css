@@ -371,6 +371,30 @@ input[type="color"][disabled] {
     outline: none;
 }
 
+/* Slider thumb (knob) animation - smooth transitions for color and transform */
+.slider-line input[type="range"]::-webkit-slider-thumb {
+    transition: transform 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+    cursor: pointer;
+}
+
+.slider-line input[type="range"]::-moz-range-thumb {
+    transition: transform 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+    cursor: pointer;
+}
+
+/* Zoom and color change only when hovering directly over the thumb */
+.slider-line input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+    background-color: var(--blue-base);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.slider-line input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.25);
+    background-color: var(--blue-base);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
 .slider-line output {
     min-width: 64px;
     text-align: right;
