@@ -25,17 +25,28 @@ public class CachedRequestService(ILogger<CachedRequestService> logger, MimirDbC
 
     public void AddOrReplaceCacheEntry(string url, string response)
     {
-        this._mimirDbContext.CachedRequests.Where(x => x.RequestUrl == url).ExecuteDelete();
-
-        var cachedRequest = new CachedRequest
+        using var transaction = this._mimirDbContext.Database.BeginTransaction();
+        try
         {
-            RequestUrl = url,
-            ResponseText = response,
-            LastRequestTimestamp = DateTime.UtcNow
-        };
+            this._mimirDbContext.CachedRequests.Where(x => x.RequestUrl == url).ExecuteDelete();
 
-        this._mimirDbContext.CachedRequests.Add(cachedRequest);
-        this._mimirDbContext.SaveChanges();
-        this._logger.LogInformation("Added response to cache for URL: {Url}", url);
+            var cachedRequest = new CachedRequest
+            {
+                RequestUrl = url,
+                ResponseText = response,
+                LastRequestTimestamp = DateTime.UtcNow
+            };
+
+            this._mimirDbContext.CachedRequests.Add(cachedRequest);
+            this._mimirDbContext.SaveChanges();
+
+            transaction.Commit();
+            this._logger.LogInformation("Added response to cache for URL: {Url}", url);
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 }
