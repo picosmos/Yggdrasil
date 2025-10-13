@@ -64,7 +64,14 @@ const DEFAULT_STATE = {
 };
 
 const urlStateOptions = {
-	alias: { mapSource: "src" },
+	alias: { 
+		mapSource: "src",
+		breakHours: "bh",
+		speedCutoff: "sco",
+		zoom: "z",
+		segmentLengthLimitKm: "sll",
+		showHuts: "hts"
+	},
 	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
 	booleanKeys: ["showHuts"],
 	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts"]
