@@ -71,3 +71,4 @@ Thus, the three roots of Yggdrasil are not merely symbolic, but serve as the liv
 # To Do
 
 - Script to facilitate initial setup
+- pipelines for deployment of beta (Jotunheim)/release (Asgard) version
