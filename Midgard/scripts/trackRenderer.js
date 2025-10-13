@@ -181,82 +181,7 @@ export const renderTrack = (mapManager, trackEvents, options) => {
         return html;
     };
 
-    // Step 4: Render each sub-series
-    subSeries.forEach((series) => {
-        const seriesColor = colorScale(series[0].groupId);
-
-        // Step 4a: Calculate track segments with speed calculated per segment
-        const segments = pairwise(series).map(([curr, next]) => {
-            const timeDelta = next.time - curr.time;
-            const distance = distanceBetween(curr, next);
-
-            // Calculate speed for THIS SEGMENT (not from point data)
-            const timeSeconds = timeDelta / 1000;
-            const segmentSpeed = timeSeconds > 0 ? (distance / timeSeconds) * 3.6 : 0; // km/h
-
-            // Determine if this segment qualifies as a valid track segment
-            const isTrackSegment = segmentSpeed < speedLimit && distance <= maxSegmentLengthMeters;
-
-            return { curr, next, distance, segmentSpeed, isTrackSegment };
-        });
-
-        // Build set of point indices that are adjacent to valid track segments
-        const connectedPoints = new Set();
-        segments.forEach(({ isTrackSegment }, index) => {
-            if (isTrackSegment) {
-                connectedPoints.add(index);
-                connectedPoints.add(index + 1);
-            }
-        });
-
-        // Step 4b: Draw each point
-        series.forEach((point, index) => {
-            const isConnected = connectedPoints.has(index);
-            const radius = isConnected ? 5 : 2.5;
-            const opacity = isConnected ? 0.85 : 0.5;
-
-            const marker = L.circleMarker([point.lat, point.lon], {
-                radius,
-                color: seriesColor,
-                fillColor: seriesColor,
-                fillOpacity: opacity,
-                weight: 1
-            });
-
-            const prevPoint = index > 0 ? series[index - 1] : null;
-            const nextPoint = index < series.length - 1 ? series[index + 1] : null;
-            const popupContent = createPopupContent(point, prevPoint, nextPoint);
-            marker.bindPopup(popupContent);
-            marker.addTo(mapManager.pointLayer);
-        });
-
-        // Step 4c: Draw all track segments
-        segments.forEach(({ curr, next, distance, segmentSpeed, isTrackSegment }) => {
-            // Skip segments that exceed the length limit entirely
-            if (distance > maxSegmentLengthMeters) {
-                return;
-            }
-
-            const coords = [[curr.lat, curr.lon], [next.lat, next.lon]];
-
-            if (isTrackSegment) {
-                L.polyline(coords, {
-                    color: seriesColor,
-                    weight: 3,
-                    opacity: 1.0
-                }).addTo(mapManager.trackLayer);
-            } else {
-                L.polyline(coords, {
-                    color: seriesColor,
-                    weight: 2,
-                    opacity: 0.6,
-                    dashArray: '3, 4.5'
-                }).addTo(mapManager.trackLayer);
-            }
-        });
-    });
-
-    // Step 5: Render segments between sub-series
+    // Step 4: Render segments between sub-series
     for (let i = 0; i < subSeries.length - 1; i++) {
         const currentSeries = subSeries[i];
         const nextSeries = subSeries[i + 1];
@@ -284,6 +209,81 @@ export const renderTrack = (mapManager, trackEvents, options) => {
             }).addTo(mapManager.trackLayer);
         }
     }
+
+    // Step 5: Render each sub-series
+    subSeries.forEach((series) => {
+        const seriesColor = colorScale(series[0].groupId);
+
+        // Step 5a: Calculate track segments with speed calculated per segment
+        const segments = pairwise(series).map(([curr, next]) => {
+            const timeDelta = next.time - curr.time;
+            const distance = distanceBetween(curr, next);
+
+            // Calculate speed for THIS SEGMENT (not from point data)
+            const timeSeconds = timeDelta / 1000;
+            const segmentSpeed = timeSeconds > 0 ? (distance / timeSeconds) * 3.6 : 0; // km/h
+
+            // Determine if this segment qualifies as a valid track segment
+            const isTrackSegment = segmentSpeed < speedLimit && distance <= maxSegmentLengthMeters;
+
+            return { curr, next, distance, segmentSpeed, isTrackSegment };
+        });
+
+        // Build set of point indices that are adjacent to valid track segments
+        const connectedPoints = new Set();
+        segments.forEach(({ isTrackSegment }, index) => {
+            if (isTrackSegment) {
+                connectedPoints.add(index);
+                connectedPoints.add(index + 1);
+            }
+        });
+
+        // Step 5b: Draw all track segments
+        segments.forEach(({ curr, next, distance, segmentSpeed, isTrackSegment }) => {
+            // Skip segments that exceed the length limit entirely
+            if (distance > maxSegmentLengthMeters) {
+                return;
+            }
+
+            const coords = [[curr.lat, curr.lon], [next.lat, next.lon]];
+
+            if (isTrackSegment) {
+                L.polyline(coords, {
+                    color: seriesColor,
+                    weight: 3,
+                    opacity: 1.0
+                }).addTo(mapManager.trackLayer);
+            } else {
+                L.polyline(coords, {
+                    color: seriesColor,
+                    weight: 2,
+                    opacity: 0.6,
+                    dashArray: '3, 4.5'
+                }).addTo(mapManager.trackLayer);
+            }
+        });
+        
+        // Step 5c: Draw each point
+        series.forEach((point, index) => {
+            const isConnected = connectedPoints.has(index);
+            const radius = isConnected ? 5 : 2.5;
+            const opacity = isConnected ? 0.85 : 0.5;
+
+            const marker = L.circleMarker([point.lat, point.lon], {
+                radius,
+                color: seriesColor,
+                fillColor: seriesColor,
+                fillOpacity: opacity,
+                weight: 1
+            });
+
+            const prevPoint = index > 0 ? series[index - 1] : null;
+            const nextPoint = index < series.length - 1 ? series[index + 1] : null;
+            const popupContent = createPopupContent(point, prevPoint, nextPoint);
+            marker.bindPopup(popupContent);
+            marker.addTo(mapManager.pointLayer);
+        });
+    });
 
     // Step 6: Fit map bounds if needed
     const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lon]));
