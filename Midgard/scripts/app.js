@@ -245,6 +245,12 @@ const createAppState = () => {
 			}
 		},
 
+		centerMap() {
+			// Re-render track data which will fit bounds to all points
+			this.hasUserAdjustedView = false;
+			this.renderTrackData();
+		},
+
 		breakHoursIndex() {
 			return this.breakHoursSlider.getIndex(this.state.breakHours);
 		},
