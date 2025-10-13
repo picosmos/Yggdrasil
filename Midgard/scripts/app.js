@@ -27,13 +27,13 @@ const MAP_SOURCES = [
 	},
 	{
 		key: "osm",
-		label: "Classic",
+		label: "Classic OpenStreetMap (OSM)",
 		url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 		options: { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>' }
 	},
 	{
-		key: "opentpo",
-		label: "Topo",
+		key: "opentopo",
+		label: "OpenTopoMap",
 		url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
 		options: { maxZoom: 19, attribution: '&copy; <a href="https://opentopomap.org/">OpenTopoMap</a> (CC-BY-SA)' }
 	},
