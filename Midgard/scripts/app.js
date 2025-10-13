@@ -117,6 +117,7 @@ const createAppState = () => {
 		hasError: false,
 		errorMessage: "",
 		mapStatus: "",
+		showMapStatusModal: false,
 		trackEvents: [],
 		hutData: [],
 		breakHourOptions: BREAK_HOUR_VALUES,
@@ -136,10 +137,10 @@ const createAppState = () => {
 		init() {
 			this.pendingId = this.state.id;
 			if (!this.state.id) {
-				this.mapStatus = "Enter an ID to load a track.";
+				this.setMapStatus("Enter an ID to load a track.", false);
 				this.ensureMenuOpen();
 			} else {
-				this.mapStatus = "";
+				this.setMapStatus("", false);
 			}
 			this.setupMap();
 			this.$nextTick(() => {
@@ -150,6 +151,11 @@ const createAppState = () => {
 				this.loadTrack();
 			}
 			this.loadHutsAsync();
+		},
+
+		setMapStatus(message, showModal = false) {
+			this.mapStatus = message;
+			this.showMapStatusModal = showModal;
 		},
 
 		setMenuOpen(isOpen) {
@@ -173,7 +179,7 @@ const createAppState = () => {
 			if (!trimmed) {
 				this.errorMessage = "Please enter a valid track id.";
 				this.hasError = true;
-				this.mapStatus = this.errorMessage;
+				this.setMapStatus(this.errorMessage, true);
 				this.ensureMenuOpen();
 				return;
 			}
@@ -296,12 +302,12 @@ const createAppState = () => {
 
 		loadTrack() {
 			if (!this.state.id) {
-				this.mapStatus = "Enter an ID to load a track.";
+				this.setMapStatus("Enter an ID to load a track.", false);
 				this.ensureMenuOpen();
 				return;
 			}
 
-			this.mapStatus = "Loading track…";
+			this.setMapStatus("Loading track…", true);
 			this.hasError = false;
 			this.errorMessage = "";
 
@@ -323,9 +329,9 @@ const createAppState = () => {
 				.then((data) => {
 					this.trackEvents = Array.isArray(data) ? data : [];
 					if (this.trackEvents.length === 0) {
-						this.mapStatus = "No track points available.";
+						this.setMapStatus("No track points available.", true);
 					} else {
-						this.mapStatus = `${this.trackEvents.length} events loaded.`;
+						this.setMapStatus(`${this.trackEvents.length} events loaded.`, false);
 					}
 					// Only reset hasUserAdjustedView if we didn't have view params initially
 					// This prevents fitBounds from overriding URL-specified positions
@@ -338,7 +344,7 @@ const createAppState = () => {
 				.catch((error) => {
 					this.hasError = true;
 					this.errorMessage = error.message || "Something went wrong.";
-					this.mapStatus = this.errorMessage;
+					this.setMapStatus(this.errorMessage, true);
 					this.ensureMenuOpen();
 					this.mapManager.clearTrackLayers();
 				});
@@ -356,7 +362,8 @@ const createAppState = () => {
 				hasUserAdjustedView: this.hasUserAdjustedView
 			});
 
-			this.mapStatus = result.message;
+			// Don't show modal for normal status messages (e.g., "X events loaded")
+			this.setMapStatus(result.message, false);
 		},
 
 		async loadHutsAsync() {

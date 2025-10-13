@@ -139,10 +139,18 @@
         </aside>
 
         <main class="map-wrapper">
-            <div id="map" x-ref="map"></div>
+            <div id="map" x-ref="map" :class="{ 'map--modal-active': showMapStatusModal }"></div>
             <div id="error" x-show="hasError" x-transition>
                 <h1 x-text="errorMessage"></h1>
                 <img src="./assets/guillaume.png" alt="Rubberduck" />
+            </div>
+            
+            <!-- Map Status Modal Dialog -->
+            <div class="map-status-modal" x-show="showMapStatusModal" x-transition>
+                <div class="map-status-modal__backdrop"></div>
+                <div class="map-status-modal__dialog">
+                    <p class="map-status-modal__message" x-text="mapStatus" role="status"></p>
+                </div>
             </div>
         </main>
 
