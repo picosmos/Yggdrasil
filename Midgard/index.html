@@ -25,7 +25,7 @@
                         <p>Who do you want to track?</p>
                         <label class="field">
                             <span>Track ID</span>
-                            <input type="text" x-model="pendingId" placeholder="Enter track id" />
+                            <input type="text" x-model="pendingId" placeholder="Enter track id" @keyup.enter="applyId" />
                         </label>
                         <button class="primary" type="button" @click="applyId">Load track</button>
                     </div>
