@@ -115,8 +115,6 @@ const createAppState = () => {
 		hasInitializedMenu: false,
 		state: appState,
 		pendingId: appState.id,
-		hasError: false,
-		errorMessage: "",
 		mapStatus: "",
 		showMapStatusModal: false,
 		trackEvents: [],
@@ -178,15 +176,11 @@ const createAppState = () => {
 		applyId() {
 			const trimmed = (this.pendingId || "").trim();
 			if (!trimmed) {
-				this.errorMessage = "Please enter a valid track id.";
-				this.hasError = true;
-				this.setMapStatus(this.errorMessage, true);
+				this.setMapStatus("Please enter a valid track id.", true);
 				this.ensureMenuOpen();
 				return;
 			}
 
-			this.hasError = false;
-			this.errorMessage = "";
 			this.state.id = trimmed;
 			this.stateManager.persistState({ id: trimmed });
 			this.loadTrack();
@@ -309,8 +303,6 @@ const createAppState = () => {
 			}
 
 			this.setMapStatus("Loading track…", true);
-			this.hasError = false;
-			this.errorMessage = "";
 
 			let baseUrl = readCookie("baseUrl") || "";
 			fetch(`${baseUrl}/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
@@ -344,9 +336,7 @@ const createAppState = () => {
 					this.renderTrackData();
 				})
 				.catch((error) => {
-					this.hasError = true;
-					this.errorMessage = error.message || "Something went wrong.";
-					this.setMapStatus(this.errorMessage, true);
+					this.setMapStatus(error.message || "Something went wrong.", true);
 					this.ensureMenuOpen();
 					this.mapManager.clearTrackLayers();
 				});

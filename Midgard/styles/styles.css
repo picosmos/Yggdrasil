@@ -6,7 +6,7 @@
     --blue-dark: #1d4ed8;
     --blue-darker: #1e40af;
     --blue-darkest: #1e3a8a;
-    
+
     --slate-50: #f8fafc;
     --slate-100: #f1f5f9;
     --slate-200: #e2e8f0;
@@ -17,30 +17,30 @@
     --slate-700: #334155;
     --slate-800: #1e293b;
     --slate-900: #0f172a;
-    
+
     --text-primary: #1f2933;
     --bg-light: #f5f7fa;
-    
+
     /* Glass effect */
     --glass-bg: rgba(235, 235, 235, 0.75);
     --glass-border: rgba(15, 23, 42, 0.1);
     --glass-shadow: -3px 0 16px rgba(15, 23, 42, 0.12);
-    
+
     /* Blue effects - borders and highlights */
     --blue-border-light: rgba(59, 130, 246, 0.4);
     --blue-border-medium: rgba(37, 99, 235, 0.6);
-    
+
     /* Blue glow effects */
     --glow-light: rgba(59, 130, 246, 0.1);
     --glow-medium: rgba(59, 130, 246, 0.25);
     --glow-strong: rgba(37, 99, 235, 0.2);
     --glow-focus: rgba(29, 78, 216, 0.4);
-    
+
     /* Blue drop shadows */
     --drop-shadow-light: drop-shadow(0 0 4px rgba(59, 130, 246, 0.25));
     --drop-shadow-medium: drop-shadow(0 0 3px rgba(59, 130, 246, 0.4));
     --drop-shadow-strong: drop-shadow(0 0 6px rgba(37, 99, 235, 0.35));
-    
+
     /* Transitions */
     --transition-fast: 120ms ease;
     --transition-normal: 180ms ease;
@@ -135,13 +135,13 @@ hr {
 }
 
 /* Embossed look when menu is open */
-.settings.is-open ~ .menu-toggle {
+.settings.is-open~.menu-toggle {
     background: linear-gradient(145deg, rgba(226, 232, 240, 0.9), rgba(241, 245, 249, 0.9));
     box-shadow: inset 2px 2px 4px rgba(15, 23, 42, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.7);
     border-color: rgba(203, 213, 225, 0.5);
 }
 
-.settings.is-open ~ .menu-toggle:hover {
+.settings.is-open~.menu-toggle:hover {
     box-shadow: inset 2px 2px 4px rgba(15, 23, 42, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.8), 0 0 0 3px var(--glow-light);
 }
 
@@ -673,6 +673,11 @@ button:not(.primary):not(.menu-toggle):active {
     color: var(--slate-700);
     text-align: center;
     line-height: 1.5;
+}
+
+.guillaume {
+    max-width: min(420px, 80vw);
+    border-radius: 8px;
 }
 
 /* Disable map interactions when modal is active */
