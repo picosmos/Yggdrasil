@@ -5,6 +5,7 @@ import { StateManager } from "./stateManager.js";
 import { createSliderHandler, formatBreakHours, formatSegmentLength, createSegmentLengthHandler } from "./sliders.js";
 import { renderTrack } from "./trackRenderer.js";
 import { renderHuts, loadHuts } from "./hutRenderer.js";
+import { readCookie, setCookie } from "./cookies.js";
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -64,7 +65,7 @@ const DEFAULT_STATE = {
 };
 
 const urlStateOptions = {
-	alias: { 
+	alias: {
 		mapSource: "src",
 		breakHours: "bh",
 		speedCutoff: "sco",
@@ -204,10 +205,10 @@ const createAppState = () => {
 				this.state.lat = viewData.lat;
 				this.state.lng = viewData.lng;
 				this.state.zoom = viewData.zoom;
-				this.stateManager.persistState({ 
-					lat: viewData.lat, 
-					lng: viewData.lng, 
-					zoom: viewData.zoom 
+				this.stateManager.persistState({
+					lat: viewData.lat,
+					lng: viewData.lng,
+					zoom: viewData.zoom
 				});
 
 				if (!viewData.isProgrammatic) {
@@ -311,7 +312,8 @@ const createAppState = () => {
 			this.hasError = false;
 			this.errorMessage = "";
 
-			fetch(`/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
+			let baseUrl = readCookie("baseUrl") || "";
+			fetch(`${baseUrl}/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
 				method: "GET"
 			})
 				.then((response) => {
@@ -390,3 +392,10 @@ document.addEventListener("alpine:init", () => {
 // Provide a global fallback so x-data="app()" keeps working even if Alpine
 // evaluates before the alpine:init hook fires.
 window.app = createAppState;
+
+// Helper function for debugging using a locally served backend on a different port. Call this method once from the browser console.
+// Example: setBaseUrl("http://localhost:1339")
+window.setBaseUrl = (url) => {
+	window.baseUrl = url;
+	setCookie("baseUrl", url, 365);
+};
