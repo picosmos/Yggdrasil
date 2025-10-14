@@ -14,6 +14,25 @@ builder.Services.AddScoped<TrackDatabaseService>();
 builder.Services.AddScoped<ProtegearService>();
 builder.Services.AddScoped<CachedRequestService>();
 builder.Services.AddHostedService<PurgeCacheHostedService>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.SetIsOriginAllowed(origin =>
+        {
+            if (string.IsNullOrEmpty(origin))
+            {
+                return false;
+            }
+
+            var uri = new Uri(origin);
+            return uri.Host is "localhost" or "127.0.0.1";
+        })
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+    });
+});
 builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(Himinbjorg.Controllers.TrackController).Assembly)
                 .AddApplicationPart(typeof(Odin.Controllers.HomeController).Assembly);
@@ -42,5 +61,6 @@ app.MapControllerRoute(
 app.RegisterOdinRoutes();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors();
 
 app.Run();
