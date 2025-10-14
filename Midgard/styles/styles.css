@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../assets/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+    font-weight: 300 700;
+    font-display: swap;
+}
+
 :root {
     /* Color palette */
     --blue-light: #60a5fa;
@@ -55,7 +62,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+    font-family: "Quicksand", "Inter", "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
     background-color: var(--bg-light);
     max-height: 100vh;
@@ -77,14 +84,14 @@ body {
 
 .map-status {
     color: var(--slate-500);
-    font-size: 0.9rem;
+    font-weight: 300;
     margin: 0;
 }
 
 .settings__content h1 {
-    margin: 0 0 18px;
-    font-size: 1.4rem;
-    font-weight: 600;
+    margin: -6px 0 18px;
+    font-size: 2.2rem;
+    font-weight: 300;
 }
 
 .settings__section+.settings__section {
@@ -276,6 +283,7 @@ hr {
     cursor: pointer;
     transition: filter var(--transition-normal), transform var(--transition-normal);
     transform-origin: center;
+    margin-top: 0px;
 }
 
 .radio-option:hover input[type="radio"],
@@ -410,7 +418,7 @@ input[type="color"][disabled] {
     color: #fff;
     padding: 9px 16px;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
     transition: background var(--transition-normal), box-shadow var(--transition-normal);
@@ -564,7 +572,7 @@ button:not(.primary):not(.menu-toggle):active {
 
 .leaflet-popup-content table.track-point-info th {
     text-align: left;
-    font-weight: bold;
+    font-weight: 600;
     padding: 2px 8px 2px 0;
 }
 
