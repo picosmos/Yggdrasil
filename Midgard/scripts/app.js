@@ -516,6 +516,7 @@ const createAppState = () => {
 				}
 
 				const result = renderTrack(this.mapManager, trackEvents, {
+					trackId: trackId,
 					breakHours: settings.breakHours,
 					speedCutoff: this.state.speedCutoff,
 					segmentLengthLimitKm: this.state.segmentLengthLimitKm,

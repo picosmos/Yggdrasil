@@ -121,7 +121,7 @@ export const renderTrack = (mapManager, trackEvents, options) => {
     };
 
     // Helper: Create popup HTML content
-    const createPopupContent = (point, prevPoint, nextPoint) => {
+    const createPopupContent = (point, prevPoint, nextPoint, options) => {
         // Format time as "dd MMM yyyy, hh:mm:ss"
         const formattedParts = timeFormatter.formatToParts(point.time);
         const day = formattedParts.find(p => p.type === 'day').value;
@@ -135,6 +135,11 @@ export const renderTrack = (mapManager, trackEvents, options) => {
         const geoHackUrl = createGeoHackUrl(point.lat, point.lon);
         
         let html = '<table class="track-point-info">';
+        
+        // Track name/ID (if provided)
+        if (options && options.trackId) {
+            html += `<tr><th>Track:</th><td><strong>${options.trackId}</strong></td></tr>`;
+        }
         
         // Time with timezone
         html += `<tr><th>Time:</th><td>${time}</td></tr>`;
@@ -277,7 +282,7 @@ export const renderTrack = (mapManager, trackEvents, options) => {
 
             const prevPoint = index > 0 ? series[index - 1] : null;
             const nextPoint = index < series.length - 1 ? series[index + 1] : null;
-            const popupContent = createPopupContent(point, prevPoint, nextPoint);
+            const popupContent = createPopupContent(point, prevPoint, nextPoint, options);
             marker.bindPopup(popupContent);
             marker.addTo(mapManager.pointLayer);
         });
