@@ -17,12 +17,12 @@
 
 <body x-data="app()" x-init="init()">
     <div class="app-layout">
-        <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--no-animate': !hasInitializedMenu }">
-            <div class="settings__content">
+        <aside class="settings" :class="{ 'is-open': menuOpen, 'settings-no-animate': !hasInitializedMenu }">
+            <div class="settings-content">
                 <h1>Miðgarðr</h1>
 
                 <h2>Tracks</h2>
-                <div class="settings__section">
+                <div class="settings-section">
                     <div style="display: flex; gap: 8px; margin-bottom: 18px;">
                         <input type="text" x-model="pendingId" placeholder="Enter track id" @keyup.enter="applyId" style="flex: 1; border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 6px; padding: 8px 10px; font-size: 0.95rem;" />
                         <button class="primary" type="button" @click="applyId">Add</button>
@@ -31,28 +31,28 @@
                     <div class="field">
                         <template x-for="item in state.ids" :key="typeof item === 'string' ? item : item.id">
                             <div class="track-item">
-                                <div class="track-item__header">
-                                    <label class="field checkbox track-item__checkbox">
+                                <div class="track-item-header">
+                                    <label class="field checkbox track-item-checkbox">
                                         <input type="checkbox"
                                             :checked="trackSettings[typeof item === 'string' ? item : item.id]?.enabled"
                                             @change="toggleTrack(typeof item === 'string' ? item : item.id)">
                                         <span x-text="typeof item === 'string' ? item : item.id"></span>
                                     </label>
-                                    <button class="track-item__delete" type="button"
+                                    <button class="track-item-delete" type="button"
                                         @click="deleteTrack(typeof item === 'string' ? item : item.id)"
                                         title="Delete track">
                                         ×
                                     </button>
                                 </div>
 
-                                <div class="track-item__settings"
-                                    :class="{ 'track-item__settings--disabled': !trackSettings[typeof item === 'string' ? item : item.id]?.enabled }"
+                                <div class="track-item-settings"
+                                    :class="{ 'track-item-settings-disabled': !trackSettings[typeof item === 'string' ? item : item.id]?.enabled }"
                                     x-data="{ trackId: typeof item === 'string' ? item : item.id }">
 
-                                    <div class="field field--nested">
-                                        <span class="field__sub-label">Colour mode</span>
+                                    <div class="field field-nested">
+                                        <span class="field-sub-label">Colour mode</span>
 
-                                        <div class="radio-group radio-group--stacked">
+                                        <div class="radio-group radio-group-stacked">
                                             <label class="radio-option">
                                                 <input type="radio" :name="'colorMode-' + trackId"
                                                     :checked="!trackSettings[trackId]?.colorEnabled"
@@ -62,12 +62,12 @@
                                             </label>
 
                                             <!-- Base color picker - always shown, greyed when not in single colour mode -->
-                                            <div class="radio-option__content"
-                                                :class="{ 'field--disabled': trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
+                                            <div class="radio-option-content"
+                                                :class="{ 'field-disabled': trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
                                                 <div class="color-picker-field">
-                                                    <label class="color-picker-field__label">
+                                                    <label class="color-picker-field-label">
                                                         <span>Base colour</span>
-                                                        <input class="color-picker-field__input" type="color"
+                                                        <input class="color-picker-field-input" type="color"
                                                             x-model="trackSettings[trackId].color"
                                                             @input="updateTrackColor(trackId)"
                                                             :disabled="trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled"
@@ -77,7 +77,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="radio-group radio-group--stacked">
+                                        <div class="radio-group radio-group-stacked">
                                             <label class="radio-option">
                                                 <input type="radio" :name="'colorMode-' + trackId"
                                                     :checked="trackSettings[trackId]?.colorEnabled"
@@ -87,8 +87,8 @@
                                             </label>
 
                                             <!-- Settings always shown, greyed when not in Shenanigans mode -->
-                                            <div class="radio-option__content"
-                                                :class="{ 'field--disabled': !trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
+                                            <div class="radio-option-content"
+                                                :class="{ 'field-disabled': !trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
                                                 <label>
                                                     <span>New colour after</span>
                                                     <div class="slider-line">
@@ -155,21 +155,21 @@
                     <button class="primary" type="button" @click="centerMap">Center map to track(s)</button>
                 </div>
 
-                <div class="settings__section settings__section--status" x-show="mapStatus">
+                <div class="settings-section settings-section-status" x-show="mapStatus">
                     <p class="map-status" x-text="mapStatus" role="status"></p>
                 </div>
             </div>
         </aside>
 
         <main class="map-wrapper">
-            <div id="map" x-ref="map" :class="{ 'map--modal-active': showMapStatusModal }"></div>
+            <div id="map" x-ref="map" :class="{ 'map-modal-active': showMapStatusModal }"></div>
 
             <!-- Map Status Modal Dialog -->
             <div class="map-status-modal" x-show="showMapStatusModal" x-transition>
-                <div class="map-status-modal__backdrop"></div>
-                <div class="map-status-modal__dialog">
+                <div class="map-status-modal-backdrop"></div>
+                <div class="map-status-modal-dialog">
                     <img class="guillaume" src="./assets/guillaume.png" alt="Rubberduck" />
-                    <p class="map-status-modal__message" x-text="mapStatus" role="status"></p>
+                    <p class="map-status-modal-message" x-text="mapStatus" role="status"></p>
                 </div>
             </div>
         </main>
