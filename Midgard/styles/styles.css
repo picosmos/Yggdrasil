@@ -95,9 +95,14 @@ body {
     font-weight: 300;
 }
 
+.settings__content h2 {
+    margin: -6px 0 18px;
+    font-size: 1.6rem;
+    font-weight: 300;
+}
+
 .settings__section+.settings__section {
     margin-top: 24px;
-    border-top: 1px solid rgba(15, 23, 42, 0.08);
     padding-top: 24px;
 }
 
@@ -707,14 +712,6 @@ button:not(.primary):not(.menu-toggle):active {
 }
 
 /* Track items */
-.track-item {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-}
-
-.track-item:last-child {
-    border-bottom: none;
-}
 
 .track-item__header {
     display: flex;

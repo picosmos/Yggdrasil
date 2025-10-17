@@ -20,156 +20,140 @@
         <aside class="settings" :class="{ 'is-open': menuOpen, 'settings--no-animate': !hasInitializedMenu }">
             <div class="settings__content">
                 <h1>Miðgarðr</h1>
-                <template x-if="state.ids.length === 0">
-                    <div class="settings__section">
-                        <p>Who do you want to track?</p>
-                        <label class="field">
-                            <span>Track ID</span>
-                            <input type="text" x-model="pendingId" placeholder="Enter track id" @keyup.enter="applyId" />
-                        </label>
-                        <button class="primary" type="button" @click="applyId">Load track</button>
+
+                <h2>Tracks</h2>
+                <div class="settings__section">
+                    <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+                        <input type="text" x-model="pendingId" placeholder="Enter track id" @keyup.enter="applyId" style="flex: 1; border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 6px; padding: 8px 10px; font-size: 0.95rem;" />
+                        <button class="primary" type="button" @click="applyId">Add</button>
                     </div>
-                </template>
 
-                <template x-if="state.ids.length > 0">
-                    <div class="settings__section">
-                        <label class="field">
-                            <span>Add another track</span>
-                            <input type="text" x-model="pendingId" placeholder="Enter track id" @keyup.enter="applyId" />
-                        </label>
-                        <button class="primary" type="button" @click="applyId">Add track</button>
+                    <div class="field">
+                        <template x-for="item in state.ids" :key="typeof item === 'string' ? item : item.id">
+                            <div class="track-item">
+                                <div class="track-item__header">
+                                    <label class="field checkbox track-item__checkbox">
+                                        <input type="checkbox"
+                                            :checked="trackSettings[typeof item === 'string' ? item : item.id]?.enabled"
+                                            @change="toggleTrack(typeof item === 'string' ? item : item.id)">
+                                        <span x-text="typeof item === 'string' ? item : item.id"></span>
+                                    </label>
+                                    <button class="track-item__delete" type="button"
+                                        @click="deleteTrack(typeof item === 'string' ? item : item.id)"
+                                        title="Delete track">
+                                        ×
+                                    </button>
+                                </div>
 
-                        <hr />
+                                <div class="track-item__settings"
+                                    :class="{ 'track-item__settings--disabled': !trackSettings[typeof item === 'string' ? item : item.id]?.enabled }"
+                                    x-data="{ trackId: typeof item === 'string' ? item : item.id }">
 
-                        <div class="field">
-                            <span class="field__label">Tracks</span>
-                            <template x-for="item in state.ids" :key="typeof item === 'string' ? item : item.id">
-                                <div class="track-item">
-                                    <div class="track-item__header">
-                                        <label class="field checkbox track-item__checkbox">
-                                            <input type="checkbox" 
-                                                :checked="trackSettings[typeof item === 'string' ? item : item.id]?.enabled" 
-                                                @change="toggleTrack(typeof item === 'string' ? item : item.id)">
-                                            <span x-text="typeof item === 'string' ? item : item.id"></span>
-                                        </label>
-                                        <button class="track-item__delete" type="button" 
-                                            @click="deleteTrack(typeof item === 'string' ? item : item.id)"
-                                            title="Delete track">
-                                            ×
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="track-item__settings" 
-                                        :class="{ 'track-item__settings--disabled': !trackSettings[typeof item === 'string' ? item : item.id]?.enabled }"
-                                        x-data="{ trackId: typeof item === 'string' ? item : item.id }">
-                                        
-                                        <div class="field field--nested">
-                                            <span class="field__sub-label">Colour mode</span>
-                                            
-                                            <div class="radio-group radio-group--stacked">
-                                                <label class="radio-option">
-                                                    <input type="radio" :name="'colorMode-' + trackId" 
-                                                        :checked="!trackSettings[trackId]?.colorEnabled"
-                                                        @change="setTrackColorMode(trackId, false)"
-                                                        :disabled="!trackSettings[trackId]?.enabled">
-                                                    <span>Single colour</span>
-                                                </label>
-                                                
-                                                <!-- Base color picker - always shown, greyed when not in single colour mode -->
-                                                <div class="radio-option__content" 
-                                                    :class="{ 'field--disabled': trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
-                                                    <div class="color-picker-field">
-                                                        <label class="color-picker-field__label">
-                                                            <span>Base colour</span>
-                                                            <input class="color-picker-field__input" type="color" 
-                                                                x-model="trackSettings[trackId].color"
-                                                                @input="updateTrackColor(trackId)" 
-                                                                :disabled="trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled"
-                                                                title="Applies to every segment">
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="field field--nested">
+                                        <span class="field__sub-label">Colour mode</span>
 
-                                            <div class="radio-group radio-group--stacked">
-                                                <label class="radio-option">
-                                                    <input type="radio" :name="'colorMode-' + trackId" 
-                                                        :checked="trackSettings[trackId]?.colorEnabled"
-                                                        @change="setTrackColorMode(trackId, true)"
-                                                        :disabled="!trackSettings[trackId]?.enabled">
-                                                    <span>Shenanigans</span>
-                                                </label>
-                                                
-                                                <!-- Settings always shown, greyed when not in Shenanigans mode -->
-                                                <div class="radio-option__content" 
-                                                    :class="{ 'field--disabled': !trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
-                                                    <label>
-                                                        <span>New colour after</span>
-                                                        <div class="slider-line">
-                                                            <input type="range" :min="0" :max="breakHourOptions.length - 1"
-                                                                :value="getTrackBreakHoursIndex(trackId)" 
-                                                                @input="setTrackBreakHours(trackId, $event.target.value)"
-                                                                :disabled="!trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled" />
-                                                            <output x-text="formatBreakHours(trackSettings[trackId]?.breakHours || 3.0)"></output>
-                                                        </div>
+                                        <div class="radio-group radio-group--stacked">
+                                            <label class="radio-option">
+                                                <input type="radio" :name="'colorMode-' + trackId"
+                                                    :checked="!trackSettings[trackId]?.colorEnabled"
+                                                    @change="setTrackColorMode(trackId, false)"
+                                                    :disabled="!trackSettings[trackId]?.enabled">
+                                                <span>Single colour</span>
+                                            </label>
+
+                                            <!-- Base color picker - always shown, greyed when not in single colour mode -->
+                                            <div class="radio-option__content"
+                                                :class="{ 'field--disabled': trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
+                                                <div class="color-picker-field">
+                                                    <label class="color-picker-field__label">
+                                                        <span>Base colour</span>
+                                                        <input class="color-picker-field__input" type="color"
+                                                            x-model="trackSettings[trackId].color"
+                                                            @input="updateTrackColor(trackId)"
+                                                            :disabled="trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled"
+                                                            title="Applies to every segment">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="radio-group radio-group--stacked">
+                                            <label class="radio-option">
+                                                <input type="radio" :name="'colorMode-' + trackId"
+                                                    :checked="trackSettings[trackId]?.colorEnabled"
+                                                    @change="setTrackColorMode(trackId, true)"
+                                                    :disabled="!trackSettings[trackId]?.enabled">
+                                                <span>Shenanigans</span>
+                                            </label>
+
+                                            <!-- Settings always shown, greyed when not in Shenanigans mode -->
+                                            <div class="radio-option__content"
+                                                :class="{ 'field--disabled': !trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled }">
+                                                <label>
+                                                    <span>New colour after</span>
+                                                    <div class="slider-line">
+                                                        <input type="range" :min="0" :max="breakHourOptions.length - 1"
+                                                            :value="getTrackBreakHoursIndex(trackId)"
+                                                            @input="setTrackBreakHours(trackId, $event.target.value)"
+                                                            :disabled="!trackSettings[trackId]?.colorEnabled || !trackSettings[trackId]?.enabled" />
+                                                        <output
+                                                            x-text="formatBreakHours(trackSettings[trackId]?.breakHours || 3.0)"></output>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </template>
-                        </div>
-
-                        <hr />
-
-                        <label class="field">
-                            <span>Base map</span>
-                            <select x-model="state.mapSource" @change="updateMapSource">
-                                <template x-for="source in mapSources" :key="source.key">
-                                    <option :value="source.key" x-text="source.label" :selected="source.key === state.mapSource"></option>
-                                </template>
-                            </select>
-                        </label>
-
-                        <hr />
-
-                        <div class="field">
-                            <label>
-                                <span>Lighten segments with speed over</span>
-                                <div class="slider-line">
-                                    <input type="range" :min="0" :max="speedCutoffOptions.length - 1"
-                                        :value="speedCutoffIndex()" @input="setSpeedCutoff($event.target.value)" />
-                                    <output x-text="state.speedCutoff + 'km/h'"></output>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="field">
-                            <label>
-                                <span>Hide segments longer than</span>
-                                <div class="slider-line">
-                                    <input type="range" min="0" :max="segmentLengthSliderSteps"
-                                        :value="segmentLengthSliderValue()"
-                                        @input="setSegmentLengthLimit($event.target.value)" />
-                                    <output x-text="formatSegmentLength(state.segmentLengthLimitKm)"></output>
-                                </div>
-                            </label>
-                        </div>
-
-                        <hr />
-
-                        <label class="field checkbox">
-                            <input type="checkbox" :checked="state.showHuts"
-                                @change="setShowHuts($event.target.checked)">
-                            <span>Show huts</span>
-                        </label>
-
-                        <hr />
-
-                        <button class="primary" type="button" @click="centerMap">Center map</button>
+                            </div>
+                        </template>
                     </div>
-                </template>
+
+                    <hr />
+
+                    <div class="field">
+                        <label>
+                            <span>Lighten segments with speed over</span>
+                            <div class="slider-line">
+                                <input type="range" :min="0" :max="speedCutoffOptions.length - 1"
+                                    :value="speedCutoffIndex()" @input="setSpeedCutoff($event.target.value)" />
+                                <output x-text="state.speedCutoff + 'km/h'"></output>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            <span>Hide segments longer than</span>
+                            <div class="slider-line">
+                                <input type="range" min="0" :max="segmentLengthSliderSteps"
+                                    :value="segmentLengthSliderValue()"
+                                    @input="setSegmentLengthLimit($event.target.value)" />
+                                <output x-text="formatSegmentLength(state.segmentLengthLimitKm)"></output>
+                            </div>
+                        </label>
+                    </div>
+
+                    <hr />
+
+                    <h2>Map Settings</h2>
+
+                    <label class="field">
+                        <span>Base map</span>
+                        <select x-model="state.mapSource" @change="updateMapSource">
+                            <template x-for="source in mapSources" :key="source.key">
+                                <option :value="source.key" x-text="source.label"
+                                    :selected="source.key === state.mapSource"></option>
+                            </template>
+                        </select>
+                    </label>
+
+                    <label class="field checkbox">
+                        <input type="checkbox" :checked="state.showHuts" @change="setShowHuts($event.target.checked)">
+                        <span>Show huts</span>
+                    </label>
+
+                    <button class="primary" type="button" @click="centerMap">Center map to track(s)</button>
+                </div>
 
                 <div class="settings__section settings__section--status" x-show="mapStatus">
                     <p class="map-status" x-text="mapStatus" role="status"></p>
@@ -179,7 +163,7 @@
 
         <main class="map-wrapper">
             <div id="map" x-ref="map" :class="{ 'map--modal-active': showMapStatusModal }"></div>
-            
+
             <!-- Map Status Modal Dialog -->
             <div class="map-status-modal" x-show="showMapStatusModal" x-transition>
                 <div class="map-status-modal__backdrop"></div>
