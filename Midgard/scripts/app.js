@@ -71,11 +71,12 @@ const urlStateOptions = {
 		speedCutoff: "sco",
 		zoom: "z",
 		segmentLengthLimitKm: "sll",
-		showHuts: "hts"
+		showHuts: "hts",
+		color: "clr"
 	},
 	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
 	booleanKeys: ["showHuts"],
-	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts"]
+	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts", "color"]
 };
 
 const createAppState = () => {
