@@ -18,6 +18,11 @@ export const readQueryParam = (key) => {
 	return params.get(key);
 };
 
+export const readQueryParams = (key) => {
+	const params = new URLSearchParams(window.location.search);
+	return params.getAll(key);
+};
+
 export const readUrlState = (defaults, options = {}) => {
 	const {
 		alias = {},
@@ -29,7 +34,26 @@ export const readUrlState = (defaults, options = {}) => {
 	const params = new URLSearchParams(window.location.search);
 	const state = { ...defaults };
 
-	Object.entries(defaults).forEach(([key, fallback]) => {
+	// Handle multiple IDs specially - parse enabled/disabled state from ! prefix
+	const rawIds = params.getAll('id');
+	if (rawIds.length > 0) {
+		// Parse and de-duplicate IDs (keep last occurrence)
+		const idMap = new Map();
+		rawIds.forEach(id => {
+			const disabled = id.startsWith('!');
+			const cleanId = disabled ? id.substring(1) : id;
+			idMap.set(cleanId, { id: cleanId, enabled: !disabled });
+		});
+		state.ids = Array.from(idMap.values());
+	} else if (!state.ids) {
+		// Ensure ids is always an array
+		state.ids = [];
+	}	Object.entries(defaults).forEach(([key, fallback]) => {
+		// Skip 'id' as it's handled above, and skip 'ids' from defaults
+		if (key === 'id' || key === 'ids') {
+			return;
+		}
+
 		const paramKey = alias[key] ?? key;
 		if (!params.has(paramKey)) {
 			state[key] = fallback;
@@ -71,7 +95,36 @@ export const writeUrlState = (defaults, partial, options = {}) => {
 	const next = { ...current, ...partial };
 	const keysToPersist = persistedKeys ?? Object.keys(next);
 
+	// Clear all 'id' params first if 'ids' is being updated
+	if (partial.ids !== undefined) {
+		url.searchParams.delete('id');
+	}
+
 	keysToPersist.forEach((key) => {
+		// Handle multiple IDs specially with ! prefix for disabled tracks
+		if (key === 'ids') {
+			if (Array.isArray(next.ids) && next.ids.length > 0) {
+				// Remove duplicates by id
+				const seen = new Set();
+				next.ids.forEach(item => {
+					const id = typeof item === 'string' ? item : item.id;
+					const enabled = typeof item === 'string' ? true : item.enabled;
+					
+					if (id && id.trim() && !seen.has(id)) {
+						seen.add(id);
+						const urlId = enabled ? id : `!${id}`;
+						url.searchParams.append('id', urlId);
+					}
+				});
+			}
+			return;
+		}
+
+		// Skip 'id' as it's handled via 'ids'
+		if (key === 'id') {
+			return;
+		}
+
 		const paramKey = alias[key] ?? key;
 		const value = next[key];
 
@@ -89,4 +142,56 @@ export const writeUrlState = (defaults, partial, options = {}) => {
 export const normalizeMapSource = (sourceKey, mapSources, fallbackKey) => {
 	const match = mapSources.find((candidate) => candidate.key === sourceKey);
 	return match ? match.key : fallbackKey;
+};
+
+export const readPerTrackParams = (trackIds, defaultColor, defaultBreakHours, defaultColorEnabled, perTrackAlias = {}) => {
+	const params = new URLSearchParams(window.location.search);
+	const trackSettings = {};
+
+	// Get aliases or use full property names as defaults
+	const colorAlias = perTrackAlias.color || 'color';
+	const breakHoursAlias = perTrackAlias.breakHours || 'breakHours';
+	const colorEnabledAlias = perTrackAlias.colorEnabled || 'colorEnabled';
+
+	trackIds.forEach(item => {
+		const id = typeof item === 'string' ? item : item.id;
+		const enabled = typeof item === 'string' ? true : item.enabled;
+		
+		trackSettings[id] = {
+			enabled,
+			color: params.get(`${colorAlias}-${id}`) || defaultColor,
+			breakHours: parseNumberValue(params.get(`${breakHoursAlias}-${id}`), defaultBreakHours),
+			colorEnabled: parseBooleanToken(params.get(`${colorEnabledAlias}-${id}`), defaultColorEnabled)
+		};
+	});
+
+	return trackSettings;
+};
+
+export const writePerTrackParams = (trackSettings, perTrackAlias = {}) => {
+	const url = new URL(window.location.href);
+	
+	// Get aliases or use full property names as defaults
+	const colorAlias = perTrackAlias.color || 'color';
+	const breakHoursAlias = perTrackAlias.breakHours || 'breakHours';
+	const colorEnabledAlias = perTrackAlias.colorEnabled || 'colorEnabled';
+	
+	// Clear all per-track params first
+	const keys = Array.from(url.searchParams.keys());
+	keys.forEach(key => {
+		if (key.startsWith(`${colorAlias}-`) || 
+		    key.startsWith(`${breakHoursAlias}-`) || 
+		    key.startsWith(`${colorEnabledAlias}-`)) {
+			url.searchParams.delete(key);
+		}
+	});
+
+	// Write new per-track params (enabled state is in the ! prefix of id)
+	Object.entries(trackSettings).forEach(([id, settings]) => {
+		url.searchParams.set(`${colorAlias}-${id}`, settings.color);
+		url.searchParams.set(`${breakHoursAlias}-${id}`, settings.breakHours);
+		url.searchParams.set(`${colorEnabledAlias}-${id}`, settings.colorEnabled ? 'true' : 'false');
+	});
+
+	window.history.replaceState({}, "", url.toString());
 };

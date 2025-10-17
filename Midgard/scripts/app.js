@@ -1,4 +1,4 @@
-import { normalizeMapSource } from "./url.js";
+import { normalizeMapSource, readPerTrackParams, writePerTrackParams } from "./url.js";
 import { MapManager } from "./mapManager.js";
 import { ColorManager } from "./colorManager.js";
 import { StateManager } from "./stateManager.js";
@@ -53,7 +53,7 @@ const DEFAULT_VIEW = {
 };
 
 const DEFAULT_STATE = {
-	id: "",
+	ids: [],
 	mapSource: MAP_SOURCES[0].key,
 	breakHours: 3.0,
 	speedCutoff: 8.0,
@@ -74,9 +74,14 @@ const urlStateOptions = {
 		showHuts: "hts",
 		color: "clr"
 	},
+	perTrackAlias: {
+		color: "clr",
+		breakHours: "bh",
+		colorEnabled: "ce"
+	},
 	numberKeys: ["breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm"],
 	booleanKeys: ["showHuts"],
-	persistedKeys: ["id", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts", "color"]
+	persistedKeys: ["ids", "mapSource", "breakHours", "speedCutoff", "lat", "lng", "zoom", "segmentLengthLimitKm", "showHuts", "color"]
 };
 
 const createAppState = () => {
@@ -102,9 +107,14 @@ const createAppState = () => {
 	// Normalize map source to ensure it matches available options
 	const normalizedMapSource = normalizeMapSource(state.mapSource, MAP_SOURCES, DEFAULT_STATE.mapSource);
 
+	// Load per-track settings from URL
+	const trackIds = Array.isArray(state.ids) ? state.ids : [];
+	const trackSettings = readPerTrackParams(trackIds, baseColor, state.breakHours, colorEnabled, urlStateOptions.perTrackAlias);
+
 	// Create a new state object with all normalized values for template binding
 	const appState = {
 		...state,
+		ids: trackIds,
 		mapSource: normalizedMapSource,
 		colorEnabled,
 		baseColor
@@ -115,10 +125,11 @@ const createAppState = () => {
 		menuOpen,
 		hasInitializedMenu: false,
 		state: appState,
-		pendingId: appState.id,
+		pendingId: "",
+		trackSettings,
+		trackData: {}, // Store loaded track events by ID
 		mapStatus: "",
 		showMapStatusModal: false,
-		trackEvents: [],
 		hutData: [],
 		breakHourOptions: BREAK_HOUR_VALUES,
 		speedCutoffOptions: SPEED_CUTOFF_VALUES,
@@ -135,8 +146,27 @@ const createAppState = () => {
 		segmentLengthHandler,
 
 		init() {
-			this.pendingId = this.state.id;
-			if (!this.state.id) {
+			this.pendingId = "";
+			
+			// Defensive: ensure trackSettings has an entry for every ID
+			// (should already be populated by readPerTrackParams, but just in case)
+			if (this.state.ids && this.state.ids.length > 0) {
+				this.state.ids.forEach(item => {
+					const id = typeof item === 'string' ? item : item.id;
+					if (!this.trackSettings[id]) {
+						console.warn(`trackSettings missing for ${id}, initializing with defaults`);
+						const enabled = typeof item === 'string' ? true : item.enabled;
+						this.trackSettings[id] = {
+							enabled,
+							color: this.state.baseColor,
+							breakHours: this.state.breakHours,
+							colorEnabled: this.state.colorEnabled
+						};
+					}
+				});
+			}
+			
+			if (!this.state.ids || this.state.ids.length === 0) {
 				this.setMapStatus("Enter an ID to load a track.", false);
 				this.ensureMenuOpen();
 			} else {
@@ -147,8 +177,8 @@ const createAppState = () => {
 				this.mapManager.invalidateSize();
 				this.hasInitializedMenu = true;
 			});
-			if (this.state.id) {
-				this.loadTrack();
+			if (this.state.ids && this.state.ids.length > 0) {
+				this.loadTracks();
 			}
 			this.loadHutsAsync();
 		},
@@ -182,9 +212,30 @@ const createAppState = () => {
 				return;
 			}
 
-			this.state.id = trimmed;
-			this.stateManager.persistState({ id: trimmed });
-			this.loadTrack();
+			// Check if ID already exists
+			const existingIds = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			if (existingIds.includes(trimmed)) {
+				this.setMapStatus("Track ID already exists.", true);
+				this.pendingId = "";
+				return;
+			}
+
+			// Add the new ID to the list
+			this.state.ids = [...this.state.ids, { id: trimmed, enabled: true }];
+			
+			// Initialize settings for the new track
+			this.trackSettings[trimmed] = {
+				enabled: true,
+				color: this.state.baseColor,
+				breakHours: this.state.breakHours,
+				colorEnabled: this.state.colorEnabled
+			};
+			
+			this.stateManager.persistState({ ids: this.state.ids });
+			writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+			this.loadTracks();
+			
+			this.pendingId = "";
 		},
 
 		setupMap() {
@@ -253,6 +304,75 @@ const createAppState = () => {
 			this.renderTrackData();
 		},
 
+		toggleTrack(trackId) {
+			if (this.trackSettings[trackId]) {
+				this.trackSettings[trackId].enabled = !this.trackSettings[trackId].enabled;
+				
+				// Update the enabled state in the ids array
+				this.state.ids = this.state.ids.map(item => {
+					const id = typeof item === 'string' ? item : item.id;
+					if (id === trackId) {
+						return { id, enabled: this.trackSettings[trackId].enabled };
+					}
+					return item;
+				});
+				
+				this.stateManager.persistState({ ids: this.state.ids });
+				writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+				this.renderTrackData();
+			}
+		},
+
+		deleteTrack(trackId) {
+			if (!confirm(`Delete track "${trackId}"? This cannot be undone.`)) {
+				return;
+			}
+
+			// Remove from ids array
+			this.state.ids = this.state.ids.filter(item => {
+				const id = typeof item === 'string' ? item : item.id;
+				return id !== trackId;
+			});
+
+			// Remove from trackSettings
+			delete this.trackSettings[trackId];
+
+			// Remove from trackData
+			delete this.trackData[trackId];
+
+			this.stateManager.persistState({ ids: this.state.ids });
+			writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+			this.renderTrackData();
+		},
+
+		updateTrackColor(trackId) {
+			if (this.trackSettings[trackId]) {
+				writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+				this.renderTrackData();
+			}
+		},
+
+		setTrackColorMode(trackId, enabled) {
+			if (this.trackSettings[trackId]) {
+				this.trackSettings[trackId].colorEnabled = enabled;
+				writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+				this.renderTrackData();
+			}
+		},
+
+		getTrackBreakHoursIndex(trackId) {
+			if (!this.trackSettings[trackId]) return 0;
+			return this.breakHoursSlider.getIndex(this.trackSettings[trackId].breakHours);
+		},
+
+		setTrackBreakHours(trackId, rawIndex) {
+			if (this.trackSettings[trackId]) {
+				this.trackSettings[trackId].breakHours = this.breakHoursSlider.setValue(rawIndex);
+				writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
+				this.renderTrackData();
+			}
+		},
+
 		breakHoursIndex() {
 			return this.breakHoursSlider.getIndex(this.state.breakHours);
 		},
@@ -296,40 +416,68 @@ const createAppState = () => {
 			this.renderTrackData();
 		},
 
-		loadTrack() {
-			if (!this.state.id) {
+		loadTracks() {
+			if (!this.state.ids || this.state.ids.length === 0) {
 				this.setMapStatus("Enter an ID to load a track.", false);
 				this.ensureMenuOpen();
 				return;
 			}
 
-			this.setMapStatus("Loading track…", true);
+			const trackIdList = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			
+			// Only load tracks that haven't been loaded yet
+			const tracksToLoad = trackIdList.filter(id => !this.trackData[id] || this.trackData[id].length === 0);
+			
+			if (tracksToLoad.length === 0) {
+				// All tracks already loaded, just re-render
+				this.renderTrackData();
+				return;
+			}
+
+			this.setMapStatus(`Loading ${tracksToLoad.length} track(s)…`, true);
 
 			let baseUrl = readCookie("baseUrl") || "";
-			fetch(`${baseUrl}/Himinbjorg/Track?id=${encodeURIComponent(this.state.id)}`, {
-				method: "GET"
-			})
-				.then((response) => {
-					if (response.status === 403) {
-						throw new Error("403 - Access denied");
-					}
-					if (response.status === 404) {
-						throw new Error("404 - Track not found");
-					}
-					if (!response.ok) {
-						throw new Error("Failed to load track");
-					}
-					return response.json();
+			
+			const loadPromises = tracksToLoad.map(id => 
+				fetch(`${baseUrl}/Himinbjorg/Track?id=${encodeURIComponent(id)}`, {
+					method: "GET"
 				})
-				.then((data) => {
-					this.trackEvents = Array.isArray(data) ? data : [];
-					if (this.trackEvents.length === 0) {
-						this.setMapStatus("No track points available.", true);
+					.then((response) => {
+						if (response.status === 403) {
+							throw new Error(`403 - Access denied for ${id}`);
+						}
+						if (response.status === 404) {
+							throw new Error(`404 - Track ${id} not found`);
+						}
+						if (!response.ok) {
+							throw new Error(`Failed to load track ${id}`);
+						}
+						return response.json();
+					})
+					.then((data) => {
+						this.trackData[id] = Array.isArray(data) ? data : [];
+						return { id, success: true, count: this.trackData[id].length };
+					})
+					.catch((error) => {
+						this.trackData[id] = [];
+						return { id, success: false, error: error.message };
+					})
+			);
+
+			Promise.all(loadPromises)
+				.then((results) => {
+					const successCount = results.filter(r => r.success).length;
+					const totalEvents = results.reduce((sum, r) => sum + (r.count || 0), 0);
+					
+					if (successCount === 0) {
+						this.setMapStatus("Failed to load any tracks.", true);
+					} else if (successCount < results.length) {
+						this.setMapStatus(`Loaded ${successCount}/${results.length} tracks (${totalEvents} events).`, false);
 					} else {
-						this.setMapStatus(`${this.trackEvents.length} events loaded.`, false);
+						this.setMapStatus(`${totalEvents} events loaded from ${successCount} tracks.`, false);
 					}
+					
 					// Only reset hasUserAdjustedView if we didn't have view params initially
-					// This prevents fitBounds from overriding URL-specified positions
 					if (!this.hasUserAdjustedView) {
 						this.hasUserAdjustedView = this.initialViewFromUrl;
 					}
@@ -344,19 +492,64 @@ const createAppState = () => {
 		},
 
 		renderTrackData() {
-			const result = renderTrack(this.mapManager, this.trackEvents, {
-				breakHours: this.state.breakHours,
-				speedCutoff: this.state.speedCutoff,
-				segmentLengthLimitKm: this.state.segmentLengthLimitKm,
-				minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
-				maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
-				colorEnabled: this.state.colorEnabled,
-				baseColor: this.state.baseColor,
-				hasUserAdjustedView: this.hasUserAdjustedView
+			this.mapManager.clearTrackLayers();
+
+			let totalPointsRendered = 0;
+			const allBounds = [];
+
+			const trackIdList = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			
+			trackIdList.forEach(trackId => {
+				const trackEvents = this.trackData[trackId] || [];
+				const settings = this.trackSettings[trackId];
+				
+				if (!settings) {
+					console.warn(`No settings for track ${trackId}`);
+					return;
+				}
+				if (!settings.enabled) {
+					return;
+				}
+				if (trackEvents.length === 0) {
+					console.info(`No data yet for track ${trackId}`);
+					return;
+				}
+
+				const result = renderTrack(this.mapManager, trackEvents, {
+					breakHours: settings.breakHours,
+					speedCutoff: this.state.speedCutoff,
+					segmentLengthLimitKm: this.state.segmentLengthLimitKm,
+					minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
+					maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
+					colorEnabled: settings.colorEnabled,
+					baseColor: settings.color,
+					hasUserAdjustedView: this.hasUserAdjustedView,
+					skipFitBounds: true  // We'll fit all bounds together at the end
+				});
+
+				totalPointsRendered += result.pointsRendered;
+				if (result.bounds) {
+					allBounds.push(result.bounds);
+				}
 			});
 
-			// Don't show modal for normal status messages (e.g., "X events loaded")
-			this.setMapStatus(result.message, false);
+			// Fit bounds to include all tracks
+			if (allBounds.length > 0 && !this.hasUserAdjustedView) {
+				const L = this.mapManager.getLeaflet();
+				const combinedBounds = L.latLngBounds([]);
+				allBounds.forEach(bounds => {
+					combinedBounds.extend(bounds);
+				});
+				if (combinedBounds.isValid()) {
+					this.mapManager.fitBounds(combinedBounds);
+				}
+			}
+
+			if (totalPointsRendered === 0) {
+				this.setMapStatus("No tracks to display.", false);
+			} else {
+				this.setMapStatus(`${totalPointsRendered} points rendered.`, false);
+			}
 		},
 
 		async loadHutsAsync() {

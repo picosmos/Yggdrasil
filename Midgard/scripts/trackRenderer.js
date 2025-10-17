@@ -17,8 +17,6 @@ export const renderTrack = (mapManager, trackEvents, options) => {
         return { pointsRendered: 0, message: "Map not initialized" };
     }
 
-    mapManager.clearTrackLayers();
-
     if (!Array.isArray(trackEvents) || trackEvents.length === 0) {
         return { pointsRendered: 0, message: "No track events" };
     }
@@ -287,9 +285,9 @@ export const renderTrack = (mapManager, trackEvents, options) => {
 
     // Step 6: Fit map bounds if needed
     const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lon]));
-    if (bounds.isValid() && !options.hasUserAdjustedView) {
+    if (bounds.isValid() && !options.hasUserAdjustedView && !options.skipFitBounds) {
         mapManager.fitBounds(bounds);
     }
 
-    return { pointsRendered: points.length, message: `${points.length} points rendered` };
+    return { pointsRendered: points.length, message: `${points.length} points rendered`, bounds };
 };
