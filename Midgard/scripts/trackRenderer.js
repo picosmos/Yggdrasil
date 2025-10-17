@@ -1,4 +1,5 @@
 import { makeColorScale, blendColors } from "./colors.js";
+import { createGeoHackUrl } from "./geoUtils.js";
 
 // Haversine distance calculation in meters
 const distanceBetween = (pointA, pointB) => {
@@ -109,15 +110,6 @@ export const renderTrack = (mapManager, trackEvents, options) => {
         if (meters < 0) return "N/A";
         if (meters < 1000) return `${Math.round(meters)}m`;
         return `${(meters / 1000).toFixed(2)}km`;
-    };
-
-    // Helper: Create GeoHack URL for coordinates
-    const createGeoHackUrl = (lat, lon) => {
-        const latAbs = Math.abs(lat);
-        const lonAbs = Math.abs(lon);
-        const latDir = lat >= 0 ? 'N' : 'S';
-        const lonDir = lon >= 0 ? 'E' : 'W';
-        return `https://geohack.toolforge.org/geohack.php?params=${latAbs}_${latDir}_${lonAbs}_${lonDir}`;
     };
 
     // Helper: Create popup HTML content
