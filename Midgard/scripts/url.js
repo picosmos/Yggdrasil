@@ -95,27 +95,28 @@ export const writeUrlState = (defaults, partial, options = {}) => {
 	const next = { ...current, ...partial };
 	const keysToPersist = persistedKeys ?? Object.keys(next);
 
-	// Clear all 'id' params first if 'ids' is being updated
-	if (partial.ids !== undefined) {
-		url.searchParams.delete('id');
-	}
-
 	keysToPersist.forEach((key) => {
 		// Handle multiple IDs specially with ! prefix for disabled tracks
 		if (key === 'ids') {
-			if (Array.isArray(next.ids) && next.ids.length > 0) {
-				// Remove duplicates by id
-				const seen = new Set();
-				next.ids.forEach(item => {
-					const id = typeof item === 'string' ? item : item.id;
-					const enabled = typeof item === 'string' ? true : item.enabled;
-					
-					if (id && id.trim() && !seen.has(id)) {
-						seen.add(id);
-						const urlId = enabled ? id : `!${id}`;
-						url.searchParams.append('id', urlId);
-					}
-				});
+			// Only update ids if they're explicitly in the partial update
+			if (partial.ids !== undefined) {
+				// Clear all 'id' params first before re-adding
+				url.searchParams.delete('id');
+				
+				if (Array.isArray(next.ids) && next.ids.length > 0) {
+					// Remove duplicates by id
+					const seen = new Set();
+					next.ids.forEach(item => {
+						const id = typeof item === 'string' ? item : item.id;
+						const enabled = typeof item === 'string' ? true : item.enabled;
+						
+						if (id && id.trim() && !seen.has(id)) {
+							seen.add(id);
+							const urlId = enabled ? id : `!${id}`;
+							url.searchParams.append('id', urlId);
+						}
+					});
+				}
 			}
 			return;
 		}
