@@ -1,3 +1,5 @@
+import { getTrackId, getTrackEnabled } from "./trackUtils.js";
+
 const truthyTokens = new Set(["true", "1", "yes", "on", "shenanigans"]);
 
 export const parseNumberValue = (value, fallback) => {
@@ -11,6 +13,25 @@ export const parseBooleanToken = (value, fallback) => {
 	}
 
 	return truthyTokens.has(String(value).toLowerCase());
+};
+
+/**
+ * Helper function to process parameter values based on their type
+ * @param {string} rawValue - Raw parameter value from URL
+ * @param {string} key - Parameter key
+ * @param {any} fallback - Fallback value
+ * @param {string[]} numberKeys - Keys that should be parsed as numbers
+ * @param {string[]} booleanKeys - Keys that should be parsed as booleans
+ * @returns {any} Processed parameter value
+ */
+const processParameterValue = (rawValue, key, fallback, numberKeys, booleanKeys) => {
+	if (numberKeys.includes(key)) {
+		return parseNumberValue(rawValue, fallback);
+	}
+	if (booleanKeys.includes(key)) {
+		return parseBooleanToken(rawValue, fallback);
+	}
+	return rawValue ?? fallback;
 };
 
 export const readQueryParam = (key) => {
@@ -48,7 +69,9 @@ export const readUrlState = (defaults, options = {}) => {
 	} else if (!state.ids) {
 		// Ensure ids is always an array
 		state.ids = [];
-	}	Object.entries(defaults).forEach(([key, fallback]) => {
+	}
+
+	Object.entries(defaults).forEach(([key, fallback]) => {
 		// Skip 'id' as it's handled above, and skip 'ids' from defaults
 		if (key === 'id' || key === 'ids') {
 			return;
@@ -61,17 +84,7 @@ export const readUrlState = (defaults, options = {}) => {
 		}
 
 		const rawValue = params.get(paramKey);
-		if (numberKeys.includes(key)) {
-			state[key] = parseNumberValue(rawValue, fallback);
-			return;
-		}
-
-		if (booleanKeys.includes(key)) {
-			state[key] = parseBooleanToken(rawValue, fallback);
-			return;
-		}
-
-		state[key] = rawValue ?? fallback;
+		state[key] = processParameterValue(rawValue, key, fallback, numberKeys, booleanKeys);
 	});
 
 	Object.entries(tokenParsers).forEach(([key, parser]) => {
@@ -107,8 +120,8 @@ export const writeUrlState = (defaults, partial, options = {}) => {
 					// Remove duplicates by id
 					const seen = new Set();
 					next.ids.forEach(item => {
-						const id = typeof item === 'string' ? item : item.id;
-						const enabled = typeof item === 'string' ? true : item.enabled;
+						const id = getTrackId(item);
+						const enabled = getTrackEnabled(item);
 						
 						if (id && id.trim() && !seen.has(id)) {
 							seen.add(id);
@@ -155,8 +168,8 @@ export const readPerTrackParams = (trackIds, defaultColor, defaultBreakHours, de
 	const colorEnabledAlias = perTrackAlias.colorEnabled || 'colorEnabled';
 
 	trackIds.forEach(item => {
-		const id = typeof item === 'string' ? item : item.id;
-		const enabled = typeof item === 'string' ? true : item.enabled;
+		const id = getTrackId(item);
+		const enabled = getTrackEnabled(item);
 		
 		trackSettings[id] = {
 			enabled,

@@ -1,5 +1,5 @@
 import { makeColorScale, blendColors } from "./colors.js";
-import { createGeoHackUrl } from "./geoUtils.js";
+import { createGeoHackUrl, formatCoordinates } from "./geoUtils.js";
 
 // Haversine distance calculation in meters
 const distanceBetween = (pointA, pointB) => {
@@ -143,10 +143,8 @@ export const renderTrack = (mapManager, trackEvents, options) => {
         html += `<tr><th>Altitude:</th><td>${altitudeText}</td></tr>`;
         
         // Coordinates with GeoHack link
-        const latDir = point.lat >= 0 ? 'N' : 'S';
-        const lonDir = point.lon >= 0 ? 'E' : 'W';
-        const coordsText = `${Math.abs(point.lat).toFixed(6)}° ${latDir}, ${Math.abs(point.lon).toFixed(6)}° ${lonDir}`;
-        html += `<tr><th>Coordinates:</th><td><a href="${geoHackUrl}" target="_blank" rel="noopener noreferrer">${coordsText}</a></td></tr>`;
+        const coordinates = formatCoordinates(point.lat, point.lon);
+        html += `<tr><th>Coordinates:</th><td><a href="${geoHackUrl}" target="_blank" rel="noopener noreferrer">${coordinates.formatted}</a></td></tr>`;
         
         // Distance to previous point
         if (prevPoint) {

@@ -6,6 +6,7 @@ import { createSliderHandler, formatBreakHours, formatSegmentLength, createSegme
 import { renderTrack } from "./trackRenderer.js";
 import { renderHuts, loadHuts } from "./hutRenderer.js";
 import { readCookie, setCookie } from "./cookies.js";
+import { getTrackId, getTrackEnabled, normalizeTrackItem } from "./trackUtils.js";
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -213,7 +214,7 @@ const createAppState = () => {
 			}
 
 			// Check if ID already exists
-			const existingIds = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			const existingIds = this.state.ids.map(item => getTrackId(item));
 			if (existingIds.includes(trimmed)) {
 				this.setMapStatus("Track ID already exists.", true);
 				this.pendingId = "";
@@ -310,7 +311,7 @@ const createAppState = () => {
 				
 				// Update the enabled state in the ids array
 				this.state.ids = this.state.ids.map(item => {
-					const id = typeof item === 'string' ? item : item.id;
+					const id = getTrackId(item);
 					if (id === trackId) {
 						return { id, enabled: this.trackSettings[trackId].enabled };
 					}
@@ -330,7 +331,7 @@ const createAppState = () => {
 
 			// Remove from ids array
 			this.state.ids = this.state.ids.filter(item => {
-				const id = typeof item === 'string' ? item : item.id;
+				const id = getTrackId(item);
 				return id !== trackId;
 			});
 
@@ -383,9 +384,7 @@ const createAppState = () => {
 			this.renderTrackData();
 		},
 
-		formatBreakHours(hours) {
-			return formatBreakHours(hours);
-		},
+
 
 		speedCutoffIndex() {
 			return this.speedCutoffSlider.getIndex(this.state.speedCutoff);
@@ -407,9 +406,7 @@ const createAppState = () => {
 			this.renderTrackData();
 		},
 
-		formatSegmentLength(kilometers) {
-			return formatSegmentLength(kilometers);
-		},
+
 
 		updateBaseColor() {
 			this.colorManager.updateBaseColor(this.state.baseColor);
@@ -423,7 +420,7 @@ const createAppState = () => {
 				return;
 			}
 
-			const trackIdList = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			const trackIdList = this.state.ids.map(item => getTrackId(item));
 			
 			// Only load tracks that haven't been loaded yet
 			const tracksToLoad = trackIdList.filter(id => !this.trackData[id] || this.trackData[id].length === 0);
@@ -497,7 +494,7 @@ const createAppState = () => {
 			let totalPointsRendered = 0;
 			const allBounds = [];
 
-			const trackIdList = this.state.ids.map(item => typeof item === 'string' ? item : item.id);
+			const trackIdList = this.state.ids.map(item => getTrackId(item));
 			
 			trackIdList.forEach(trackId => {
 				const trackEvents = this.trackData[trackId] || [];
@@ -571,6 +568,9 @@ document.addEventListener("alpine:init", () => {
 	if (!window.Alpine) {
 		return;
 	}
+	// Expose formatting functions globally for Alpine.js templates
+	window.formatBreakHours = formatBreakHours;
+	window.formatSegmentLength = formatSegmentLength;
 	window.Alpine.data("app", createAppState);
 });
 
