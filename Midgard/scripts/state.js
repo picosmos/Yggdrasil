@@ -1,4 +1,5 @@
-import { getTrackId, getTrackEnabled } from "./trackUtils.js";
+import { CookieUtils, ColorUtils, DEFAULT_BASE_COLOR } from "./utils.js";
+import { TrackUtils } from "./models.js";
 
 const truthyTokens = new Set(["true", "1", "yes", "on", "shenanigans"]);
 
@@ -120,8 +121,8 @@ export const writeUrlState = (defaults, partial, options = {}) => {
 					// Remove duplicates by id
 					const seen = new Set();
 					next.ids.forEach(item => {
-						const id = getTrackId(item);
-						const enabled = getTrackEnabled(item);
+						const id = TrackUtils.getTrackId(item);
+						const enabled = TrackUtils.getTrackEnabled(item);
 						
 						if (id && id.trim() && !seen.has(id)) {
 							seen.add(id);
@@ -168,8 +169,8 @@ export const readPerTrackParams = (trackIds, defaultColor, defaultBreakHours, de
 	const colorEnabledAlias = perTrackAlias.colorEnabled || 'colorEnabled';
 
 	trackIds.forEach(item => {
-		const id = getTrackId(item);
-		const enabled = getTrackEnabled(item);
+		const id = TrackUtils.getTrackId(item);
+		const enabled = TrackUtils.getTrackEnabled(item);
 		
 		trackSettings[id] = {
 			enabled,
@@ -209,3 +210,135 @@ export const writePerTrackParams = (trackSettings, perTrackAlias = {}) => {
 
 	window.history.replaceState({}, "", url.toString());
 };
+
+/**
+ * Color manager for handling color modes and persistence
+ */
+export class ColorManager {
+	constructor() {
+		this.colorEnabled = false;
+		this.baseColor = DEFAULT_BASE_COLOR;
+	}
+
+	initialize() {
+		const colorToken = this.readColorToken();
+		const shenanigansColorCookie = CookieUtils.readCookie("midgard_shenanigans_color");
+
+		if (typeof colorToken === "string" && colorToken) {
+			if (colorToken.toLowerCase() === "shenanigans") {
+				this.colorEnabled = true;
+				this.baseColor = ColorUtils.sanitizeHexColor(shenanigansColorCookie ?? DEFAULT_BASE_COLOR, DEFAULT_BASE_COLOR);
+			} else {
+				this.baseColor = ColorUtils.sanitizeHexColor(colorToken, DEFAULT_BASE_COLOR);
+			}
+		} else if (typeof shenanigansColorCookie === "string" && shenanigansColorCookie) {
+			this.baseColor = ColorUtils.sanitizeHexColor(shenanigansColorCookie, DEFAULT_BASE_COLOR);
+		}
+
+		return { colorEnabled: this.colorEnabled, baseColor: this.baseColor };
+	}
+
+	readColorToken() {
+		if (typeof window === "undefined") {
+			return "";
+		}
+
+		const params = new URLSearchParams(window.location.search);
+		return params.get("color") ?? "";
+	}
+
+	writeColorToken(token) {
+		if (typeof window === "undefined") {
+			return;
+		}
+
+		const url = new URL(window.location.href);
+		if (!token) {
+			url.searchParams.delete("color");
+		} else {
+			url.searchParams.set("color", token);
+		}
+
+		window.history.replaceState({}, "", url.toString());
+	}
+
+	setColorMode(enabled, baseColor) {
+		this.colorEnabled = Boolean(enabled);
+		this.baseColor = ColorUtils.sanitizeHexColor(baseColor, DEFAULT_BASE_COLOR);
+		this.syncColorParam();
+	}
+
+	updateBaseColor(baseColor) {
+		this.baseColor = ColorUtils.sanitizeHexColor(baseColor, DEFAULT_BASE_COLOR);
+		CookieUtils.setCookie("midgard_shenanigans_color", this.baseColor);
+		this.syncColorParam();
+	}
+
+	syncColorParam() {
+		if (this.colorEnabled) {
+			this.writeColorToken("shenanigans");
+			return;
+		}
+
+		CookieUtils.setCookie("midgard_shenanigans_color", this.baseColor);
+		if (this.baseColor === DEFAULT_BASE_COLOR) {
+			this.writeColorToken("");
+		} else {
+			this.writeColorToken(this.baseColor);
+		}
+	}
+
+	getState() {
+		return {
+			colorEnabled: this.colorEnabled,
+			baseColor: this.baseColor
+		};
+	}
+}
+
+/**
+ * State manager for application state and persistence
+ */
+export class StateManager {
+	constructor(defaultState, urlStateOptions) {
+		this.defaultState = defaultState;
+		this.urlStateOptions = urlStateOptions;
+		this.state = { ...defaultState };
+	}
+
+	initialize() {
+		this.state = readUrlState(this.defaultState, this.urlStateOptions);
+
+		const menuCookie = CookieUtils.readCookie("midgard_menu_open");
+		const menuOpen = typeof menuCookie === "string" && menuCookie.length > 0 
+			? menuCookie === "1" 
+			: false;
+
+		return { state: this.state, menuOpen };
+	}
+
+	updateState(partial) {
+		this.state = { ...this.state, ...partial };
+	}
+
+	persistState(partial) {
+		this.updateState(partial);
+		writeUrlState(this.defaultState, partial, this.urlStateOptions);
+	}
+
+	persistMenuState(isOpen) {
+		CookieUtils.setCookie("midgard_menu_open", isOpen ? "1" : "0");
+	}
+
+	getState() {
+		return this.state;
+	}
+
+	get(key) {
+		return this.state[key];
+	}
+
+	set(key, value) {
+		this.state[key] = value;
+	}
+}

@@ -1,12 +1,8 @@
-import { normalizeMapSource, readPerTrackParams, writePerTrackParams } from "./url.js";
-import { MapManager } from "./mapManager.js";
-import { ColorManager } from "./colorManager.js";
-import { StateManager } from "./stateManager.js";
-import { createSliderHandler, formatBreakHours, formatSegmentLength, createSegmentLengthHandler } from "./sliders.js";
-import { renderTrack } from "./trackRenderer.js";
-import { renderHuts, loadHuts } from "./hutRenderer.js";
-import { readCookie, setCookie } from "./cookies.js";
-import { getTrackId, getTrackEnabled, normalizeTrackItem } from "./trackUtils.js";
+import { normalizeMapSource, readPerTrackParams, writePerTrackParams, ColorManager, StateManager } from "./state.js";
+import { MapManager, HutRenderer, TrackRenderer } from "./map.js";
+import { createSliderHandler, createSegmentLengthHandler } from "./controls.js";
+import { CookieUtils, NumberFormatter } from "./utils.js";
+import { TrackUtils } from "./models.js";
 
 const BREAK_HOUR_VALUES = [
 	...Array.from({ length: 12 }, (_, index) => 0.25 + index * 0.25),
@@ -213,15 +209,13 @@ const createAppState = () => {
 				return;
 			}
 
-			// Check if ID already exists
-			const existingIds = this.state.ids.map(item => getTrackId(item));
-			if (existingIds.includes(trimmed)) {
-				this.setMapStatus("Track ID already exists.", true);
-				this.pendingId = "";
-				return;
-			}
-
-			// Add the new ID to the list
+		// Check if ID already exists
+		const existingIds = this.state.ids.map(item => TrackUtils.getTrackId(item));
+		if (existingIds.includes(trimmed)) {
+			this.setMapStatus("Track ID already exists.", true);
+			this.pendingId = "";
+			return;
+		}			// Add the new ID to the list
 			this.state.ids = [...this.state.ids, { id: trimmed, enabled: true }];
 			
 			// Initialize settings for the new track
@@ -309,16 +303,14 @@ const createAppState = () => {
 			if (this.trackSettings[trackId]) {
 				this.trackSettings[trackId].enabled = !this.trackSettings[trackId].enabled;
 				
-				// Update the enabled state in the ids array
-				this.state.ids = this.state.ids.map(item => {
-					const id = getTrackId(item);
-					if (id === trackId) {
-						return { id, enabled: this.trackSettings[trackId].enabled };
-					}
-					return item;
-				});
-				
-				this.stateManager.persistState({ ids: this.state.ids });
+			// Update the enabled state in the ids array
+			this.state.ids = this.state.ids.map(item => {
+				const id = TrackUtils.getTrackId(item);
+				if (id === trackId) {
+					return { id, enabled: this.trackSettings[trackId].enabled };
+				}
+				return item;
+			});				this.stateManager.persistState({ ids: this.state.ids });
 				writePerTrackParams(this.trackSettings, urlStateOptions.perTrackAlias);
 				this.renderTrackData();
 			}
@@ -329,13 +321,11 @@ const createAppState = () => {
 				return;
 			}
 
-			// Remove from ids array
-			this.state.ids = this.state.ids.filter(item => {
-				const id = getTrackId(item);
-				return id !== trackId;
-			});
-
-			// Remove from trackSettings
+		// Remove from ids array
+		this.state.ids = this.state.ids.filter(item => {
+			const id = TrackUtils.getTrackId(item);
+			return id !== trackId;
+		});			// Remove from trackSettings
 			delete this.trackSettings[trackId];
 
 			// Remove from trackData
@@ -413,16 +403,14 @@ const createAppState = () => {
 			this.renderTrackData();
 		},
 
-		loadTracks() {
-			if (!this.state.ids || this.state.ids.length === 0) {
-				this.setMapStatus("Enter an ID to load a track.", false);
-				this.ensureMenuOpen();
-				return;
-			}
+	loadTracks() {
+		if (!this.state.ids || this.state.ids.length === 0) {
+			this.setMapStatus("Enter an ID to load a track.", false);
+			this.ensureMenuOpen();
+			return;
+		}
 
-			const trackIdList = this.state.ids.map(item => getTrackId(item));
-			
-			// Only load tracks that haven't been loaded yet
+		const trackIdList = this.state.ids.map(item => TrackUtils.getTrackId(item));			// Only load tracks that haven't been loaded yet
 			const tracksToLoad = trackIdList.filter(id => !this.trackData[id] || this.trackData[id].length === 0);
 			
 			if (tracksToLoad.length === 0) {
@@ -431,11 +419,9 @@ const createAppState = () => {
 				return;
 			}
 
-			this.setMapStatus(`Loading ${tracksToLoad.length} track(s)…`, true);
+		this.setMapStatus(`Loading ${tracksToLoad.length} track(s)…`, true);
 
-			let baseUrl = readCookie("baseUrl") || "";
-			
-			const loadPromises = tracksToLoad.map(id => 
+		let baseUrl = CookieUtils.readCookie("baseUrl") || "";			const loadPromises = tracksToLoad.map(id => 
 				fetch(`${baseUrl}/Himinbjorg/Track?id=${encodeURIComponent(id)}`, {
 					method: "GET"
 				})
@@ -488,15 +474,13 @@ const createAppState = () => {
 				});
 		},
 
-		renderTrackData() {
-			this.mapManager.clearTrackLayers();
+	renderTrackData() {
+		this.mapManager.clearTrackLayers();
 
-			let totalPointsRendered = 0;
-			const allBounds = [];
+		let totalPointsRendered = 0;
+		const allBounds = [];
 
-			const trackIdList = this.state.ids.map(item => getTrackId(item));
-			
-			trackIdList.forEach(trackId => {
+		const trackIdList = this.state.ids.map(item => TrackUtils.getTrackId(item));			trackIdList.forEach(trackId => {
 				const trackEvents = this.trackData[trackId] || [];
 				const settings = this.trackSettings[trackId];
 				
@@ -512,20 +496,18 @@ const createAppState = () => {
 					return;
 				}
 
-				const result = renderTrack(this.mapManager, trackEvents, {
-					trackId: trackId,
-					breakHours: settings.breakHours,
-					speedCutoff: this.state.speedCutoff,
-					segmentLengthLimitKm: this.state.segmentLengthLimitKm,
-					minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
-					maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
-					colorEnabled: settings.colorEnabled,
-					baseColor: settings.color,
-					hasUserAdjustedView: this.hasUserAdjustedView,
-					skipFitBounds: true  // We'll fit all bounds together at the end
-				});
-
-				totalPointsRendered += result.pointsRendered;
+			const result = TrackRenderer.render(this.mapManager, trackEvents, {
+				trackId: trackId,
+				breakHours: settings.breakHours,
+				speedCutoff: this.state.speedCutoff,
+				segmentLengthLimitKm: this.state.segmentLengthLimitKm,
+				minSegmentLengthKm: MIN_SEGMENT_LENGTH_KM,
+				maxSegmentLengthKm: MAX_SEGMENT_LENGTH_KM,
+				colorEnabled: settings.colorEnabled,
+				baseColor: settings.color,
+				hasUserAdjustedView: this.hasUserAdjustedView,
+				skipFitBounds: true  // We'll fit all bounds together at the end
+			});				totalPointsRendered += result.pointsRendered;
 				if (result.bounds) {
 					allBounds.push(result.bounds);
 				}
@@ -552,8 +534,8 @@ const createAppState = () => {
 
 		async loadHutsAsync() {
 			try {
-				this.hutData = await loadHuts("./data/hytter.csv");
-				renderHuts(this.mapManager, this.hutData, "./assets/hut.png");
+				this.hutData = await HutRenderer.loadHuts("./data/hytter.csv");
+				HutRenderer.render(this.mapManager, this.hutData, "./assets/hut.png");
 				if (this.state.showHuts) {
 					this.mapManager.showHutLayer();
 				}
@@ -569,8 +551,8 @@ document.addEventListener("alpine:init", () => {
 		return;
 	}
 	// Expose formatting functions globally for Alpine.js templates
-	window.formatBreakHours = formatBreakHours;
-	window.formatSegmentLength = formatSegmentLength;
+	window.formatBreakHours = NumberFormatter.formatBreakHours;
+	window.formatSegmentLength = NumberFormatter.formatSegmentLength;
 	window.Alpine.data("app", createAppState);
 });
 
@@ -582,5 +564,5 @@ window.app = createAppState;
 // Example: setBaseUrl("http://localhost:1339")
 window.setBaseUrl = (url) => {
 	window.baseUrl = url;
-	setCookie("baseUrl", url, 365);
+	CookieUtils.setCookie("baseUrl", url, 365);
 };

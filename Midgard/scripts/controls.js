@@ -1,3 +1,7 @@
+/**
+ * Slider and control utility functions
+ */
+
 export const findNearestIndex = (options, value) => {
 	const matchIndex = options.findIndex((item) => item === value);
 	if (matchIndex !== -1) {
@@ -28,37 +32,6 @@ export const createSliderHandler = (options) => {
 			return options[clampedIndex];
 		}
 	};
-};
-
-export const formatBreakHours = (hours) => {
-	const totalMinutes = Math.round(hours * 60);
-	const wholeHours = Math.floor(totalMinutes / 60);
-	const remainingMinutes = totalMinutes % 60;
-	const parts = [];
-	if (wholeHours > 0) {
-		parts.push(`${wholeHours}h`);
-	}
-	if (remainingMinutes > 0) {
-		parts.push(`${remainingMinutes}min`);
-	}
-	if (parts.length === 0) {
-		return "0 min";
-	}
-	return parts.join(" ");
-};
-
-export const formatSegmentLength = (kilometers) => {
-	const km = Number(kilometers);
-	if (!Number.isFinite(km)) {
-		return "n/a";
-	}
-	if (km >= 10) {
-		return `${Math.round(km)}km`;
-	}
-	if (km >= 3) {
-		return `${km.toFixed(1)}km`;
-	}
-	return `${Math.round(km * 1000)}m`;
 };
 
 export const createSegmentLengthHandler = (minKm, maxKm, sliderSteps) => {
