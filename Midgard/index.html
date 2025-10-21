@@ -152,7 +152,12 @@
                         <span>Show huts</span>
                     </label>
 
-                    <button class="primary" type="button" @click="centerMap">Center map to track(s)</button>
+                    <button class="primary" type="button" @click="centerMap" 
+                        :disabled="!state.ids || state.ids.filter(item => trackSettings[TrackUtils.getTrackId(item)]?.enabled).length === 0"
+                        x-text="(() => {
+                            const count = state.ids ? state.ids.filter(item => trackSettings[TrackUtils.getTrackId(item)]?.enabled).length : 0;
+                            return count === 1 ? 'Center map to track' : 'Center map to tracks';
+                        })()"></button>
                 </div>
 
                 <div class="settings-section settings-section-status" x-show="mapStatus">

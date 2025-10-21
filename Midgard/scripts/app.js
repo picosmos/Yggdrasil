@@ -142,6 +142,9 @@ const createAppState = () => {
 		speedCutoffSlider,
 		segmentLengthHandler,
 
+		// Utility functions
+		TrackUtils,
+
 		init() {
 			this.pendingId = "";
 			

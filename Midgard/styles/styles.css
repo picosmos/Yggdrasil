@@ -481,6 +481,19 @@ input[type="color"][disabled] {
     transform: scale(0.98);
 }
 
+/* Disabled state for regular buttons */
+.settings button[type="button"]:disabled,
+.settings input[type="button"]:disabled {
+    background: var(--neutral-100);
+    color: var(--neutral-400);
+    border-color: var(--neutral-200);
+    cursor: not-allowed;
+    opacity: 0.75;
+    filter: saturate(0);
+    transform: none;
+    box-shadow: none;
+}
+
 /* Primary buttons within settings - blue gradient base */
 .settings button.primary {
     align-self: flex-start;
@@ -509,6 +522,23 @@ input[type="color"][disabled] {
 
 .settings button.primary:active {
     background: linear-gradient(135deg, var(--accent-color-darker), var(--accent-color-darkest));
+}
+
+/* Disabled state for primary buttons */
+.settings button.primary:disabled {
+    background: var(--neutral-300);
+    color: var(--neutral-500);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+    transform: none;
+}
+
+.settings button.primary:disabled:hover {
+    background: var(--neutral-300);
+    color: var(--neutral-500);
+    box-shadow: none;
+    transform: none;
 }
 
 /* Leaflet zoom buttons styling - matching menu toggle style */
