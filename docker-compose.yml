@@ -1,8 +1,6 @@
 services:
   yggdrasil:
     build: .
-    ports:
-      - "1339:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME}
